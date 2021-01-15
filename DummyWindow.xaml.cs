@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -26,8 +28,13 @@ namespace DeadEye {
 			}
 
 			// Register hotkeys
-			this.overlayHotkey = new HotKey(ModifierKeys.Control | ModifierKeys.Windows, Key.S, this, key => {
+			this.overlayHotkey = new HotKey(ModifierKeys.Alt | ModifierKeys.Shift, Key.S, this, key => {
 				Debug.WriteLine("Overlay Hotkey!");
+
+				var bm = new Bitmap(2560, 1440);
+				var g = Graphics.FromImage(bm);
+				g.CopyFromScreen(0, 0, 0, 0, bm.Size);
+				bm.Save(@"C:\Users\hallo\Desktop\screen.png", ImageFormat.Png);
 			});
 		}
 
