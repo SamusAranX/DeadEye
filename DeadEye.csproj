@@ -10,7 +10,21 @@
     <PublishTrimmed>true</PublishTrimmed>
     <PublishReadyToRun>true</PublishReadyToRun>
     <Platforms>x64</Platforms>
+    <Authors>Emma Alyx Wunder</Authors>
+    <Company />
+    <Description>A fast screenshot tool</Description>
+    <Copyright>2021 Emma Alyx Wunder</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Icons\camera.ico" />
+    <None Remove="Icons\crosshair.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\camera.ico" />
+    <Resource Include="Icons\crosshair.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="5.0.0" />

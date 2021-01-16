@@ -3,10 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DeadEye" SourceInitialized="DummyWindow_OnSourceInitialized" Closed="DummyWindow_OnClosed"
+        xmlns:local="clr-namespace:DeadEye"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:notifyIcon="clr-namespace:DeadEye.NotifyIcon" UseLayoutRounding="True"
+        SourceInitialized="DummyWindow_OnSourceInitialized" Closed="DummyWindow_OnClosed"
         Visibility="Collapsed" IsHitTestVisible="False" ShowInTaskbar="False" ShowActivated="False" WindowStyle="None"
         mc:Ignorable="d" Title="Dummy Window" Height="128" Width="128">
-    <Grid Background="#0E0E0E">
+	<Window.Resources>
+		<ContextMenu x:Key="TaskbarIconContextMenu">
+			<MenuItem Header="Settings" Click="SettingsMenuItem_OnClick" />
+			<MenuItem Header="About" Click="AboutMenuItem_OnClick" />
+            <Separator />
+			<MenuItem Header="Exit" Click="ExitMenuItem_OnClick" />
+		</ContextMenu>
+
+		<notifyIcon:TaskbarIcon x:Key="TaskbarIcon" IconSource="Icons/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye"
+		                        ContextMenu="{StaticResource TaskbarIconContextMenu}" />
+	</Window.Resources>
+
+	<Grid Background="#0E0E0E">
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Padding="8" Foreground="#EBEBEB">
             If you can read this, ignore it.
 		</TextBlock>

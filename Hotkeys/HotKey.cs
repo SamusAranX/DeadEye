@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
-namespace DeadEye.Hotkeys {
+namespace DeadEye.HotKeys {
     public sealed class HotKey : IDisposable {
 	    private const int WM_HOTKEY = 0x0312;
 	    private const int ERROR_HOTKEY_ALREADY_REGISTERED = 1409;
