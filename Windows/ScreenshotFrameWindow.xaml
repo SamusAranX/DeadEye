@@ -1,4 +1,4 @@
-﻿<Window x:Class="DeadEye.ScreenshotFrameWindow"
+﻿<Window x:Class="DeadEye.Windows.ScreenshotFrameWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,7 @@
         mc:Ignorable="d" WindowStyle="None" Background="#000000" ResizeMode="NoResize"
         Title="ScreenshotFrameWindow" Height="480" Width="640" DataContext="{Binding RelativeSource={RelativeSource Self}}"
         ContentRendered="ScreenshotFrameWindow_OnContentRendered" KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp"
-        RenderOptions.BitmapScalingMode="NearestNeighbor" UseLayoutRounding="True"
+        RenderOptions.BitmapScalingMode="NearestNeighbor" UseLayoutRounding="True" LostFocus="ScreenshotFrameWindow_OnLostFocus"
         MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown" MouseMove="ScreenshotFrameWindow_OnMouseMove" MouseLeftButtonUp="ScreenshotFrameWindow_OnMouseLeftButtonUp">
 	<Window.Resources>
         <Storyboard x:Key="FadeInStoryboard">
@@ -38,12 +38,11 @@
 		</Border>
 
 		<Canvas Background="Transparent">
-			<!-- This doesn't work because even after more than 14 years, WPF is still a broken mess -->
 			<controls:RuleOfThirdsGrid Opacity="0.4"
-			                           Canvas.Top="{Binding SelectionBounds.Top}"
-			                           Canvas.Left="{Binding SelectionBounds.Left}"
-			                           Width="{Binding SelectionBounds.Width}"
-			                           Height="{Binding SelectionBounds.Height}" />
+			                           Canvas.Top="{Binding SelectionBoundsClamped.Top}"
+			                           Canvas.Left="{Binding SelectionBoundsClamped.Left}"
+			                           Width="{Binding SelectionBoundsClamped.Width}"
+			                           Height="{Binding SelectionBoundsClamped.Height}" />
 		</Canvas>
 	</Grid>
 </Window>

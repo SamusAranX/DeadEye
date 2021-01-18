@@ -10,16 +10,15 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DeadEye {
+namespace DeadEye.Windows {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Interaction logic for SettingsWindow.xaml
 	/// </summary>
-	public partial class MainWindow {
-		public MainWindow() {
-			this.InitializeComponent();
+	public partial class SettingsWindow : Window {
+		public SettingsWindow() {
+			InitializeComponent();
 		}
 	}
 }

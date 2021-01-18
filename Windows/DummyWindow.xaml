@@ -1,4 +1,4 @@
-﻿<Window x:Class="DeadEye.DummyWindow"
+﻿<Window x:Class="DeadEye.Windows.DummyWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,7 +17,7 @@
 			<MenuItem Header="Exit" Click="ExitMenuItem_OnClick" />
 		</ContextMenu>
 
-		<notifyIcon:TaskbarIcon x:Key="TaskbarIcon" IconSource="Icons/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye"
+		<notifyIcon:TaskbarIcon x:Key="TaskbarIcon" IconSource="/Icons/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye"
 		                        ContextMenu="{StaticResource TaskbarIconContextMenu}" />
 	</Window.Resources>
 
