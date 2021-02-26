@@ -6,21 +6,13 @@
         xmlns:local="clr-namespace:DeadEye"
         xmlns:controls="clr-namespace:DeadEye.Controls"
         Loaded="ScreenshotFrameWindow_OnLoaded"
-        mc:Ignorable="d" WindowStyle="None" Background="#000000" ResizeMode="NoResize"
+        mc:Ignorable="d" WindowStyle="None" Background="#0088FF" ResizeMode="NoResize"
         Title="ScreenshotFrameWindow" Height="480" Width="640" DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        ContentRendered="ScreenshotFrameWindow_OnContentRendered" KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp"
-        RenderOptions.BitmapScalingMode="NearestNeighbor" UseLayoutRounding="True" LostFocus="ScreenshotFrameWindow_OnLostFocus"
+        KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp"
+        UseLayoutRounding="True" LostFocus="ScreenshotFrameWindow_OnLostFocus"
         MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown" MouseMove="ScreenshotFrameWindow_OnMouseMove" MouseLeftButtonUp="ScreenshotFrameWindow_OnMouseLeftButtonUp">
 	<Window.Resources>
-        <Storyboard x:Key="FadeInStoryboard">
-			<DoubleAnimation Duration="0:0:0.1" From="0" To="1" FillBehavior="HoldEnd" Storyboard.TargetName="DragOverlay" Storyboard.TargetProperty="Opacity">
-                <DoubleAnimation.EasingFunction>
-	                <CubicEase EasingMode="EaseInOut" />
-                </DoubleAnimation.EasingFunction>
-			</DoubleAnimation>
-        </Storyboard>
-
-		<RectangleGeometry x:Key="FullscreenRect"  Rect="0,0,32767,32767" />
+		<RectangleGeometry x:Key="FullscreenRect" Rect="0,0,32767,32767" />
 
 		<SolidColorBrush x:Key="GridUnselected" Color="#66000000" />
 	</Window.Resources>
@@ -28,7 +20,7 @@
 	<Grid>
 		<Image Source="{Binding ScreenshotSource}" />
 
-		<Border x:Name="DragOverlay" Background="{StaticResource GridUnselected}" Opacity="0">
+		<Border x:Name="DragOverlay" Background="{StaticResource GridUnselected}">
 			<Border.Clip>
 				<GeometryGroup>
 					<StaticResource ResourceKey="FullscreenRect" />
@@ -38,11 +30,11 @@
 		</Border>
 
 		<Canvas Background="Transparent">
-			<controls:RuleOfThirdsGrid Opacity="0.4"
-			                           Canvas.Top="{Binding SelectionBoundsClamped.Top}"
-			                           Canvas.Left="{Binding SelectionBoundsClamped.Left}"
-			                           Width="{Binding SelectionBoundsClamped.Width}"
-			                           Height="{Binding SelectionBoundsClamped.Height}" />
+			<controls:GuideGrid Opacity="0.4" GridType="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.GridType}"
+			                    Canvas.Top="{Binding SelectionBoundsClamped.Top}"
+			                    Canvas.Left="{Binding SelectionBoundsClamped.Left}"
+			                    Width="{Binding SelectionBoundsClamped.Width}"
+			                    Height="{Binding SelectionBoundsClamped.Height}" />
 		</Canvas>
 	</Grid>
 </Window>

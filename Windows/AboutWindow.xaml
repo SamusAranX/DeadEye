@@ -4,9 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeadEye.Windows"
+        xmlns:helpers="clr-namespace:DeadEye.Helpers"
         mc:Ignorable="d" Icon="/Icons/camera.ico"
-        Title="AboutWindow" Height="450" Width="800">
-    <Grid>
-        <TextBlock Text="About" HorizontalAlignment="Center" VerticalAlignment="Center" />
-    </Grid>
+        UseLayoutRounding="True" DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        TextOptions.TextFormattingMode="Display"
+        Title="About DeadEye" Width="380" Height="240" ResizeMode="NoResize">
+    <Border Padding="8">
+	    <StackPanel Orientation="Vertical">
+		    <TextBlock>
+                <Run Text="DeadEye" FontSize="26" FontWeight="SemiBold" />
+			    <Run Text="{Binding CurrentVersion, Mode=OneTime, FallbackValue=v1.0.0}" />
+			    <Run Text="{Binding GitVersion, Mode=OneTime, FallbackValue=3d9f094-dirty}" />
+		    </TextBlock>
+
+            <TextBlock>
+                lots of placeholders here.
+            </TextBlock>
+	    </StackPanel>
+	</Border>
 </Window>
