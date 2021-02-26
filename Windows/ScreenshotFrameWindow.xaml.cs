@@ -1,12 +1,10 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
+using DeadEye.Helpers;
 using Image = System.Drawing.Image;
 
 namespace DeadEye.Windows {
@@ -16,7 +14,7 @@ namespace DeadEye.Windows {
 	public sealed partial class ScreenshotFrameWindow: INotifyPropertyChanged {
 
 		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+		private void OnPropertyChanged(string propertyName = null) {
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
@@ -55,15 +53,7 @@ namespace DeadEye.Windows {
 			}
 		}
 		public Rect SelectionBounds => new Rect(this.SelectionStartPoint, this.SelectionEndPoint);
-
-		public Rect SelectionBoundsClamped {
-			get {
-				if (this.virtualScreenRectNormalized == Rect.Empty)
-					return this.SelectionBounds;
-
-				return Rect.Intersect(this.SelectionBounds, this.virtualScreenRectNormalized);
-			}
-		}
+		public Rect SelectionBoundsClamped => this.virtualScreenRectNormalized == Rect.Empty ? this.SelectionBounds : Rect.Intersect(this.SelectionBounds, this.virtualScreenRectNormalized);
 
 		public bool IsMakingSelection { get; private set; }
 		public bool IsMovingSelection { get; private set; }
@@ -73,11 +63,12 @@ namespace DeadEye.Windows {
 		private Point moveSelectionOffset;
 
 		// copy of the virtual screen rect with the X coordinate set to 0
-		private Rect virtualScreenRectNormalized;
+		private readonly Rect virtualScreenRectNormalized;
 
-		public ScreenshotFrameWindow() { 
+		public ScreenshotFrameWindow() {
 			this.InitializeComponent();
-			var virtualScreenRect = Helpers.GetVirtualScreenRect();
+
+			var virtualScreenRect = ScreenshotHelper.GetVirtualScreenRect();
 			this.SetSize(virtualScreenRect);
 			this.virtualScreenRectNormalized = virtualScreenRect;
 			this.virtualScreenRectNormalized.X = 0;
@@ -100,11 +91,6 @@ namespace DeadEye.Windows {
 		private void ScreenshotFrameWindow_OnLostFocus(object sender, RoutedEventArgs e) {
 			Debug.WriteLine("lost focus");
 			this.CloseDialog(false);
-		}
-
-		private void ScreenshotFrameWindow_OnContentRendered(object sender, EventArgs e) {
-			var sb = this.FindResource("FadeInStoryboard") as Storyboard;
-			sb?.Begin();
 		}
 
 		private void ScreenshotFrameWindow_OnKeyDown(object sender, KeyEventArgs e) {
@@ -163,7 +149,8 @@ namespace DeadEye.Windows {
 			}
 
 			var cropRect = this.SelectionBounds;
-			if (cropRect.Width <= 8 && cropRect.Height <= 8)
+			var selectionThreshold = Settings.SharedSettings.ThresholdSize;
+			if (cropRect.Width <= selectionThreshold && cropRect.Height <= selectionThreshold)
 				return;
 
 			cropRect.Intersect(this.virtualScreenRectNormalized);
@@ -200,9 +187,6 @@ namespace DeadEye.Windows {
 		private void ResetDrawingFrame() {
 			this.IsMakingSelection = false;
 			this.IsMovingSelection = false;
-
-			//var pos = e.GetPosition(this);
-			//this.SelectionEndPoint = pos;
 
 			// Hide crop rectangle
 			var zeroPoint = new Point();

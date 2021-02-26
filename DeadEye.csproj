@@ -14,6 +14,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -53,9 +53,13 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icons\camera.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -76,11 +80,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\RuleOfThirdsGrid.xaml.cs">
-      <DependentUpon>RuleOfThirdsGrid.xaml</DependentUpon>
+    <Compile Include="Helpers\AeroBlurHelper.cs" />
+    <Compile Include="Helpers\ColorWrapper.cs" />
+    <Compile Include="Controls\ColorInspector.xaml.cs">
+      <DependentUpon>ColorInspector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GuideGrid.xaml.cs">
+      <DependentUpon>GuideGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\ColorHexConverter.cs" />
+    <Compile Include="Converters\EnumToDescriptionConverter.cs" />
+    <Compile Include="Converters\ReadableColorConverter.cs" />
     <Compile Include="Extensions\AssortedExtensions.cs" />
     <Compile Include="Extensions\BitmapExtensions.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
     <Compile Include="HotKeys\HotKey.cs" />
     <Compile Include="NotifyIcon\BalloonIcon.cs" />
@@ -104,8 +117,12 @@
     <Compile Include="NotifyIcon\TaskbarIcon.cs" />
     <Compile Include="NotifyIcon\TaskbarIcon.Declarations.cs" />
     <Compile Include="NotifyIcon\Util.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Windows\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ColorBrowserWindow.xaml.cs">
+      <DependentUpon>ColorBrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ScreenshotFrameWindow.xaml.cs">
       <DependentUpon>ScreenshotFrameWindow.xaml</DependentUpon>
@@ -113,11 +130,19 @@
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\RuleOfThirdsGrid.xaml">
+    <Page Include="Controls\ColorInspector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GuideGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ColorBrowserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -132,7 +157,7 @@
     <Compile Include="Windows\DummyWindow.xaml.cs">
       <DependentUpon>DummyWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers.cs" />
+    <Compile Include="Helpers\ScreenshotHelper.cs" />
     <Page Include="Windows\ScreenshotFrameWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -185,6 +210,12 @@
     <Resource Include="Icons\camera.ico" />
     <Resource Include="Icons\crosshair.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="version.txt" />
+  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>git describe --always --dirty --long &gt; "$(ProjectDir)\version.txt"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

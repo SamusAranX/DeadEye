@@ -4,9 +4,61 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeadEye.Windows"
-        mc:Ignorable="d" Icon="/Icons/camera.ico"
-        Title="SettingsWindow" Height="450" Width="800">
-	<Grid>
-		<TextBlock Text="Settings" HorizontalAlignment="Center" VerticalAlignment="Center" />
+		xmlns:deadeye="clr-namespace:DeadEye"
+		xmlns:extensions="clr-namespace:DeadEye.Extensions"
+		xmlns:converters="clr-namespace:DeadEye.Converters"
+		mc:Ignorable="d" Icon="/Icons/camera.ico"
+        UseLayoutRounding="True" DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
+        Title="Settings" Width="320" Height="300" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Background="{x:Static SystemColors.MenuBrush}">
+	<Window.Resources>
+		<converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
+	</Window.Resources>
+
+	<Grid Margin="12">
+        <Grid.ColumnDefinitions>
+			<ColumnDefinition Width="90" />
+			<ColumnDefinition Width="8" />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="22" />
+			<RowDefinition Height="22" />
+			<RowDefinition Height="22" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+
+		<TextBlock Grid.Column="0" Grid.Row="0" 
+		           Text="Grid Type:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+		<ComboBox Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"
+		          ItemsSource="{Binding GridTypes}"
+		          SelectedItem="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.GridType}">
+			  <ComboBox.ItemTemplate>
+				  <DataTemplate>
+					  <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}"></TextBlock>
+				  </DataTemplate>
+			  </ComboBox.ItemTemplate>
+		</ComboBox>
+
+		<TextBlock Grid.Column="0" Grid.Row="1" 
+		           Text="Threshold Size:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+
+		<Grid Grid.Column="2" Grid.Row="1" VerticalAlignment="Center">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="28" />
+			</Grid.ColumnDefinitions>
+
+			<Slider Grid.Column="0" x:Name="ThresholdSlider" VerticalAlignment="Center"
+					TickFrequency="1" IsSnapToTickEnabled="True" Maximum="64"
+			        Value="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.ThresholdSize}" />
+
+			<Label Grid.Column="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+			       Content="{Binding ElementName=ThresholdSlider, Path=Value, FallbackValue=0}" />
+		</Grid>
+
+		<CheckBox Grid.Column="2" Grid.Row="2" Content="Use Fast Screenshot Capture (Dummy)" VerticalAlignment="Center"
+		          IsChecked="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.FastScreenshot}"/>
 	</Grid>
 </Window>

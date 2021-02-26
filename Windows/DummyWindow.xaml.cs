@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using DeadEye.Helpers;
 using DeadEye.HotKeys;
 using DeadEye.NotifyIcon;
 
@@ -15,6 +16,7 @@ namespace DeadEye.Windows {
 		private HotKey overlayHotkey;
 
 		private ScreenshotFrameWindow screenshotWindow;
+		private ColorBrowserWindow colorBrowserWindow;
 		private SettingsWindow settingsWindow;
 		private AboutWindow aboutWindow;
 
@@ -53,7 +55,7 @@ namespace DeadEye.Windows {
 				return;
 			}
 
-			var bm = Helpers.GetFullscreenScreenshotGDI();
+			var bm = ScreenshotHelper.GetFullscreenScreenshotGDI();
 			this.screenshotWindow = new ScreenshotFrameWindow(bm);
 			var result = this.screenshotWindow.ShowDialog();
 
@@ -76,6 +78,17 @@ namespace DeadEye.Windows {
 		#endregion
 
 		#region Context Menu Actions
+
+		private void ColorMenuItem_OnClick(object sender, RoutedEventArgs e) {
+			if (this.colorBrowserWindow != null) {
+				this.colorBrowserWindow.Activate();
+				return;
+			}
+
+			this.colorBrowserWindow = new ColorBrowserWindow();
+			this.colorBrowserWindow.Closed += (a, b) => this.colorBrowserWindow = null;
+			this.colorBrowserWindow.Show();
+		}
 
 		private void SettingsMenuItem_OnClick(object sender, RoutedEventArgs e) {
 			if (this.settingsWindow != null) {

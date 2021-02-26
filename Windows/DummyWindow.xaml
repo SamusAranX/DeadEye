@@ -11,6 +11,7 @@
         mc:Ignorable="d" Title="Dummy Window" Height="128" Width="128">
 	<Window.Resources>
 		<ContextMenu x:Key="TaskbarIconContextMenu">
+			<MenuItem Header="Colors (Debug)" Click="ColorMenuItem_OnClick" />
 			<MenuItem Header="Settings" Click="SettingsMenuItem_OnClick" />
 			<MenuItem Header="About" Click="AboutMenuItem_OnClick" />
             <Separator />
