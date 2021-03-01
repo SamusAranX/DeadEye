@@ -71,7 +71,7 @@ namespace DeadEye.Windows {
 			/*
 			 * I'm explicitly setting screenshotWindow to null instead of relying on the Closed event handler
 			 * because the event handler will happen before I can retrieve the screenshot
-			 */ 
+			 */
 			this.screenshotWindow = null;
 		}
 
@@ -113,6 +113,7 @@ namespace DeadEye.Windows {
 		}
 
 		private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e) {
+			Settings.SharedSettings.Save();
 			Application.Current.Shutdown();
 		}
 

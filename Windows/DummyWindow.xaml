@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeadEye"
         xmlns:tb="http://www.hardcodet.net/taskbar"
-        xmlns:notifyIcon="clr-namespace:DeadEye.NotifyIcon" UseLayoutRounding="True"
+        xmlns:notifyIcon="clr-namespace:DeadEye.NotifyIcon" UseLayoutRounding="True" Icon="/Images/camera.ico"
         SourceInitialized="DummyWindow_OnSourceInitialized" Closed="DummyWindow_OnClosed"
         Visibility="Collapsed" IsHitTestVisible="False" ShowInTaskbar="False" ShowActivated="False" WindowStyle="None"
         mc:Ignorable="d" Title="Dummy Window" Height="128" Width="128">
@@ -14,11 +14,11 @@
 			<MenuItem Header="Colors (Debug)" Click="ColorMenuItem_OnClick" />
 			<MenuItem Header="Settings" Click="SettingsMenuItem_OnClick" />
 			<MenuItem Header="About" Click="AboutMenuItem_OnClick" />
-            <Separator />
+			<Separator />
 			<MenuItem Header="Exit" Click="ExitMenuItem_OnClick" />
 		</ContextMenu>
 
-		<notifyIcon:TaskbarIcon x:Key="TaskbarIcon" IconSource="/Icons/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye"
+		<notifyIcon:TaskbarIcon x:Key="TaskbarIcon" IconSource="/Images/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye"
 		                        ContextMenu="{StaticResource TaskbarIconContextMenu}" />
 	</Window.Resources>
 
@@ -26,5 +26,5 @@
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Padding="8" Foreground="#EBEBEB">
             If you can read this, ignore it.
 		</TextBlock>
-    </Grid>
+	</Grid>
 </Window>

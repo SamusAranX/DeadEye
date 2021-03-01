@@ -6,35 +6,43 @@
         xmlns:local="clr-namespace:DeadEye"
         xmlns:controls="clr-namespace:DeadEye.Controls"
         Loaded="ScreenshotFrameWindow_OnLoaded"
-        mc:Ignorable="d" WindowStyle="None" Background="#0088FF" ResizeMode="NoResize"
-        Title="ScreenshotFrameWindow" Height="480" Width="640" DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp"
-        UseLayoutRounding="True" LostFocus="ScreenshotFrameWindow_OnLostFocus"
+        mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize" Icon="/Images/camera.ico"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="ScreenshotFrameWindow" Height="480" Width="640" 
+        KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp" LostFocus="ScreenshotFrameWindow_OnLostFocus"
+        TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
+		Typography.NumeralAlignment="Tabular" Typography.NumeralStyle="Lining" Cursor="Cross"
         MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown" MouseMove="ScreenshotFrameWindow_OnMouseMove" MouseLeftButtonUp="ScreenshotFrameWindow_OnMouseLeftButtonUp">
-	<Window.Resources>
-		<RectangleGeometry x:Key="FullscreenRect" Rect="0,0,32767,32767" />
-
-		<SolidColorBrush x:Key="GridUnselected" Color="#66000000" />
-	</Window.Resources>
-
 	<Grid>
 		<Image Source="{Binding ScreenshotSource}" />
 
-		<Border x:Name="DragOverlay" Background="{StaticResource GridUnselected}">
-			<Border.Clip>
-				<GeometryGroup>
-					<StaticResource ResourceKey="FullscreenRect" />
-					<RectangleGeometry Rect="{Binding SelectionBounds}" />
-				</GeometryGroup>
-			</Border.Clip>
-		</Border>
+		<!-- Explicitly repeating the DataContext here because WPF is shit like that -->
+		<controls:PassepartoutView CutoutRect="{Binding SelectionBounds}" 
+		                           DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
 
 		<Canvas Background="Transparent">
-			<controls:GuideGrid Opacity="0.4" GridType="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.GridType}"
-			                    Canvas.Top="{Binding SelectionBoundsClamped.Top}"
-			                    Canvas.Left="{Binding SelectionBoundsClamped.Left}"
-			                    Width="{Binding SelectionBoundsClamped.Width}"
-			                    Height="{Binding SelectionBoundsClamped.Height}" />
+			<controls:GuideGrid x:Name="GuideGrid"
+				GridOpacity="0.6" 
+				GridType="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.GridType}"
+				MarkCenter="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.MarkCenter}"
+				Canvas.Top="{Binding SelectionBoundsClamped.Top}"
+				Canvas.Left="{Binding SelectionBoundsClamped.Left}"
+				Width="{Binding SelectionBoundsClamped.Width}"
+				Height="{Binding SelectionBoundsClamped.Height}" />
+		</Canvas>
+
+		<Canvas Background="Transparent"
+		        Visibility="{Binding
+				Source={x:Static local:Settings.SharedSettings}, 
+				Path=SharedSettings.ShowDimensions, 
+				Converter={StaticResource BoolToVis}}">
+			<controls:RectWHDisplay x:Name="RectDisplay"
+			                        DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+			                        FontSize="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.TextSize}"
+			                        Canvas.Top="{Binding BoundsDisplayCoords.Y}"
+			                        Canvas.Left="{Binding BoundsDisplayCoords.X}"
+			                        DisplayRect="{Binding SelectionBoundsClamped}"
+			                        Visibility="{Binding IsMakingSelection, Converter={StaticResource BoolToVis}}" />
 		</Canvas>
 	</Grid>
 </Window>

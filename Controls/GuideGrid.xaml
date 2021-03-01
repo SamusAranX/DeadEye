@@ -9,9 +9,6 @@
 
 	<UserControl.Resources>
 		<Grid x:Key="NoneGrid" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
-			<!-- Inner Border -->
-			<Border Padding="1" BorderThickness="1" BorderBrush="{Binding GridShadowBrush}" />
-
 			<!-- Outer border -->
 			<Border BorderThickness="1" BorderBrush="{Binding GridLineBrush}"/>
 		</Grid>
@@ -61,7 +58,7 @@
 	</UserControl.Resources>
 
 	<Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
-		<ContentControl>
+		<ContentControl Opacity="{Binding GridOpacity}">
 			<ContentControl.Style>
 				<Style TargetType="{x:Type ContentControl}">
 					<Style.Triggers>
@@ -83,5 +80,11 @@
 				</Style>
 			</ContentControl.Style>
 		</ContentControl>
+
+		<Border Background="{Binding GridShadowBrush}"
+		        Padding="1" Width="6" Height="6" CornerRadius="2.5"
+		        Visibility="{Binding MarkCenter, Converter={StaticResource BoolToVis}}">
+			<Border CornerRadius="1.5" Background="{Binding GridLineBrush}" />
+		</Border>
 	</Grid>
 </UserControl>

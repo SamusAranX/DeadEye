@@ -1,5 +1,6 @@
-﻿using System.Drawing;
-using System.Windows;
+﻿using System.Windows;
+
+using Rectangle = System.Drawing.Rectangle;
 
 namespace DeadEye.Extensions {
 	public static class AssortedExtensions {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeadEye.Windows"
         xmlns:helpers="clr-namespace:DeadEye.Helpers"
-        mc:Ignorable="d" Icon="/Icons/camera.ico"
+        mc:Ignorable="d" Icon="/Images/camera.ico"
         UseLayoutRounding="True" DataContext="{Binding RelativeSource={RelativeSource Self}}"
         TextOptions.TextFormattingMode="Display"
         Title="About DeadEye" Width="380" Height="240" ResizeMode="NoResize">

@@ -32,11 +32,11 @@ using System.Windows.Media;
 using DeadEye.NotifyIcon.Interop;
 
 namespace DeadEye.NotifyIcon {
-    /// <summary>
-    /// Contains declarations of WPF dependency properties
-    /// and events.
-    /// </summary>
-    partial class TaskbarIcon {
+	/// <summary>
+	/// Contains declarations of WPF dependency properties
+	/// and events.
+	/// </summary>
+	public partial class TaskbarIcon {
         /// <summary>
         /// Category name that is set on designer properties.
         /// </summary>

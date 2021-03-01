@@ -54,7 +54,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icons\camera.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -80,7 +81,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\AeroBlurHelper.cs" />
+    <Compile Include="Controls\RectWHDisplay.xaml.cs">
+      <DependentUpon>RectWHDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PassepartoutView.xaml.cs">
+      <DependentUpon>PassepartoutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\TextSizeNameConverter.cs" />
     <Compile Include="Helpers\ColorWrapper.cs" />
     <Compile Include="Controls\ColorInspector.xaml.cs">
       <DependentUpon>ColorInspector.xaml</DependentUpon>
@@ -134,9 +141,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\RectWHDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\GuideGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PassepartoutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\AboutWindow.xaml">
       <SubType>Designer</SubType>
@@ -207,13 +222,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\camera.ico" />
-    <Resource Include="Icons\crosshair.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="version.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\grid_preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\camera.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>git describe --always --dirty --long &gt; "$(ProjectDir)\version.txt"</PreBuildEvent>
