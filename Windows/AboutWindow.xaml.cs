@@ -9,10 +9,7 @@ namespace DeadEye.Windows {
 	/// </summary>
 	public partial class AboutWindow {
 		public AboutWindow() {
-			//AeroBlurHelper.EnableBlur(this);
-
 			this.InitializeComponent();
-
 		}
 
 		public string CurrentVersion {

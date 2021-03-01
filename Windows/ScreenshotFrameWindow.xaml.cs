@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
 using Image = System.Drawing.Image;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace DeadEye.Windows {
 	/// <summary>
@@ -14,7 +17,7 @@ namespace DeadEye.Windows {
 	public sealed partial class ScreenshotFrameWindow: INotifyPropertyChanged {
 
 		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChanged(string propertyName = null) {
+		private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
@@ -41,6 +44,7 @@ namespace DeadEye.Windows {
 				this.OnPropertyChanged();
 				this.OnPropertyChanged("SelectionBounds");
 				this.OnPropertyChanged("SelectionBoundsClamped");
+				this.OnPropertyChanged("BoundsDisplayCoords");
 			}
 		}
 		public Point SelectionEndPoint {
@@ -50,13 +54,58 @@ namespace DeadEye.Windows {
 				this.OnPropertyChanged();
 				this.OnPropertyChanged("SelectionBounds");
 				this.OnPropertyChanged("SelectionBoundsClamped");
+				this.OnPropertyChanged("BoundsDisplayCoords");
 			}
 		}
 		public Rect SelectionBounds => new Rect(this.SelectionStartPoint, this.SelectionEndPoint);
 		public Rect SelectionBoundsClamped => this.virtualScreenRectNormalized == Rect.Empty ? this.SelectionBounds : Rect.Intersect(this.SelectionBounds, this.virtualScreenRectNormalized);
 
-		public bool IsMakingSelection { get; private set; }
-		public bool IsMovingSelection { get; private set; }
+		private const double BOUNDS_DISPLAY_PADDING = 4;
+		public Point BoundsDisplayCoords {
+			get {
+				var boundsBounds = new Size(this.RectDisplay.ActualWidth, this.RectDisplay.ActualHeight);
+
+				var isRight = this._selectionEndPoint.X >= this._selectionStartPoint.X;
+				var isBottom = this._selectionEndPoint.Y >= this._selectionStartPoint.Y;
+
+				double newX, newY;
+				if (isRight) {
+					newX = this.SelectionBoundsClamped.X + this.SelectionBoundsClamped.Width;
+					newX += BOUNDS_DISPLAY_PADDING;
+				} else {
+					newX = this.SelectionBoundsClamped.X - boundsBounds.Width;
+					newX -= BOUNDS_DISPLAY_PADDING;
+				}
+
+				if (isBottom) {
+					newY = this.SelectionBoundsClamped.Y + this.SelectionBoundsClamped.Height;
+					newY += BOUNDS_DISPLAY_PADDING;
+				} else {
+					newY = this.SelectionBoundsClamped.Y - boundsBounds.Height;
+					newY -= BOUNDS_DISPLAY_PADDING;
+				}
+
+				return new Point(newX + BOUNDS_DISPLAY_PADDING, newY + BOUNDS_DISPLAY_PADDING);
+			}
+		}
+
+		private bool _isMakingSelection;
+		private bool _isMovingSelection;
+
+		public bool IsMakingSelection {
+			get => this._isMakingSelection;
+			private set {
+				this._isMakingSelection = value;
+				this.OnPropertyChanged();
+			}
+		}
+		public bool IsMovingSelection {
+			get => this._isMovingSelection;
+			private set {
+				this._isMovingSelection = value;
+				this.OnPropertyChanged();
+			}
+		}
 
 		private Point moveSelectionStart;
 		private Point moveSelectionEnd;
@@ -149,10 +198,6 @@ namespace DeadEye.Windows {
 			}
 
 			var cropRect = this.SelectionBounds;
-			var selectionThreshold = Settings.SharedSettings.ThresholdSize;
-			if (cropRect.Width <= selectionThreshold && cropRect.Height <= selectionThreshold)
-				return;
-
 			cropRect.Intersect(this.virtualScreenRectNormalized);
 
 			this.CloseDialog(true, new CroppedBitmap(this.ScreenshotSource, cropRect.ToInt32Rect()));

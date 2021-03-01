@@ -5,7 +5,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace DeadEye.Converters {
-	internal class ColorHexConverter : MarkupExtension, IValueConverter {
+	internal class ColorHexConverter: MarkupExtension, IValueConverter {
 		private static ColorHexConverter _converter;
 		public override object ProvideValue(IServiceProvider serviceProvider) {
 			return _converter ??= new ColorHexConverter();

@@ -13,8 +13,7 @@ namespace DeadEye.Converters {
 
 			var type = value.GetType();
 
-			return
-				type.IsEnum ? this.GetDescription(type, value) : string.Empty;
+			return type.IsEnum ? this.GetDescription(type, value) : string.Empty;
 		}
 
 		private string GetDescription(Type enumType, object enumValue) {

@@ -3,7 +3,7 @@ using System.Windows;
 using DeadEye.Extensions;
 
 namespace DeadEye.Helpers {
-	class ScreenshotHelper {
+	internal class ScreenshotHelper {
 		public static Rect GetVirtualScreenRect() => new Rect(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenWidth, SystemParameters.VirtualScreenHeight);
 
 		public static Bitmap GetFullscreenScreenshotGDI() {

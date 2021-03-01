@@ -1,10 +1,9 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using DeadEye.Helpers;
 
 namespace DeadEye.Controls {
-	public partial class ColorInspector : UserControl {
+	public partial class ColorInspector {
 		public ColorInspector() { this.InitializeComponent(); }
 
 		public ColorWrapper ColorWrapper {

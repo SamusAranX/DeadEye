@@ -6,7 +6,7 @@ using System.Windows.Media;
 using DeadEye.Extensions;
 
 namespace DeadEye.Converters {
-	internal class ReadableColorConverter : MarkupExtension, IValueConverter {
+	internal class ReadableColorConverter: MarkupExtension, IValueConverter {
 		private static ReadableColorConverter _converter;
 		public override object ProvideValue(IServiceProvider serviceProvider) {
 			return _converter ??= new ReadableColorConverter();
