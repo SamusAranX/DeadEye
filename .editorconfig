@@ -16,6 +16,8 @@ csharp_new_line_before_members_in_object_initializers = false
 csharp_new_line_before_open_brace = none
 csharp_preferred_modifier_order = public, private, protected, internal, new, abstract, virtual, sealed, override, static, readonly, extern, unsafe, volatile, async:suggestion
 csharp_space_after_cast = false
+csharp_space_before_colon = false
+csharp_space_before_colon_in_case = false
 csharp_space_before_colon_in_inheritance_clause = false
 csharp_style_var_elsewhere = true:suggestion
 csharp_style_var_for_built_in_types = true:suggestion
@@ -71,7 +73,7 @@ resharper_csharp_naming_rule.constants = AA_BB
 resharper_csharp_naming_rule.private_constants = AA_BB
 resharper_csharp_naming_rule.public_fields = AaBb, aaBb
 resharper_csharp_naming_rule.static_readonly = AaBb
-resharper_csharp_space_before_type_parameter_constraint_colon = false
+resharper_csharp_space_before_type_parameter_constraint_= false
 resharper_csharp_wrap_lines = false
 resharper_enforce_line_ending_style = true
 resharper_new_line_before_finally = false
@@ -99,3 +101,21 @@ resharper_suggest_var_or_type_built_in_types_highlighting = hint
 resharper_suggest_var_or_type_elsewhere_highlighting = hint
 resharper_suggest_var_or_type_simple_types_highlighting = hint
 resharper_xaml_binding_without_context_not_resolved_highlighting = none
+
+# Code Analysis: Disable pointless checks
+dotnet_analyzer_diagnostic.severity = warning
+dotnet_diagnostic.CA1001.severity = none
+dotnet_diagnostic.CA1051.severity = none
+dotnet_diagnostic.CA1702.severity = none
+dotnet_diagnostic.CA1704.severity = none
+dotnet_diagnostic.CA1805.severity = none
+dotnet_diagnostic.CA2210.severity = none
+dotnet_diagnostic.IDE0010.severity = none
+dotnet_diagnostic.IDE0011.severity = none
+dotnet_diagnostic.IDE0045.severity = none
+dotnet_diagnostic.IDE0055.severity = none
+dotnet_diagnostic.IDE0058.severity = none
+
+# ignore third-party code
+[{HotKeys,NotifyIcon}/**.cs]
+generated_code = true

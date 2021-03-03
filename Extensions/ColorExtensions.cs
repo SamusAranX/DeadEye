@@ -65,11 +65,11 @@ namespace DeadEye.Extensions {
 
 			if (chroma == 0) {
 				h1 = 0;
-			} else if (max == r) {
+			} else if (Math.Abs(max - r) < double.Epsilon) {
 				// The % operator doesn't do proper modulo on negative
 				// numbers, so we'll add 6 before using it
 				h1 = (((g - b) / chroma) + 6) % 6;
-			} else if (max == g) {
+			} else if (Math.Abs(max - g) < double.Epsilon) {
 				h1 = 2 + ((b - r) / chroma);
 			} else {
 				h1 = 4 + ((r - g) / chroma);
@@ -97,9 +97,9 @@ namespace DeadEye.Extensions {
 		}
 
 		public static double GetLuma(this Color c) {
-			var r = ColorExtensions.sRGBToLinear(c.R);
-			var g = ColorExtensions.sRGBToLinear(c.G);
-			var b = ColorExtensions.sRGBToLinear(c.B);
+			var r = sRGBToLinear(c.R);
+			var g = sRGBToLinear(c.G);
+			var b = sRGBToLinear(c.B);
 
 			return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 		}

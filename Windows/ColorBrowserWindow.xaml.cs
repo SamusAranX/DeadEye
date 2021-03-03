@@ -21,32 +21,32 @@ namespace DeadEye.Windows {
 		public ColorBrowserWindow() {
 			this.InitializeComponent();
 
-			this.SystemColors = new List<ColorWrapper>(this.GetBrushes(typeof(SystemColors)));
-			this.SystemParameters = new List<ColorWrapper>(this.GetBrushes(typeof(SystemParameters)));
-			this.BrushColors = new List<ColorWrapper>(this.GetBrushes(typeof(Brushes)));
+			this.SystemColors = new List<ColorWrapper>(GetBrushes(typeof(SystemColors)));
+			this.SystemParameters = new List<ColorWrapper>(GetBrushes(typeof(SystemParameters)));
+			this.BrushColors = new List<ColorWrapper>(GetBrushes(typeof(Brushes)));
 
-			this.OnPropertyChanged("SystemColors");
-			this.OnPropertyChanged("SystemParameters");
-			this.OnPropertyChanged("BrushColors");
+			this.OnPropertyChanged(nameof(this.SystemColors));
+			this.OnPropertyChanged(nameof(this.SystemParameters));
+			this.OnPropertyChanged(nameof(this.BrushColors));
 		}
 
 		private void ColorBrowser_OnLoaded(object sender, RoutedEventArgs e) {
 			//this.ColorList.SelectedIndex = 0;
 		}
 
-		private IEnumerable<ColorWrapper> GetBrushes(Type type) {
+		private static IEnumerable<ColorWrapper> GetBrushes(Type type) {
 			var properties = type.GetProperties().OrderBy(p => p.Name);
 
 			var brushList = new List<ColorWrapper>();
 			foreach (var propInfo in properties) {
-				if (!propInfo.Name.EndsWith("Brush") && !propInfo.PropertyType.IsSubclassOf(typeof(Brush)))
+				if (!propInfo.Name.EndsWith("Brush", StringComparison.InvariantCulture) && !propInfo.PropertyType.IsSubclassOf(typeof(Brush)))
 					continue;
 
 				//if (!propInfo.PropertyType.IsSubclassOf(typeof(Brush)))
 				//	continue;
 
 				var resName = propInfo.Name;
-				if (resName.EndsWith("Brush"))
+				if (resName.EndsWith("Brush", StringComparison.InvariantCulture))
 					resName = resName.Remove(propInfo.Name.Length - 5);
 
 				var brush = (Brush)propInfo.GetValue(null);

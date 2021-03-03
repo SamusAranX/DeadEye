@@ -6,8 +6,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
-using Image = System.Drawing.Image;
-using Bitmap = System.Drawing.Bitmap;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
@@ -39,9 +37,9 @@ namespace DeadEye.Windows {
 			private set {
 				this._selectionStartPoint = value;
 				this.OnPropertyChanged();
-				this.OnPropertyChanged("SelectionBounds");
-				this.OnPropertyChanged("SelectionBoundsClamped");
-				this.OnPropertyChanged("BoundsDisplayCoords");
+				this.OnPropertyChanged(nameof(this.SelectionBounds));
+				this.OnPropertyChanged(nameof(this.SelectionBoundsClamped));
+				this.OnPropertyChanged(nameof(this.BoundsDisplayCoords));
 			}
 		}
 		public Point SelectionEndPoint {
@@ -49,9 +47,9 @@ namespace DeadEye.Windows {
 			private set {
 				this._selectionEndPoint = value;
 				this.OnPropertyChanged();
-				this.OnPropertyChanged("SelectionBounds");
-				this.OnPropertyChanged("SelectionBoundsClamped");
-				this.OnPropertyChanged("BoundsDisplayCoords");
+				this.OnPropertyChanged(nameof(this.SelectionBounds));
+				this.OnPropertyChanged(nameof(this.SelectionBoundsClamped));
+				this.OnPropertyChanged(nameof(this.BoundsDisplayCoords));
 			}
 		}
 		public Rect SelectionBounds => new Rect(this.SelectionStartPoint, this.SelectionEndPoint);

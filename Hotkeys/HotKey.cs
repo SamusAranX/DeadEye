@@ -54,14 +54,14 @@ namespace DeadEye.HotKeys {
 			ComponentDispatcher.ThreadPreprocessMessage += this.ThreadPreprocessMessageMethod;
 
 			if (onKeyAction != null)
-				this.HotKeyPressed += onKeyAction;
+				this.HotKeyPressedEventHandler += onKeyAction;
 		}
 
 		~HotKey() {
 			this.Dispose();
 		}
 
-		public event Action<HotKey> HotKeyPressed;
+		public event Action<HotKey> HotKeyPressedEventHandler;
 
 		public Key Key { get; }
 
@@ -82,7 +82,7 @@ namespace DeadEye.HotKeys {
 		private void OnHotKeyPressed() {
 			this._currentDispatcher.Invoke(
 				delegate {
-					this.HotKeyPressed?.Invoke(this);
+					this.HotKeyPressedEventHandler?.Invoke(this);
 				});
 		}
 

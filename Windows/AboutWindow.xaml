@@ -13,7 +13,7 @@
 	    <StackPanel Orientation="Vertical">
 		    <TextBlock>
                 <Run Text="DeadEye" FontSize="26" FontWeight="SemiBold" />
-			    <Run Text="{Binding CurrentVersion, Mode=OneTime, FallbackValue=v1.0.0}" />
+			    <Run Text="{Binding AppVersion, Mode=OneTime, FallbackValue=v1.0.0}" />
 			    <Run Text="{Binding GitVersion, Mode=OneTime, FallbackValue=3d9f094-dirty}" />
 		    </TextBlock>
 
