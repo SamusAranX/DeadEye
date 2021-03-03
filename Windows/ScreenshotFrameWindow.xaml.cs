@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
 using Image = System.Drawing.Image;
+using Bitmap = System.Drawing.Bitmap;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
@@ -19,10 +20,6 @@ namespace DeadEye.Windows {
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		private Image Screenshot {
-			set => this.ScreenshotSource = value.ToBitmapImage();
 		}
 
 		private BitmapSource _screenshotSource;
@@ -123,8 +120,8 @@ namespace DeadEye.Windows {
 			this.virtualScreenRectNormalized.X = 0;
 		}
 
-		public ScreenshotFrameWindow(Image screenshot): this() {
-			this.Screenshot = screenshot;
+		public ScreenshotFrameWindow(BitmapSource screenshotSource): this() {
+			this.ScreenshotSource = screenshotSource;
 		}
 
 		private void ScreenshotFrameWindow_OnLoaded(object sender, RoutedEventArgs e) {
