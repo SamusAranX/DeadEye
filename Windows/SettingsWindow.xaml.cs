@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Windows;
 
 namespace DeadEye.Windows {
 	/// <summary>
@@ -7,15 +6,11 @@ namespace DeadEye.Windows {
 	/// </summary>
 	public partial class SettingsWindow {
 
-		public GridType[] GridTypes {
-			get {
-				return new[]
+		public static GridType[] GridTypes => new[]
 				{
 					GridType.None,
 					GridType.RuleOfThirds,
 				};
-			}
-		}
 
 		public SettingsWindow() {
 			this.InitializeComponent();
@@ -25,5 +20,6 @@ namespace DeadEye.Windows {
 			// Instead of saving after every little change, save when the settings window closes
 			Settings.SharedSettings.Save();
 		}
+
 	}
 }

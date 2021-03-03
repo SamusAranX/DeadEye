@@ -36,5 +36,11 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 
+# nuget packages folder
+packages/
+
 # auto-generated version file
 version.txt
+
+# auto-generated garbage file
+DeadEye.GeneratedMSBuildEditorConfig.editorconfig

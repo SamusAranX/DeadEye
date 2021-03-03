@@ -4,7 +4,9 @@ using DeadEye.Extensions;
 
 namespace DeadEye.Helpers {
 	internal class ScreenshotHelper {
-		public static Rect GetVirtualScreenRect() => new Rect(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenWidth, SystemParameters.VirtualScreenHeight);
+		public static Rect GetVirtualScreenRect() {
+			return new Rect(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenWidth, SystemParameters.VirtualScreenHeight);
+		}
 
 		public static Bitmap GetFullscreenScreenshotGDI() {
 			var rect = GetVirtualScreenRect().ToRectangle();

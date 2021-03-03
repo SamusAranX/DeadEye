@@ -12,17 +12,22 @@ namespace DeadEye.Windows {
 			this.InitializeComponent();
 		}
 
-		public string CurrentVersion {
-			get {
-				var version = ApplicationDeployment.IsNetworkDeployed
-					? ApplicationDeployment.CurrentDeployment.CurrentVersion
-					: Assembly.GetExecutingAssembly().GetName().Version;
+		private string _appVersion;
+		private string _gitVersion;
 
-				return version.ToString(3);
+		public string AppVersion {
+			get {
+				if (this._appVersion == null) {
+					var version = ApplicationDeployment.IsNetworkDeployed
+						? ApplicationDeployment.CurrentDeployment.CurrentVersion
+						: Assembly.GetExecutingAssembly().GetName().Version;
+					this._appVersion = version.ToString(3);
+				}
+
+				return this._appVersion;
 			}
 		}
 
-		private string _gitVersion;
 		public string GitVersion {
 			get {
 				if (this._gitVersion == null) {

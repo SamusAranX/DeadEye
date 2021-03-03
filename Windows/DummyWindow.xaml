@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeadEye"
-        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:notifyIcon="clr-namespace:DeadEye.NotifyIcon" UseLayoutRounding="True" Icon="/Images/camera.ico"
         SourceInitialized="DummyWindow_OnSourceInitialized" Closed="DummyWindow_OnClosed"
         Visibility="Collapsed" IsHitTestVisible="False" ShowInTaskbar="False" ShowActivated="False" WindowStyle="None"

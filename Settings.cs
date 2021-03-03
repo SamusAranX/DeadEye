@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace DeadEye {
@@ -24,7 +25,7 @@ namespace DeadEye {
 		public static Settings SharedSettings {
 			get {
 				if (_sharedSettings == null)
-					_sharedSettings = Settings.Load();
+					_sharedSettings = Load();
 
 				return _sharedSettings;
 			}
@@ -102,9 +103,14 @@ namespace DeadEye {
 				return new Settings();
 
 			try {
-				using var s = new FileStream(_settingsPath, FileMode.Open);
+				using var stream = new FileStream(_settingsPath, FileMode.Open);
+				var readerSettings = new XmlReaderSettings {
+					DtdProcessing = DtdProcessing.Ignore
+				};
+				using var reader = XmlReader.Create(stream, readerSettings);
+
 				var x = new XmlSerializer(typeof(Settings));
-				return (Settings)x.Deserialize(s);
+				return (Settings)x.Deserialize(reader);
 			} catch (Exception e) {
 				Debug.WriteLine("Error while loading settings");
 				Debug.WriteLine(e);
@@ -117,7 +123,7 @@ namespace DeadEye {
 		public void Save() {
 			var settingsDir = Path.GetDirectoryName(_settingsPath);
 			if (settingsDir == null)
-				throw new NullReferenceException("no");
+				throw new DirectoryNotFoundException("no");
 
 			Directory.CreateDirectory(settingsDir);
 
