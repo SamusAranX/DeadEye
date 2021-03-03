@@ -113,8 +113,10 @@ dotnet_diagnostic.CA2210.severity = none
 dotnet_diagnostic.IDE0010.severity = none
 dotnet_diagnostic.IDE0011.severity = none
 dotnet_diagnostic.IDE0045.severity = none
+dotnet_diagnostic.IDE0046.severity = none
 dotnet_diagnostic.IDE0055.severity = none
 dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.XLS1106.severity = none
 
 # ignore third-party code
 [{HotKeys,NotifyIcon}/**.cs]
