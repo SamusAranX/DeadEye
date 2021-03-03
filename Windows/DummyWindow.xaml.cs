@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using DeadEye.Extensions;
 using DeadEye.Helpers;
 using DeadEye.HotKeys;
 using DeadEye.NotifyIcon;
@@ -55,8 +56,8 @@ namespace DeadEye.Windows {
 				return;
 			}
 
-			var bm = ScreenshotHelper.GetFullscreenScreenshotGDI();
-			this.screenshotWindow = new ScreenshotFrameWindow(bm);
+			using var bm = ScreenshotHelper.GetFullscreenScreenshotGDI();
+			this.screenshotWindow = new ScreenshotFrameWindow(bm.ToBitmapSource());
 			var result = this.screenshotWindow.ShowDialog();
 
 			if (result.HasValue && result.Value) {

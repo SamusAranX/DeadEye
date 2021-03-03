@@ -1,24 +1,25 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace DeadEye.Extensions {
 	public static class BitmapExtensions {
-		public static BitmapImage ToBitmapImage(this Image img) {
-			using var memory = new MemoryStream();
+		public static BitmapSource ToBitmapSource(this Image img) {
+			using var bitmap = (Bitmap)img;
+			var bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
-			img.Save(memory, ImageFormat.Png);
-			memory.Position = 0;
+			var bitmapSource = BitmapSource.Create(bitmapData.Width, bitmapData.Height, 
+				bitmap.HorizontalResolution, bitmap.VerticalResolution, PixelFormats.Bgra32, 
+				null, bitmapData.Scan0, 
+				bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
 
-			var bitmapImage = new BitmapImage();
-			bitmapImage.BeginInit();
-			bitmapImage.StreamSource = memory;
-			bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-			bitmapImage.EndInit();
-			bitmapImage.Freeze();
+			bitmap.UnlockBits(bitmapData);
 
-			return bitmapImage;
+			bitmapSource.Freeze();
+			return bitmapSource;
 		}
 	}
 }

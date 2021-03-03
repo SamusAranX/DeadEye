@@ -32,8 +32,7 @@
 		<Point x:Key="CrossCursorPosition" X="201" Y="103" />
 		<Point x:Key="RectHWDisplayPosition" X="214" Y="116" />
 	</Window.Resources>
-
-	<!-- TODO: Add info tooltips -->
+	
 	<StackPanel Margin="8">
 		<!-- Grid preview -->
 		<Grid Height="169" Margin="0,0,0,8">
