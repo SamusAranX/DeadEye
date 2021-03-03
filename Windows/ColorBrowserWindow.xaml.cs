@@ -7,6 +7,7 @@ using System.Windows.Media;
 using DeadEye.Helpers;
 
 namespace DeadEye.Windows {
+
 	public partial class ColorBrowserWindow: INotifyPropertyChanged {
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -14,24 +15,18 @@ namespace DeadEye.Windows {
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		public List<ColorWrapper> SystemColors { get; set; }
-		public List<ColorWrapper> SystemParameters { get; set; }
-		public List<ColorWrapper> BrushColors { get; set; }
+		public List<TabItemWrapper> Tabs { get; set; }
 
 		public ColorBrowserWindow() {
 			this.InitializeComponent();
 
-			this.SystemColors = new List<ColorWrapper>(GetBrushes(typeof(SystemColors)));
-			this.SystemParameters = new List<ColorWrapper>(GetBrushes(typeof(SystemParameters)));
-			this.BrushColors = new List<ColorWrapper>(GetBrushes(typeof(Brushes)));
+			this.Tabs = new List<TabItemWrapper>(new[] {
+				new TabItemWrapper("SystemColors", GetBrushes(typeof(SystemColors))),
+				new TabItemWrapper("SystemParameters", GetBrushes(typeof(SystemParameters))),
+				new TabItemWrapper("Brushes", GetBrushes(typeof(Brushes))),
+			});
 
-			this.OnPropertyChanged(nameof(this.SystemColors));
-			this.OnPropertyChanged(nameof(this.SystemParameters));
-			this.OnPropertyChanged(nameof(this.BrushColors));
-		}
-
-		private void ColorBrowser_OnLoaded(object sender, RoutedEventArgs e) {
-			//this.ColorList.SelectedIndex = 0;
+			this.OnPropertyChanged(nameof(this.Tabs));
 		}
 
 		private static IEnumerable<ColorWrapper> GetBrushes(Type type) {
@@ -41,9 +36,6 @@ namespace DeadEye.Windows {
 			foreach (var propInfo in properties) {
 				if (!propInfo.Name.EndsWith("Brush", StringComparison.InvariantCulture) && !propInfo.PropertyType.IsSubclassOf(typeof(Brush)))
 					continue;
-
-				//if (!propInfo.PropertyType.IsSubclassOf(typeof(Brush)))
-				//	continue;
 
 				var resName = propInfo.Name;
 				if (resName.EndsWith("Brush", StringComparison.InvariantCulture))
@@ -57,4 +49,5 @@ namespace DeadEye.Windows {
 			return brushList.ToArray();
 		}
 	}
+
 }
