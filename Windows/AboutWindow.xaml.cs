@@ -5,12 +5,12 @@ using System.Reflection;
 
 namespace DeadEye.Windows {
 	public partial class AboutWindow {
+		private string _appVersion;
+		private string _gitVersion;
+
 		public AboutWindow() {
 			this.InitializeComponent();
 		}
-
-		private string _appVersion;
-		private string _gitVersion;
 
 		public string AppVersion {
 			get {

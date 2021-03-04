@@ -8,9 +8,6 @@ using DeadEye.Extensions;
 namespace DeadEye.Converters {
 	internal class ReadableColorConverter: MarkupExtension, IValueConverter {
 		private static ReadableColorConverter _converter;
-		public override object ProvideValue(IServiceProvider serviceProvider) {
-			return _converter ??= new ReadableColorConverter();
-		}
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			if (value == null)
@@ -25,6 +22,10 @@ namespace DeadEye.Converters {
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
 			throw new NotImplementedException();
+		}
+
+		public override object ProvideValue(IServiceProvider serviceProvider) {
+			return _converter ??= new ReadableColorConverter();
 		}
 	}
 }

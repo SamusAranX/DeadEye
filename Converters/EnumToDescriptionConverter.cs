@@ -7,13 +7,15 @@ using System.Windows.Data;
 namespace DeadEye.Converters {
 	public class EnumToDescriptionConverter: IValueConverter {
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-			if (value == null) {
-				return string.Empty;
-			}
+			if (value == null) return string.Empty;
 
 			var type = value.GetType();
 
 			return type.IsEnum ? GetDescription(type, value) : string.Empty;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+			throw new NotImplementedException();
 		}
 
 		private static string GetDescription(Type enumType, object enumValue) {
@@ -24,10 +26,6 @@ namespace DeadEye.Converters {
 					.FirstOrDefault() is DescriptionAttribute descriptionAttribute
 					? descriptionAttribute.Description
 					: enumValue.ToString();
-		}
-
-		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-			throw new NotImplementedException();
 		}
 	}
 }

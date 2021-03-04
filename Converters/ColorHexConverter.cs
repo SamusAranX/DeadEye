@@ -7,9 +7,6 @@ using System.Windows.Media;
 namespace DeadEye.Converters {
 	internal class ColorHexConverter: MarkupExtension, IValueConverter {
 		private static ColorHexConverter _converter;
-		public override object ProvideValue(IServiceProvider serviceProvider) {
-			return _converter ??= new ColorHexConverter();
-		}
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			if (value == null)
@@ -21,6 +18,10 @@ namespace DeadEye.Converters {
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
 			throw new NotImplementedException();
+		}
+
+		public override object ProvideValue(IServiceProvider serviceProvider) {
+			return _converter ??= new ColorHexConverter();
 		}
 	}
 }
