@@ -9,7 +9,7 @@ using System.Windows;
 [assembly: AssemblyTitle("DeadEye")]
 [assembly: AssemblyDescription("A fast screenshot tool")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Emma Alyx Wunder")]
 [assembly: AssemblyProduct("DeadEye")]
 [assembly: AssemblyCopyright("Copyright © Emma Alyx Wunder 2021")]
 [assembly: AssemblyTrademark("")]
