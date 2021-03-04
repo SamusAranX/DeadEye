@@ -7,11 +7,11 @@ namespace DeadEye.Extensions {
 	public static class BitmapExtensions {
 		public static BitmapSource ToBitmapSource(this Image img) {
 			using var bitmap = (Bitmap)img;
-			var bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),ImageLockMode.ReadOnly, bitmap.PixelFormat);
+			var bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
-			var bitmapSource = BitmapSource.Create(bitmapData.Width, bitmapData.Height, 
-				bitmap.HorizontalResolution, bitmap.VerticalResolution, PixelFormats.Bgr24, 
-				null, bitmapData.Scan0, 
+			var bitmapSource = BitmapSource.Create(bitmapData.Width, bitmapData.Height,
+				bitmap.HorizontalResolution, bitmap.VerticalResolution, PixelFormats.Bgr24,
+				null, bitmapData.Scan0,
 				bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
 
 			bitmap.UnlockBits(bitmapData);

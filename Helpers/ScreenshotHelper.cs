@@ -14,7 +14,7 @@ namespace DeadEye.Helpers {
 
 			var bm = new Bitmap(rect.Width, rect.Height, PixelFormat.Format24bppRgb);
 			using var g = Graphics.FromImage(bm);
-			
+
 			g.CopyFromScreen(rect.X, rect.Y, 0, 0, bm.Size, CopyPixelOperation.SourceCopy);
 
 			return bm;
