@@ -6,21 +6,41 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace DeadEye.Windows {
 	/// <summary>
-	/// Interaction logic for ScreenshotFrameWindow.xaml
+	///     Interaction logic for ScreenshotFrameWindow.xaml
 	/// </summary>
 	public sealed partial class ScreenshotFrameWindow: INotifyPropertyChanged {
+		private const double BOUNDS_DISPLAY_PADDING = 4;
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
+		// copy of the virtual screen rect with the X coordinate set to 0
+		private readonly Rect virtualScreenRectNormalized;
+
+		private bool _isMakingSelection;
+		private bool _isMovingSelection;
 
 		private BitmapSource _screenshotSource;
+
+		private Point _selectionStartPoint, _selectionEndPoint;
+		private Point moveSelectionEnd;
+		private Point moveSelectionOffset;
+
+		private Point moveSelectionStart;
+
+		public ScreenshotFrameWindow() {
+			this.InitializeComponent();
+
+			var virtualScreenRect = ScreenshotHelper.GetVirtualScreenRect();
+			this.SetSize(virtualScreenRect);
+			this.virtualScreenRectNormalized = virtualScreenRect;
+			this.virtualScreenRectNormalized.X = 0;
+		}
+
+		public ScreenshotFrameWindow(BitmapSource screenshotSource): this() {
+			this.ScreenshotSource = screenshotSource;
+		}
+
 		public BitmapSource ScreenshotSource {
 			get => this._screenshotSource;
 			private set {
@@ -31,7 +51,6 @@ namespace DeadEye.Windows {
 
 		public CroppedBitmap CroppedScreenshot { get; private set; }
 
-		private Point _selectionStartPoint, _selectionEndPoint;
 		public Point SelectionStartPoint {
 			get => this._selectionStartPoint;
 			private set {
@@ -42,6 +61,7 @@ namespace DeadEye.Windows {
 				this.OnPropertyChanged(nameof(this.BoundsDisplayCoords));
 			}
 		}
+
 		public Point SelectionEndPoint {
 			get => this._selectionEndPoint;
 			private set {
@@ -52,10 +72,10 @@ namespace DeadEye.Windows {
 				this.OnPropertyChanged(nameof(this.BoundsDisplayCoords));
 			}
 		}
+
 		public Rect SelectionBounds => new Rect(this.SelectionStartPoint, this.SelectionEndPoint);
 		public Rect SelectionBoundsClamped => this.virtualScreenRectNormalized == Rect.Empty ? this.SelectionBounds : Rect.Intersect(this.SelectionBounds, this.virtualScreenRectNormalized);
 
-		private const double BOUNDS_DISPLAY_PADDING = 4;
 		public Point BoundsDisplayCoords {
 			get {
 				var boundsBounds = new Size(this.RectDisplay.ActualWidth, this.RectDisplay.ActualHeight);
@@ -84,9 +104,6 @@ namespace DeadEye.Windows {
 			}
 		}
 
-		private bool _isMakingSelection;
-		private bool _isMovingSelection;
-
 		public bool IsMakingSelection {
 			get => this._isMakingSelection;
 			private set {
@@ -94,6 +111,7 @@ namespace DeadEye.Windows {
 				this.OnPropertyChanged();
 			}
 		}
+
 		public bool IsMovingSelection {
 			get => this._isMovingSelection;
 			private set {
@@ -102,24 +120,10 @@ namespace DeadEye.Windows {
 			}
 		}
 
-		private Point moveSelectionStart;
-		private Point moveSelectionEnd;
-		private Point moveSelectionOffset;
+		public event PropertyChangedEventHandler PropertyChanged;
 
-		// copy of the virtual screen rect with the X coordinate set to 0
-		private readonly Rect virtualScreenRectNormalized;
-
-		public ScreenshotFrameWindow() {
-			this.InitializeComponent();
-
-			var virtualScreenRect = ScreenshotHelper.GetVirtualScreenRect();
-			this.SetSize(virtualScreenRect);
-			this.virtualScreenRectNormalized = virtualScreenRect;
-			this.virtualScreenRectNormalized.X = 0;
-		}
-
-		public ScreenshotFrameWindow(BitmapSource screenshotSource): this() {
-			this.ScreenshotSource = screenshotSource;
+		private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		private void ScreenshotFrameWindow_OnLoaded(object sender, RoutedEventArgs e) {
@@ -127,9 +131,7 @@ namespace DeadEye.Windows {
 				this.Topmost = true;
 #endif
 
-			if (!this.Activate()) {
-				Debug.WriteLine("couldn't bring screenshot window to front");
-			}
+			if (!this.Activate()) Debug.WriteLine("couldn't bring screenshot window to front");
 		}
 
 		private void ScreenshotFrameWindow_OnLostFocus(object sender, RoutedEventArgs e) {
@@ -164,9 +166,7 @@ namespace DeadEye.Windows {
 		}
 
 		private void ScreenshotFrameWindow_OnKeyUp(object sender, KeyEventArgs e) {
-			if (e.Key == Key.Space) {
-				this.IsMovingSelection = false;
-			}
+			if (e.Key == Key.Space) this.IsMovingSelection = false;
 		}
 
 		private void ScreenshotFrameWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
@@ -179,11 +179,10 @@ namespace DeadEye.Windows {
 				return;
 
 			var pos = e.GetPosition(this);
-			if (this.IsMovingSelection) {
+			if (this.IsMovingSelection)
 				this.MoveDrawingFrame(pos);
-			} else {
+			else
 				this.ResizeDrawingFrame(pos);
-			}
 		}
 
 		private void ScreenshotFrameWindow_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {

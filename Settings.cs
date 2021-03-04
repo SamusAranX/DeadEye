@@ -8,20 +8,23 @@ using System.Xml.Serialization;
 
 namespace DeadEye {
 	public enum GridType {
-		[Description("None")]
-		None,
-
-		[Description("Rule of Thirds")]
-		RuleOfThirds,
+		[Description("None")] None,
+		[Description("Rule of Thirds")] RuleOfThirds
 	}
 
 	[Serializable]
 	public class Settings: INotifyPropertyChanged {
+		private bool _fastScreenshot = true;
+
+		private GridType _gridType = GridType.None;
+		private bool _markCenter;
+		private bool _showDimensions;
+		private double _textSize = 11;
 
 		#region "Singleton"
 
-		[NonSerialized]
-		private static Settings _sharedSettings;
+		[NonSerialized] private static Settings _sharedSettings;
+
 		public static Settings SharedSettings {
 			get {
 				if (_sharedSettings == null)
@@ -38,17 +41,12 @@ namespace DeadEye {
 		#region "INotifyPropertyChanged"
 
 		public event PropertyChangedEventHandler PropertyChanged;
+
 		private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		#endregion
-
-		private GridType _gridType = GridType.None;
-		private bool _fastScreenshot = true;
-		private bool _markCenter = false;
-		private bool _showDimensions = false;
-		private double _textSize = 11;
 
 		#region "Properties for Bindings"
 

@@ -11,38 +11,11 @@ using DeadEye.NotifyIcon;
 
 namespace DeadEye.Windows {
 	public partial class DummyWindow: IDisposable {
-		private HotKey overlayHotkey;
-
-		private ScreenshotFrameWindow screenshotWindow;
-		private ColorBrowserWindow colorBrowserWindow;
-		private SettingsWindow settingsWindow;
 		private AboutWindow aboutWindow;
-
-		#region Initialization and Shutdown
-
-		[DllImport("user32.dll")]
-		private static extern IntPtr SetParent(IntPtr hwnd, IntPtr hwndNewParent);
-
-		private void DummyWindow_OnSourceInitialized(object sender, EventArgs e) {
-			// Make screenshotWindow message-only
-			const int HWND_MESSAGE = -3;
-			if (PresentationSource.FromVisual(this) is HwndSource hwndSource) {
-				SetParent(hwndSource.Handle, (IntPtr)HWND_MESSAGE);
-			}
-
-			// boop taskbar icon so it shows up
-			var taskbarIcon = this.FindResource("TaskbarIcon") as TaskbarIcon;
-
-			// Register hotkeys
-			this.overlayHotkey = new HotKey(ModifierKeys.Alt | ModifierKeys.Shift, Key.S, this, this.OverlayHotkeyAction);
-		}
-
-		public void Dispose() {
-			this.overlayHotkey.Dispose();
-			GC.SuppressFinalize(this);
-		}
-
-		#endregion
+		private ColorBrowserWindow colorBrowserWindow;
+		private HotKey overlayHotkey;
+		private ScreenshotFrameWindow screenshotWindow;
+		private SettingsWindow settingsWindow;
 
 		#region Hotkey Actions
 
@@ -72,6 +45,30 @@ namespace DeadEye.Windows {
 			 * because the event handler will happen before I can retrieve the screenshot
 			 */
 			this.screenshotWindow = null;
+		}
+
+		#endregion
+
+		#region Initialization and Shutdown
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr SetParent(IntPtr hwnd, IntPtr hwndNewParent);
+
+		private void DummyWindow_OnSourceInitialized(object sender, EventArgs e) {
+			// Make screenshotWindow message-only
+			const int HWND_MESSAGE = -3;
+			if (PresentationSource.FromVisual(this) is HwndSource hwndSource) SetParent(hwndSource.Handle, (IntPtr)HWND_MESSAGE);
+
+			// boop taskbar icon so it shows up
+			var taskbarIcon = this.FindResource("TaskbarIcon") as TaskbarIcon;
+
+			// Register hotkeys
+			this.overlayHotkey = new HotKey(ModifierKeys.Alt | ModifierKeys.Shift, Key.S, this, this.OverlayHotkeyAction);
+		}
+
+		public void Dispose() {
+			this.overlayHotkey.Dispose();
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion

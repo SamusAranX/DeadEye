@@ -7,26 +7,25 @@ using System.Windows.Media;
 using DeadEye.Helpers;
 
 namespace DeadEye.Windows {
-
 	public partial class ColorBrowserWindow: INotifyPropertyChanged {
-
-		public event PropertyChangedEventHandler PropertyChanged;
-		private void OnPropertyChanged(string propertyName = null) {
-			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		public List<TabItemWrapper> Tabs { get; set; }
-
 		public ColorBrowserWindow() {
 			this.InitializeComponent();
 
 			this.Tabs = new List<TabItemWrapper>(new[] {
 				new TabItemWrapper("SystemColors", GetBrushes(typeof(SystemColors))),
 				new TabItemWrapper("SystemParameters", GetBrushes(typeof(SystemParameters))),
-				new TabItemWrapper("Brushes", GetBrushes(typeof(Brushes))),
+				new TabItemWrapper("Brushes", GetBrushes(typeof(Brushes)))
 			});
 
 			this.OnPropertyChanged(nameof(this.Tabs));
+		}
+
+		public List<TabItemWrapper> Tabs { get; set; }
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void OnPropertyChanged(string propertyName = null) {
+			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		private static IEnumerable<ColorWrapper> GetBrushes(Type type) {
@@ -49,5 +48,4 @@ namespace DeadEye.Windows {
 			return brushList.ToArray();
 		}
 	}
-
 }

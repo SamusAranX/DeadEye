@@ -12,13 +12,11 @@ namespace DeadEye.Converters {
 			{13, "Large"},
 			{14, "XLarge"},
 			{15, "XXLarge"},
-			{16, "Largest"},
+			{16, "Largest"}
 		};
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-			if (value == null) {
-				return "N/A";
-			}
+			if (value == null) return "N/A";
 
 			if (!this._textSizeNames.ContainsKey((double)value))
 				return ((double)value).ToString(CultureInfo.InvariantCulture);

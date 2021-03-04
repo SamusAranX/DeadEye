@@ -2,11 +2,10 @@
 using System.Windows.Media;
 
 namespace DeadEye.Controls {
-	/// <summary>
-	/// Interaction logic for GuideGrid.xaml
-	/// </summary>
 	public partial class GuideGrid {
-		public GuideGrid() { this.InitializeComponent(); }
+		public GuideGrid() {
+			this.InitializeComponent();
+		}
 
 		#region Dependency Properties
 
@@ -66,6 +65,5 @@ namespace DeadEye.Controls {
 			new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
 
 		#endregion
-
 	}
 }

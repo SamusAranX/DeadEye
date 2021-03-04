@@ -3,13 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DeadEye.Windows"
         xmlns:controls="clr-namespace:DeadEye.Controls"
-        xmlns:de="clr-namespace:DeadEye" 
         xmlns:helpers="clr-namespace:DeadEye.Helpers" Icon="/Images/camera.ico"
         mc:Ignorable="d" UseLayoutRounding="True"
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
-        Title="Color Browser" Width="540" Height="400" MinWidth="512" MaxWidth="720" MinHeight="400" ResizeMode="NoResize"
+        Title="Color Browser" Width="540" Height="400" MinWidth="512" MaxWidth="720" MinHeight="400"
+        ResizeMode="NoResize"
         Background="{x:Static SystemColors.MenuBrush}">
 	<Grid>
 		<TabControl Margin="8" SelectedIndex="0"
@@ -27,8 +26,8 @@
 							<ColumnDefinition Width="210" />
 						</Grid.ColumnDefinitions>
 
-						<ListBox Grid.Column="0" x:Name="SystemColorsListBox" 
-						         ItemsSource="{Binding Colors}" 
+						<ListBox Grid.Column="0" x:Name="SystemColorsListBox"
+						         ItemsSource="{Binding Colors}"
 						         IsSynchronizedWithCurrentItem="True"
 						         ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.PanningMode="VerticalOnly">
 							<ListBox.ItemTemplate>
@@ -36,14 +35,16 @@
 									<Border>
 										<StackPanel Orientation="Horizontal" Height="40">
 											<Border Background="{Binding Brush}" Width="80" CornerRadius="3" />
-											<TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="10,0,0,0" TextTrimming="CharacterEllipsis" />
+											<TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="10,0,0,0"
+											           TextTrimming="CharacterEllipsis" />
 										</StackPanel>
 									</Border>
 								</DataTemplate>
 							</ListBox.ItemTemplate>
 						</ListBox>
 
-						<controls:ColorInspector Grid.Column="1" ColorWrapper="{Binding ElementName=SystemColorsListBox, Path=SelectedItem}" />
+						<controls:ColorInspector Grid.Column="1"
+						                         ColorWrapper="{Binding ElementName=SystemColorsListBox, Path=SelectedItem}" />
 					</Grid>
 				</DataTemplate>
 			</TabControl.ContentTemplate>
