@@ -4,9 +4,6 @@ using System.IO;
 using System.Reflection;
 
 namespace DeadEye.Windows {
-	/// <summary>
-	/// Interaction logic for AboutWindow.xaml
-	/// </summary>
 	public partial class AboutWindow {
 		public AboutWindow() {
 			this.InitializeComponent();

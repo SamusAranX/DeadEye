@@ -10,9 +10,6 @@ using DeadEye.HotKeys;
 using DeadEye.NotifyIcon;
 
 namespace DeadEye.Windows {
-	/// <summary>
-	/// Interaction logic for DummyWindow.xaml
-	/// </summary>
 	public partial class DummyWindow: IDisposable {
 		private HotKey overlayHotkey;
 

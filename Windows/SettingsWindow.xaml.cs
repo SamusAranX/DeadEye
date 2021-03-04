@@ -1,9 +1,6 @@
 ﻿using System.ComponentModel;
 
 namespace DeadEye.Windows {
-	/// <summary>
-	/// Interaction logic for SettingsWindow.xaml
-	/// </summary>
 	public partial class SettingsWindow {
 
 		public static GridType[] GridTypes => new[]
