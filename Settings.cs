@@ -5,14 +5,14 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Serialization;
+using DeadEye.Helpers;
 
 namespace DeadEye {
 	public enum GridType {
 		[Description("None")] None,
 		[Description("Rule of Thirds")] RuleOfThirds
 	}
-
-	[Serializable]
+	
 	public class Settings: INotifyPropertyChanged {
 		private bool _fastScreenshot = true;
 
@@ -20,10 +20,15 @@ namespace DeadEye {
 		private bool _markCenter;
 		private bool _showDimensions;
 		private double _textSize = 11;
+		private bool _autostartEnabled;
+
+		public Settings() {
+			this._autostartEnabled = AutostartHelper.CheckAutostartStatus();
+		}
 
 		#region "Singleton"
 
-		[NonSerialized] private static Settings _sharedSettings;
+		private static Settings _sharedSettings;
 
 		public static Settings SharedSettings {
 			get {
@@ -86,6 +91,15 @@ namespace DeadEye {
 			get => this._textSize;
 			set {
 				this._textSize = value;
+				this.OnPropertyChanged();
+			}
+		}
+
+		[XmlIgnore]
+		public bool AutostartEnabled {
+			get => this._autostartEnabled;
+			set {
+				this._autostartEnabled = value;
 				this.OnPropertyChanged();
 			}
 		}

@@ -96,6 +96,7 @@
       <DependentUpon>PassepartoutView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\TextSizeNameConverter.cs" />
+    <Compile Include="Helpers\AutostartHelper.cs" />
     <Compile Include="Helpers\ColorWrapper.cs" />
     <Compile Include="Controls\ColorInspector.xaml.cs">
       <DependentUpon>ColorInspector.xaml</DependentUpon>
