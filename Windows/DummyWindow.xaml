@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeadEye"
         xmlns:notifyIcon="clr-namespace:DeadEye.NotifyIcon" UseLayoutRounding="True" Icon="/Images/camera.ico"
-        SourceInitialized="DummyWindow_OnSourceInitialized" Closed="DummyWindow_OnClosed"
+        SourceInitialized="DummyWindow_OnSourceInitialized"
         Visibility="Collapsed" IsHitTestVisible="False" ShowInTaskbar="False" ShowActivated="False" WindowStyle="None"
         mc:Ignorable="d" Title="Dummy Window" Height="128" Width="128">
 	<Window.Resources>

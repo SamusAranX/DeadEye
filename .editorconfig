@@ -104,7 +104,6 @@ resharper_xaml_binding_without_context_not_resolved_highlighting = none
 
 # Code Analysis: Disable pointless checks
 dotnet_analyzer_diagnostic.severity = warning
-dotnet_diagnostic.CA1001.severity = none
 dotnet_diagnostic.CA1051.severity = none
 dotnet_diagnostic.CA1702.severity = none
 dotnet_diagnostic.CA1704.severity = none
@@ -112,6 +111,7 @@ dotnet_diagnostic.CA1805.severity = none
 dotnet_diagnostic.CA2210.severity = none
 dotnet_diagnostic.IDE0010.severity = none
 dotnet_diagnostic.IDE0011.severity = none
+dotnet_diagnostic.IDE0022.severity = none
 dotnet_diagnostic.IDE0045.severity = none
 dotnet_diagnostic.IDE0046.severity = none
 dotnet_diagnostic.IDE0055.severity = none

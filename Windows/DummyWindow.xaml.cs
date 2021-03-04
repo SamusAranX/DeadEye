@@ -13,7 +13,7 @@ namespace DeadEye.Windows {
 	/// <summary>
 	/// Interaction logic for DummyWindow.xaml
 	/// </summary>
-	public partial class DummyWindow {
+	public partial class DummyWindow: IDisposable {
 		private HotKey overlayHotkey;
 
 		private ScreenshotFrameWindow screenshotWindow;
@@ -40,8 +40,9 @@ namespace DeadEye.Windows {
 			this.overlayHotkey = new HotKey(ModifierKeys.Alt | ModifierKeys.Shift, Key.S, this, this.OverlayHotkeyAction);
 		}
 
-		private void DummyWindow_OnClosed(object sender, EventArgs e) {
+		public void Dispose() {
 			this.overlayHotkey.Dispose();
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion
