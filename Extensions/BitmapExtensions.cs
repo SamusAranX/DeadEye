@@ -5,8 +5,7 @@ using System.Windows.Media.Imaging;
 
 namespace DeadEye.Extensions {
 	public static class BitmapExtensions {
-		public static BitmapSource ToBitmapSource(this Image img) {
-			using var bitmap = (Bitmap)img;
+		public static BitmapSource ToBitmapSource(this Bitmap bitmap) {
 			var bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
 			var bitmapSource = BitmapSource.Create(bitmapData.Width, bitmapData.Height,

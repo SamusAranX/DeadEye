@@ -1,13 +1,24 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
 
 namespace DeadEye.Windows {
+	public class ScreenshotEventArgs: EventArgs {
+		public ScreenshotEventArgs(Int32Rect croppedRect) {
+			this.CroppedRect = croppedRect;
+		}
+
+		public Int32Rect CroppedRect { get; set; }
+	}
+
+	public delegate void ScreenshotTakenEventHandler(object sender, ScreenshotEventArgs args);
+
 	public sealed partial class ScreenshotFrameWindow: INotifyPropertyChanged {
 		private const double BOUNDS_DISPLAY_PADDING = 4;
 
@@ -17,13 +28,10 @@ namespace DeadEye.Windows {
 		private bool _isMakingSelection;
 		private bool _isMovingSelection;
 
-		private BitmapSource _screenshotSource;
-
 		private Point _selectionStartPoint, _selectionEndPoint;
-		private Point moveSelectionEnd;
-		private Point moveSelectionOffset;
+		private Point moveSelectionStart, moveSelectionEnd, moveSelectionOffset;
 
-		private Point moveSelectionStart;
+		public event ScreenshotTakenEventHandler ScreenshotTaken;
 
 		public ScreenshotFrameWindow() {
 			this.InitializeComponent();
@@ -34,19 +42,11 @@ namespace DeadEye.Windows {
 			this.virtualScreenRectNormalized.X = 0;
 		}
 
-		public ScreenshotFrameWindow(BitmapSource screenshotSource): this() {
-			this.ScreenshotSource = screenshotSource;
+		public ScreenshotFrameWindow(ImageSource screenshotSource): this() {
+			this.WindowBackgroundImage.Source = screenshotSource;
 		}
 
-		public BitmapSource ScreenshotSource {
-			get => this._screenshotSource;
-			private set {
-				this._screenshotSource = value;
-				this.OnPropertyChanged();
-			}
-		}
-
-		public CroppedBitmap CroppedScreenshot { get; private set; }
+		#region "Bound Properties and derivatives"
 
 		public Point SelectionStartPoint {
 			get => this._selectionStartPoint;
@@ -123,18 +123,35 @@ namespace DeadEye.Windows {
 			this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		private void ScreenshotFrameWindow_OnLoaded(object sender, RoutedEventArgs e) {
+		#endregion
+
+		private void ScreenshotFrameWindow_OnSourceInitialized(object sender, EventArgs e) {
 #if !DEBUG
-				this.Topmost = true;
+			this.Topmost = true;
 #endif
-
-			if (!this.Activate()) Debug.WriteLine("couldn't bring screenshot window to front");
 		}
 
-		private void ScreenshotFrameWindow_OnLostFocus(object sender, RoutedEventArgs e) {
+		private void OnScreenshot(ScreenshotEventArgs e) {
+			this.ScreenshotTaken?.Invoke(this, e);
+		}
+
+		private void ScreenshotFrameWindow_OnLoaded(object sender, RoutedEventArgs e) {
+			if (!this.Activate()) 
+				Debug.WriteLine("couldn't bring screenshot window to front");
+		}
+
+		private void ScreenshotFrameWindow_OnDeactivated(object sender, EventArgs e) {
 			Debug.WriteLine("lost focus");
-			this.CloseDialog(false);
+
+			if (!this.IsLoaded)
+				this.Close();
 		}
+
+		private void ScreenshotFrameWindow_OnClosed(object sender, EventArgs e) {
+			this.WindowBackgroundImage.Source = null;
+		}
+
+		#region "Mouse and Key Handlers"
 
 		private void ScreenshotFrameWindow_OnKeyDown(object sender, KeyEventArgs e) {
 			switch (e.Key) {
@@ -143,7 +160,8 @@ namespace DeadEye.Windows {
 						this.IsMakingSelection = false;
 						this.ResetDrawingFrame();
 					} else {
-						this.CloseDialog(false);
+						// Screenshot was cancelled by pressing Escape
+						this.Close();
 					}
 
 					break;
@@ -172,7 +190,7 @@ namespace DeadEye.Windows {
 		}
 
 		private void ScreenshotFrameWindow_OnMouseMove(object sender, MouseEventArgs e) {
-			if (e.LeftButton != MouseButtonState.Pressed || !this.IsMakingSelection)
+			if (!this.IsMakingSelection || e.LeftButton != MouseButtonState.Pressed)
 				return;
 
 			var pos = e.GetPosition(this);
@@ -191,14 +209,23 @@ namespace DeadEye.Windows {
 			var cropRect = this.SelectionBounds;
 			cropRect.Intersect(this.virtualScreenRectNormalized);
 
-			this.CloseDialog(true, new CroppedBitmap(this.ScreenshotSource, cropRect.ToInt32Rect()));
-		}
+			Debug.WriteLine($"Crop Rect Size: {cropRect.Width}×{cropRect.Height}");
 
-		private void CloseDialog(bool result, CroppedBitmap screenshot = null) {
-			this.CroppedScreenshot = screenshot;
-			this.DialogResult = result;
+			if (cropRect.Width == 0 || cropRect.Height == 0) {
+				// Selected region is invalid. No event will be fired
+				this.Close();
+				return;
+			}
+
+			// A valid region has been selected. Fire event.
+			var eventArgs = new ScreenshotEventArgs(cropRect.ToInt32Rect());
+			this.OnScreenshot(eventArgs);
 			this.Close();
 		}
+
+		#endregion
+
+		#region "Frame drawing logic"
 
 		private void StartDrawingFrame(Point mousePosition) {
 			this.ResetDrawingFrame();
@@ -232,5 +259,7 @@ namespace DeadEye.Windows {
 			this.moveSelectionEnd = zeroPoint;
 			this.moveSelectionOffset = zeroPoint;
 		}
+
+		#endregion
 	}
 }

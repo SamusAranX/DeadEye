@@ -110,6 +110,7 @@
     <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
+    <Compile Include="Helpers\GCHelper.cs" />
     <Compile Include="Helpers\SingleInstanceHelper.cs" />
     <Compile Include="Helpers\TabItemWrapper.cs" />
     <Compile Include="HotKeys\HotKey.cs" />
@@ -141,8 +142,8 @@
     <Compile Include="Windows\ColorBrowserWindow.xaml.cs">
       <DependentUpon>ColorBrowserWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ScreenshotFrameWindow.xaml.cs">
-      <DependentUpon>ScreenshotFrameWindow.xaml</DependentUpon>
+    <Compile Include="Windows\ScreenshotWindow.xaml.cs">
+      <DependentUpon>ScreenshotWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -183,7 +184,7 @@
       <DependentUpon>DummyWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ScreenshotHelper.cs" />
-    <Page Include="Windows\ScreenshotFrameWindow.xaml">
+    <Page Include="Windows\ScreenshotWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
