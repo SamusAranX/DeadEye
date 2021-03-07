@@ -8,9 +8,6 @@ using DeadEye.Extensions;
 using DeadEye.Helpers;
 
 namespace DeadEye.Windows {
-	/// <summary>
-	///     Interaction logic for ScreenshotFrameWindow.xaml
-	/// </summary>
 	public sealed partial class ScreenshotFrameWindow: INotifyPropertyChanged {
 		private const double BOUNDS_DISPLAY_PADDING = 4;
 
