@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
 using DeadEye.HotKeys;
-using DeadEye.NotifyIcon;
 
 namespace DeadEye.Windows {
 	public partial class DummyWindow: IDisposable {
@@ -28,23 +30,22 @@ namespace DeadEye.Windows {
 			}
 
 			using var bm = ScreenshotHelper.GetFullscreenScreenshotGDI();
-			this.screenshotWindow = new ScreenshotFrameWindow(bm.ToBitmapSource());
-			var result = this.screenshotWindow.ShowDialog();
+			var bitmapImage = bm.ToBitmapSource();
 
-			if (result.HasValue && result.Value) {
+			this.screenshotWindow = new ScreenshotFrameWindow(bitmapImage);
+			this.screenshotWindow.ScreenshotTaken += (sender, args) => {
 				Debug.WriteLine("Screenshot taken.");
-				var cropped = this.screenshotWindow.CroppedScreenshot;
-				Clipboard.SetImage(cropped);
-				Debug.WriteLine($"Image of size {cropped.PixelWidth}x{cropped.PixelHeight} saved to clipboard");
-			} else {
-				Debug.WriteLine("Screenshot cancelled.");
-			}
+				var croppedBitmap = new CroppedBitmap(bitmapImage, args.CroppedRect);
+				Clipboard.SetImage(croppedBitmap);
+				Debug.WriteLine($"Image of size {args.CroppedRect.Width}×{args.CroppedRect.Height} saved to clipboard");
 
-			/*
-			 * I'm explicitly setting screenshotWindow to null instead of relying on the Closed event handler
-			 * because the event handler will happen before I can retrieve the screenshot
-			 */
-			this.screenshotWindow = null;
+				bitmapImage = null;
+			};
+			this.screenshotWindow.Closed += (sender, args) => {
+				this.screenshotWindow = null;
+			};
+
+			this.screenshotWindow.Show();
 		}
 
 		#endregion
@@ -60,7 +61,7 @@ namespace DeadEye.Windows {
 			if (PresentationSource.FromVisual(this) is HwndSource hwndSource) SetParent(hwndSource.Handle, (IntPtr)HWND_MESSAGE);
 
 			// boop taskbar icon so it shows up
-			var taskbarIcon = this.FindResource("TaskbarIcon") as TaskbarIcon;
+			//var taskbarIcon = this.FindResource("TaskbarIcon") as TaskbarIcon;
 
 			// Register hotkeys
 			this.overlayHotkey = new HotKey(ModifierKeys.Alt | ModifierKeys.Shift, Key.S, this, this.OverlayHotkeyAction);
@@ -84,6 +85,17 @@ namespace DeadEye.Windows {
 			this.colorBrowserWindow = new ColorBrowserWindow();
 			this.colorBrowserWindow.Closed += (a, b) => this.colorBrowserWindow = null;
 			this.colorBrowserWindow.Show();
+		}
+
+		private void AppDirMenuItem_OnClick(object sender, RoutedEventArgs e) {
+			var appLocation = Assembly.GetExecutingAssembly().Location;
+			var appPath = Path.GetDirectoryName(appLocation);
+
+			Process.Start("explorer.exe", appPath);
+		}
+		
+		private void GarbageMenuItem_OnClick(object sender, RoutedEventArgs e) {
+			GCHelper.CleanUp();
 		}
 
 		private void SettingsMenuItem_OnClick(object sender, RoutedEventArgs e) {

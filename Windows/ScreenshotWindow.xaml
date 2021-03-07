@@ -3,22 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:DeadEye.Controls" 
         xmlns:local="clr-namespace:DeadEye"
-        xmlns:controls="clr-namespace:DeadEye.Controls"
         Loaded="ScreenshotFrameWindow_OnLoaded"
-        mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize" Icon="/Images/camera.ico"
+        mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize"
+        Title="ScreenshotFrameWindow" Height="240" Width="320"
+        UseLayoutRounding="True" Cursor="Cross"
+        RenderOptions.BitmapScalingMode="NearestNeighbor"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="ScreenshotFrameWindow" Height="480" Width="640"
+        Deactivated="ScreenshotFrameWindow_OnDeactivated"
+		SourceInitialized="ScreenshotFrameWindow_OnSourceInitialized" Closed="ScreenshotFrameWindow_OnClosed"
         KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp"
-        LostFocus="ScreenshotFrameWindow_OnLostFocus"
-        TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
-        Typography.NumeralAlignment="Tabular" Typography.NumeralStyle="Lining" Cursor="Cross"
-        MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown" MouseMove="ScreenshotFrameWindow_OnMouseMove"
-        MouseLeftButtonUp="ScreenshotFrameWindow_OnMouseLeftButtonUp">
+        MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown" MouseLeftButtonUp="ScreenshotFrameWindow_OnMouseLeftButtonUp"
+        MouseMove="ScreenshotFrameWindow_OnMouseMove">
 	<Grid>
-		<Image Source="{Binding ScreenshotSource}" />
+		<Image x:Name="WindowBackgroundImage" />
 
-		<!-- Explicitly repeating the DataContext here because WPF is shit like that -->
 		<controls:PassepartoutView CutoutRect="{Binding SelectionBounds}"
 		                           DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
 
