@@ -42,7 +42,6 @@
     <LangVersion>8</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
@@ -111,6 +110,7 @@
     <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\WindowExtensions.cs" />
+    <Compile Include="Helpers\SingleInstanceHelper.cs" />
     <Compile Include="Helpers\TabItemWrapper.cs" />
     <Compile Include="HotKeys\HotKey.cs" />
     <Compile Include="NotifyIcon\BalloonIcon.cs" />
