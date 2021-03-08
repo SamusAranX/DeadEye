@@ -2,7 +2,7 @@
 
 ## What's this?
 
-DeadEye is an opinionated fast screenshot tool modeled after macOS's own. It's still a work in progress, but it's perfectly usable.
+DeadEye is an opinionated fast screenshot tool with a cheesy name modeled after macOS's own. It's still a work in progress, but it's perfectly usable.
 
 ## What is this not?
 
