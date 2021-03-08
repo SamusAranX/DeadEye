@@ -16,6 +16,8 @@
 		<converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
 		<converters:TextSizeNameConverter x:Key="TextSizeNameConverter" />
 
+		<DropShadowEffect x:Key="PreviewShadow" BlurRadius="8" Direction="270" ShadowDepth="2" Opacity="0.6" />
+
 		<DrawingImage x:Key="crossCursor">
 			<DrawingImage.Drawing>
 				<DrawingGroup ClipGeometry="M0,0 V18 H18 V0 H0 Z">
@@ -33,40 +35,44 @@
 
 	<StackPanel Margin="8">
 		<!-- Grid preview -->
-		<Grid Height="169" Margin="0,0,0,8">
-			<Grid.Effect>
-				<DropShadowEffect BlurRadius="6.5" Direction="270" ShadowDepth="2" Opacity="0.6" />
-			</Grid.Effect>
+		<Grid Margin="0,0,0,8" Height="169" Effect="{StaticResource PreviewShadow}">
+			<Border Name="PreviewMask" Background="White" CornerRadius="4" />
 
-			<Image Source="/Images/grid_preview.png" Stretch="UniformToFill" />
+			<Grid>
+				<Grid.OpacityMask>
+					<VisualBrush Visual="{Binding ElementName=PreviewMask}" />
+				</Grid.OpacityMask>
 
-			<controls:PassepartoutView CutoutRect="{StaticResource DemoRectangle}" />
+				<Image Source="/Images/grid_preview.png" Stretch="UniformToFill" />
 
-			<Canvas ClipToBounds="True">
-				<controls:GuideGrid Width="{Binding Width, Source={StaticResource DemoRectangle}, Mode=OneTime}"
-				                    Height="{Binding Height, Source={StaticResource DemoRectangle}, Mode=OneTime}"
-				                    Canvas.Left="{Binding X, Source={StaticResource DemoRectangle}, Mode=OneTime}"
-				                    Canvas.Top="{Binding Y, Source={StaticResource DemoRectangle}, Mode=OneTime}"
-				                    GridOpacity="0.6"
-				                    GridType="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.GridType}"
-				                    MarkCenter="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.MarkCenter}" />
+				<controls:PassepartoutView CutoutRect="{StaticResource DemoRectangle}" />
 
-				<Image Source="{StaticResource crossCursor}"
-				       Canvas.Left="{Binding X, Source={StaticResource CrossCursorPosition}, Mode=OneTime}"
-				       Canvas.Top="{Binding Y, Source={StaticResource CrossCursorPosition}, Mode=OneTime}" />
+				<Canvas>
+					<controls:GuideGrid Width="{Binding Width, Source={StaticResource DemoRectangle}, Mode=OneTime}"
+					                    Height="{Binding Height, Source={StaticResource DemoRectangle}, Mode=OneTime}"
+					                    Canvas.Left="{Binding X, Source={StaticResource DemoRectangle}, Mode=OneTime}"
+					                    Canvas.Top="{Binding Y, Source={StaticResource DemoRectangle}, Mode=OneTime}"
+					                    GridOpacity="0.6"
+					                    GridType="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.GridType}"
+					                    MarkCenter="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.MarkCenter}" />
 
-				<controls:RectWHDisplay
-					DisplayRect="{StaticResource DemoRectangle}"
-					Canvas.Left="{Binding X, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
-					Canvas.Top="{Binding Y, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
-					FontSize="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.TextSize}"
-					Visibility="{Binding Source={x:Static deadeye:Settings.SharedSettings}, 
-					Path=SharedSettings.ShowDimensions, Converter={StaticResource BoolToVis}}" />
-			</Canvas>
+					<Image Source="{StaticResource crossCursor}"
+					       Canvas.Left="{Binding X, Source={StaticResource CrossCursorPosition}, Mode=OneTime}"
+					       Canvas.Top="{Binding Y, Source={StaticResource CrossCursorPosition}, Mode=OneTime}" />
 
-			<Label Content="Live Preview" Foreground="White" FontWeight="UltraBlack"
-			       VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+					<controls:RectWHDisplay DisplayRect="{StaticResource DemoRectangle}"
+					                        Canvas.Left="{Binding X, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
+					                        Canvas.Top="{Binding Y, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
+					                        FontSize="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.TextSize}"
+					                        Visibility="{Binding Source={x:Static deadeye:Settings.SharedSettings},
+										Path=SharedSettings.ShowDimensions, Converter={StaticResource BoolToVis}}" />
+				</Canvas>
+
+				<Label Content="Live Preview" Foreground="White" FontWeight="UltraBlack"
+				       VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+			</Grid>
 		</Grid>
+
 
 		<!-- Grid options -->
 		<Grid>
@@ -137,20 +143,20 @@
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="22" />
-				<RowDefinition Height="22" />
+				<!--<RowDefinition Height="22" />-->
 			</Grid.RowDefinitions>
 
 			<TextBlock Grid.Column="0" Grid.Row="0"
 			           Text="Misc. Settings:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-			<CheckBox Grid.Column="2" Grid.Row="0" Content="Use Fast Screenshot Capture" VerticalAlignment="Center"
-			          VerticalContentAlignment="Center"
-			          IsChecked="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.FastScreenshot}" />
-
-			<CheckBox Grid.Column="2" Grid.Row="1" Content="Enable Autostart" VerticalAlignment="Center"
+			<CheckBox Grid.Column="2" Grid.Row="0" Content="Enable Autostart" VerticalAlignment="Center"
 			          VerticalContentAlignment="Center" 
 			          Checked="ToggleButton_OnCheckUncheck" Unchecked="ToggleButton_OnCheckUncheck"
 			          IsChecked="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.AutostartEnabled}" />
+
+			<!--<CheckBox Grid.Column="2" Grid.Row="1" Content="Use Fast Screenshot Capture" VerticalAlignment="Center"
+			          VerticalContentAlignment="Center"
+			          IsChecked="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.FastScreenshot}" />-->
 		</Grid>
 	</StackPanel>
 
