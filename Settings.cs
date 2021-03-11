@@ -14,13 +14,15 @@ namespace DeadEye {
 	}
 	
 	public class Settings: INotifyPropertyChanged {
-		private bool _fastScreenshot = true;
 
 		private GridType _gridType = GridType.None;
 		private bool _markCenter;
 		private bool _showDimensions;
 		private double _textSize = 11;
+		private bool _fastScreenshot = true;
+
 		private bool _autostartEnabled;
+		private AutostartStatus _autostartStatus;
 
 		public Settings() {
 			this._autostartEnabled = AutostartHelper.CheckAutostartStatus();
@@ -100,6 +102,15 @@ namespace DeadEye {
 			get => this._autostartEnabled;
 			set {
 				this._autostartEnabled = value;
+				this.OnPropertyChanged();
+			}
+		}
+
+		[XmlIgnore]
+		public AutostartStatus AutostartStatus {
+			get => this._autostartStatus;
+			set {
+				this._autostartStatus = value;
 				this.OnPropertyChanged();
 			}
 		}

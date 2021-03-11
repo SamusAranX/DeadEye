@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:DeadEye.Converters"
         xmlns:controls="clr-namespace:DeadEye.Controls"
         mc:Ignorable="d" Icon="/Images/camera.ico" Closing="SettingsWindow_OnClosing"
-        UseLayoutRounding="True"
+        UseLayoutRounding="True" SourceInitialized="SettingsWindow_OnSourceInitialized"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         Title="Settings" Width="322" Height="420" SizeToContent="Height" ResizeMode="NoResize"
@@ -72,7 +72,6 @@
 				       VerticalAlignment="Bottom" HorizontalAlignment="Left" />
 			</Grid>
 		</Grid>
-
 
 		<!-- Grid options -->
 		<Grid>
@@ -143,16 +142,46 @@
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="22" />
-				<!--<RowDefinition Height="22" />-->
+				<RowDefinition />
 			</Grid.RowDefinitions>
 
 			<TextBlock Grid.Column="0" Grid.Row="0"
 			           Text="Misc. Settings:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-			<CheckBox Grid.Column="2" Grid.Row="0" Content="Enable Autostart" VerticalAlignment="Center"
-			          VerticalContentAlignment="Center" 
+			<CheckBox Grid.Column="2" Grid.Row="0" x:Name="AutostartCheckbox" Content="Enable Autostart" 
+			          VerticalContentAlignment="Center" VerticalAlignment="Center"
 			          Checked="ToggleButton_OnCheckUncheck" Unchecked="ToggleButton_OnCheckUncheck"
-			          IsChecked="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.AutostartEnabled}" />
+			          IsChecked="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.AutostartEnabled}">
+				<CheckBox.Style>
+					<Style TargetType="CheckBox">
+						<Setter Property="IsEnabled" Value="True" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=AutostartStatus}" Value="Disabled">
+								<DataTrigger.Setters>
+									<Setter Property="IsEnabled" Value="False" />
+								</DataTrigger.Setters>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</CheckBox.Style>
+			</CheckBox>
+
+			<TextBlock Grid.Column="2" Grid.Row="1" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" FontWeight="Bold" TextWrapping="Wrap">
+				<TextBlock.Style>
+					<Style TargetType="TextBlock">
+						<Setter Property="Visibility" Value="Collapsed" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=AutostartStatus}" Value="Disabled">
+								<DataTrigger.Setters>
+									<Setter Property="Visibility" Value="Visible" />
+								</DataTrigger.Setters>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBlock.Style>
+
+				<Run>Disabled on the Task Manager's Startup tab</Run>
+			</TextBlock>
 
 			<!--<CheckBox Grid.Column="2" Grid.Row="1" Content="Use Fast Screenshot Capture" VerticalAlignment="Center"
 			          VerticalContentAlignment="Center"

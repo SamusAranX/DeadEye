@@ -18,7 +18,7 @@ namespace DeadEye.Windows {
 					var version = ApplicationDeployment.IsNetworkDeployed
 						? ApplicationDeployment.CurrentDeployment.CurrentVersion
 						: Assembly.GetExecutingAssembly().GetName().Version;
-					this._appVersion = version.ToString(3);
+					this._appVersion = version.ToString();
 				}
 
 				return this._appVersion;
