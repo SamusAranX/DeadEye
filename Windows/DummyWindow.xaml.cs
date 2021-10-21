@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
 using DeadEye.HotKeys;
+using DeadEye.NotifyIcon;
 
 namespace DeadEye.Windows {
 	public partial class DummyWindow: IDisposable {
@@ -36,9 +37,13 @@ namespace DeadEye.Windows {
 			this.screenshotWindow.ScreenshotTaken += (sender, args) => {
 				Debug.WriteLine("Screenshot taken.");
 				var croppedBitmap = new CroppedBitmap(bitmapImage, args.CroppedRect);
-				Clipboard.SetImage(croppedBitmap);
-				Debug.WriteLine($"Image of size {args.CroppedRect.Width}×{args.CroppedRect.Height} saved to clipboard");
 
+				try {
+					Clipboard.SetImage(croppedBitmap);
+				} catch (COMException e) {
+					this.TaskbarIcon.ShowBalloonTip("Clipboard Error", $"Can't copy image into the Clipboard.\nTo fix this, click here to open the Settings and click \"Clear clipboard data\".\nMore Info: 0x{e.HResult:X8}", BalloonIcon.Error);
+				}
+				
 				bitmapImage = null;
 			};
 			this.screenshotWindow.Closed += (sender, args) => {
@@ -46,6 +51,10 @@ namespace DeadEye.Windows {
 			};
 
 			this.screenshotWindow.Show();
+		}
+
+		private void TaskbarIconOnTrayBalloonTipClicked(object sender, RoutedEventArgs e) {
+			Process.Start("ms-settings:clipboard");
 		}
 
 		#endregion
@@ -60,11 +69,10 @@ namespace DeadEye.Windows {
 			const int HWND_MESSAGE = -3;
 			if (PresentationSource.FromVisual(this) is HwndSource hwndSource) SetParent(hwndSource.Handle, (IntPtr)HWND_MESSAGE);
 
-			// boop taskbar icon so it shows up
-			//var taskbarIcon = this.FindResource("TaskbarIcon") as TaskbarIcon;
-
 			// Register hotkeys
 			this.overlayHotkey = new HotKey(ModifierKeys.Alt | ModifierKeys.Shift, Key.S, this, this.OverlayHotkeyAction);
+
+			this.TaskbarIcon.TrayBalloonTipClicked += this.TaskbarIconOnTrayBalloonTipClicked;
 		}
 
 		public void Dispose() {
