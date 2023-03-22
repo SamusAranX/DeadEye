@@ -17,7 +17,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>True</GenerateAssemblyInfo>
     <UseWindowsForms>False</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
@@ -83,7 +83,7 @@
     <Copyright>Copyright (c) 2021–2023 Emma Alyx Wunder</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en</NeutralLanguage>
-    <AssemblyVersion>0.2</AssemblyVersion>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Title>DeadEye</Title>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
