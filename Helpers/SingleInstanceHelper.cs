@@ -1,24 +1,26 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
 
-namespace DeadEye.Helpers {
-	internal class SingleInstanceHelper: IDisposable {
-		private readonly Mutex _mutex;
-		public SingleInstanceHelper() {
-			var appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value;
-			var mutexId = $"Global\\{{{appGuid}}}";
-			this._mutex = new Mutex(false, mutexId);
-		}
+namespace DeadEye.Helpers;
 
-		public bool IsOtherInstanceRunning(int millisecondsTimeout = 100) {
-			return !this._mutex.WaitOne(millisecondsTimeout, false);
-		}
+internal sealed class SingleInstanceHelper : IDisposable
+{
+	private readonly Mutex _mutex;
 
-		public void Dispose() {
-			this._mutex.Close();
-			this._mutex.Dispose();
-		}
+	public SingleInstanceHelper(string mutexName)
+	{
+		var mutexId = @"Global\" + mutexName;
+		this._mutex = new Mutex(false, mutexId);
+	}
+
+	public void Dispose()
+	{
+		this._mutex.Close();
+		this._mutex.Dispose();
+	}
+
+	public bool IsOtherInstanceRunning(int millisecondsTimeout = 100)
+	{
+		return !this._mutex.WaitOne(millisecondsTimeout, false);
 	}
 }

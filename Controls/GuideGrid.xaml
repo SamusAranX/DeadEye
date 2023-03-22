@@ -6,85 +6,85 @@
              mc:Ignorable="d"
              d:DesignWidth="320" d:DesignHeight="240">
 
-	<UserControl.Resources>
-		<Grid x:Key="NoneGrid" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
-			<!-- Outer border -->
-			<Border BorderThickness="1" BorderBrush="{Binding GridLineBrush}" />
-		</Grid>
+    <UserControl.Resources>
+        <Grid x:Key="NoneGrid" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <!-- Outer border -->
+            <Border BorderThickness="1" BorderBrush="{Binding GridLineBrush}" />
+        </Grid>
 
-		<Grid x:Key="RuleOfThirdsGrid" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition Width="1" />
-				<ColumnDefinition />
-				<ColumnDefinition Width="1" />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition />
-				<RowDefinition Height="1" />
-				<RowDefinition />
-				<RowDefinition Height="1" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
+        <Grid x:Key="RuleOfThirdsGrid" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="1" />
+                <RowDefinition />
+                <RowDefinition Height="1" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-			<!-- Vertical grid lines -->
-			<Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="5" Background="{Binding GridLineBrush}" />
-			<Border Grid.Column="3" Grid.Row="0" Grid.RowSpan="5" Background="{Binding GridLineBrush}" />
+            <!-- Vertical grid lines -->
+            <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="5" Background="{Binding GridLineBrush}" />
+            <Border Grid.Column="3" Grid.Row="0" Grid.RowSpan="5" Background="{Binding GridLineBrush}" />
 
-			<!-- Horizontal grid lines -->
-			<Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Background="{Binding GridLineBrush}" />
-			<Border Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="5" Background="{Binding GridLineBrush}" />
+            <!-- Horizontal grid lines -->
+            <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Background="{Binding GridLineBrush}" />
+            <Border Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="5" Background="{Binding GridLineBrush}" />
 
-			<!-- Grid "windows", first row -->
-			<Border Grid.Column="0" Grid.Row="0" BorderThickness="2,2,1,1" BorderBrush="{Binding GridShadowBrush}" />
-			<Border Grid.Column="2" Grid.Row="0" BorderThickness="1,2,1,1" BorderBrush="{Binding GridShadowBrush}" />
-			<Border Grid.Column="4" Grid.Row="0" BorderThickness="1,2,2,1" BorderBrush="{Binding GridShadowBrush}" />
+            <!-- Grid "windows", first row -->
+            <Border Grid.Column="0" Grid.Row="0" BorderThickness="2,2,1,1" BorderBrush="{Binding GridShadowBrush}" />
+            <Border Grid.Column="2" Grid.Row="0" BorderThickness="1,2,1,1" BorderBrush="{Binding GridShadowBrush}" />
+            <Border Grid.Column="4" Grid.Row="0" BorderThickness="1,2,2,1" BorderBrush="{Binding GridShadowBrush}" />
 
-			<!-- Grid "windows", second row -->
-			<Border Grid.Column="0" Grid.Row="2" BorderThickness="2,1,1,1" BorderBrush="{Binding GridShadowBrush}" />
-			<Border Grid.Column="2" Grid.Row="2" BorderThickness="1,1,1,1" BorderBrush="{Binding GridShadowBrush}" />
-			<Border Grid.Column="4" Grid.Row="2" BorderThickness="1,1,2,1" BorderBrush="{Binding GridShadowBrush}" />
+            <!-- Grid "windows", second row -->
+            <Border Grid.Column="0" Grid.Row="2" BorderThickness="2,1,1,1" BorderBrush="{Binding GridShadowBrush}" />
+            <Border Grid.Column="2" Grid.Row="2" BorderThickness="1,1,1,1" BorderBrush="{Binding GridShadowBrush}" />
+            <Border Grid.Column="4" Grid.Row="2" BorderThickness="1,1,2,1" BorderBrush="{Binding GridShadowBrush}" />
 
-			<!-- Grid "windows", third row -->
-			<Border Grid.Column="0" Grid.Row="4" BorderThickness="2,1,1,2" BorderBrush="{Binding GridShadowBrush}" />
-			<Border Grid.Column="2" Grid.Row="4" BorderThickness="1,1,1,2" BorderBrush="{Binding GridShadowBrush}" />
-			<Border Grid.Column="4" Grid.Row="4" BorderThickness="1,1,2,2" BorderBrush="{Binding GridShadowBrush}" />
+            <!-- Grid "windows", third row -->
+            <Border Grid.Column="0" Grid.Row="4" BorderThickness="2,1,1,2" BorderBrush="{Binding GridShadowBrush}" />
+            <Border Grid.Column="2" Grid.Row="4" BorderThickness="1,1,1,2" BorderBrush="{Binding GridShadowBrush}" />
+            <Border Grid.Column="4" Grid.Row="4" BorderThickness="1,1,2,2" BorderBrush="{Binding GridShadowBrush}" />
 
-			<!-- Outer border -->
-			<Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Grid.RowSpan="5" BorderThickness="1"
-			        BorderBrush="{Binding GridLineBrush}" />
-		</Grid>
-	</UserControl.Resources>
+            <!-- Outer border -->
+            <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Grid.RowSpan="5" BorderThickness="1"
+                    BorderBrush="{Binding GridLineBrush}" />
+        </Grid>
+    </UserControl.Resources>
 
-	<Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
-		<ContentControl Opacity="{Binding GridOpacity}">
-			<ContentControl.Style>
-				<Style TargetType="{x:Type ContentControl}">
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding GridType}" Value="None">
-							<Setter Property="Content">
-								<Setter.Value>
-									<StaticResource ResourceKey="NoneGrid" />
-								</Setter.Value>
-							</Setter>
-						</DataTrigger>
-						<DataTrigger Binding="{Binding GridType}" Value="RuleOfThirds">
-							<Setter Property="Content">
-								<Setter.Value>
-									<StaticResource ResourceKey="RuleOfThirdsGrid" />
-								</Setter.Value>
-							</Setter>
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-			</ContentControl.Style>
-		</ContentControl>
+    <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <ContentControl Opacity="{Binding GridOpacity}">
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding GridType}" Value="None">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <StaticResource ResourceKey="NoneGrid" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding GridType}" Value="RuleOfThirds">
+                            <Setter Property="Content">
+                                <Setter.Value>
+                                    <StaticResource ResourceKey="RuleOfThirdsGrid" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
 
-		<Border Background="{Binding GridShadowBrush}"
-		        Padding="1" Width="6" Height="6" CornerRadius="2.5"
-		        Visibility="{Binding MarkCenter, Converter={StaticResource BoolToVis}}">
-			<Border CornerRadius="1.5" Background="{Binding GridLineBrush}" />
-		</Border>
-	</Grid>
+        <Border Background="{Binding GridShadowBrush}"
+                Padding="1" Width="6" Height="6" CornerRadius="2.5"
+                Visibility="{Binding MarkCenter, Converter={StaticResource BoolToVis}}">
+            <Border CornerRadius="1.5" Background="{Binding GridLineBrush}" />
+        </Border>
+    </Grid>
 </UserControl>

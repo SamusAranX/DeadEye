@@ -3,32 +3,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:notifyIcon="clr-namespace:DeadEye.NotifyIcon" UseLayoutRounding="True" Icon="/Images/camera.ico"
+        xmlns:notifyIcon="clr-namespace:NotifyIcon;assembly=NotifyIcon"
+        UseLayoutRounding="True" Icon="/Images/camera.ico"
         SourceInitialized="DummyWindow_OnSourceInitialized"
         Visibility="Collapsed" IsHitTestVisible="False" ShowInTaskbar="False" ShowActivated="False" WindowStyle="None"
         mc:Ignorable="d" Title="Dummy Window" Height="60" Width="200">
-	<Grid>
-		<notifyIcon:TaskbarIcon IconSource="/Images/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye" x:Name="TaskbarIcon">
-			<notifyIcon:TaskbarIcon.ContextMenu>
-				<ContextMenu TextOptions.TextFormattingMode="Display">
-					<MenuItem Header="Colors (Debug)" Click="ColorMenuItem_OnClick" 
-					          Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
-					<MenuItem Header="Open App Dir" Click="AppDirMenuItem_OnClick" 
-					          Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
-					<MenuItem Header="GC.Collect()" Click="GarbageMenuItem_OnClick" 
-					          Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
-					<Separator Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
+    <Grid>
+        <notifyIcon:TaskbarIcon IconSource="/Images/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye"
+                                x:Name="TaskbarIcon">
+            <notifyIcon:TaskbarIcon.ContextMenu>
+                <ContextMenu TextOptions.TextFormattingMode="Display">
+                    <MenuItem Header="Colors (Debug)" Click="ColorMenuItem_OnClick"
+                              Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
+                    <MenuItem Header="Open App Dir" Click="AppDirMenuItem_OnClick"
+                              Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
+                    <MenuItem Header="GC.Collect()" Click="GarbageMenuItem_OnClick"
+                              Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
+                    <Separator
+                        Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
 
-					<MenuItem Header="Settings" Click="SettingsMenuItem_OnClick" />
-					<MenuItem Header="About" Click="AboutMenuItem_OnClick" />
-					<Separator />
-					<MenuItem Header="Exit" Click="ExitMenuItem_OnClick" />
-				</ContextMenu>
-			</notifyIcon:TaskbarIcon.ContextMenu>
-		</notifyIcon:TaskbarIcon>
+                    <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick" />
+                    <MenuItem Header="About" Click="AboutMenuItem_OnClick" />
+                    <Separator />
+                    <MenuItem Header="Exit" Click="ExitMenuItem_OnClick" />
+                </ContextMenu>
+            </notifyIcon:TaskbarIcon.ContextMenu>
+        </notifyIcon:TaskbarIcon>
 
-		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" >
-			If you can read this, ignore it.
-		</TextBlock>
-	</Grid>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+            If you can read this, ignore it.
+        </TextBlock>
+    </Grid>
 </Window>

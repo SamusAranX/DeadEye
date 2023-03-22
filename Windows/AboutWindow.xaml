@@ -5,19 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" Icon="/Images/camera.ico"
         UseLayoutRounding="True" DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        TextOptions.TextFormattingMode="Display"
         Title="About DeadEye" Width="380" Height="240" ResizeMode="NoResize">
-	<Border Padding="8">
-		<StackPanel Orientation="Vertical">
-			<TextBlock>
-				<Run Text="DeadEye" FontSize="26" FontWeight="SemiBold" />
-				<Run Text="{Binding AppVersion, Mode=OneTime, FallbackValue=v1.0.0}" />
-				<Run Text="{Binding GitVersion, Mode=OneTime, FallbackValue=3d9f094-dirty}" />
-			</TextBlock>
+    <Border Padding="8">
+        <StackPanel Orientation="Vertical">
+            <TextBlock>
+                <Run Text="DeadEye" FontSize="26" FontWeight="SemiBold" />
+                <Run Text="{Binding AppVersion, Mode=OneTime, FallbackValue=v1.0.0}" />
+                <Run Text="{Binding GitVersion, Mode=OneTime, FallbackValue=1234567-dirty}" />
+            </TextBlock>
 
-			<TextBlock>
-				lots of placeholders here.
-			</TextBlock>
-		</StackPanel>
-	</Border>
+            <TextBlock>
+                lots of placeholders here.
+            </TextBlock>
+        </StackPanel>
+    </Border>
 </Window>

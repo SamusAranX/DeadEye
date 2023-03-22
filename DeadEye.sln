@@ -1,20 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeadEye", "DeadEye.csproj", "{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeadEye", "DeadEye.csproj", "{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotifyIcon", "..\NotifyIcon\NotifyIcon.csproj", "{AE354F1E-E08C-44A2-ABF3-F49DB0D3BA83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Release|x64 = Release|x64
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}.Debug|x64.ActiveCfg = Debug|x64
-		{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}.Debug|x64.Build.0 = Debug|x64
-		{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}.Release|x64.ActiveCfg = Release|x64
-		{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}.Release|x64.Build.0 = Release|x64
+		{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09AB8A73-C9D8-4FC2-A223-4C9E4799098A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE354F1E-E08C-44A2-ABF3-F49DB0D3BA83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE354F1E-E08C-44A2-ABF3-F49DB0D3BA83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE354F1E-E08C-44A2-ABF3-F49DB0D3BA83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE354F1E-E08C-44A2-ABF3-F49DB0D3BA83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

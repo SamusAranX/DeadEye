@@ -5,94 +5,130 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:DeadEye.Converters"
              mc:Ignorable="d" d:DesignHeight="250" d:DesignWidth="210">
-	<UserControl.Resources>
-		<converters:ReadableColorConverter x:Key="readableConv" />
-		<converters:ColorHexConverter x:Key="hexConv" />
-	</UserControl.Resources>
-	<StackPanel DataContext="{Binding Path=ColorWrapper, RelativeSource={RelativeSource AncestorType=UserControl}}"
-	            Background="White">
-		<Border Background="{Binding Brush, FallbackValue=LightGray}" Height="100" Margin="4" CornerRadius="4">
-			<StackPanel Orientation="Vertical" VerticalAlignment="Center">
-				<TextBlock Text="{Binding Color, FallbackValue=#012345, Converter={StaticResource hexConv}, StringFormat=#{0}}"
-				           Foreground="{Binding Color, Converter={StaticResource readableConv}}"
-				           TextAlignment="Center" Typography.NumeralAlignment="Tabular"
-				           FontFamily="IBM Plex Mono" FontSize="32" FontWeight="Medium" />
+    <UserControl.Resources>
+        <converters:ReadableColorConverter x:Key="ReadableConv" />
+        <converters:ColorHexConverter x:Key="HexConv" />
 
-				<TextBlock Text="{Binding Name, FallbackValue=ColorName}"
-				           Foreground="{Binding Color, Converter={StaticResource readableConv}}"
-				           TextAlignment="Center" FontStyle="Italic" FontSize="14" FontWeight="Medium" />
-			</StackPanel>
-		</Border>
+        <FontFamily x:Key="MonoFont">IBM Plex Mono, Consolas, Courier New</FontFamily>
 
-		<Grid Height="40">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
+        <Style TargetType="Label">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="4,0,0,0" />
+            <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
+            <Setter Property="Typography.SlashedZero" Value="True" />
+        </Style>
 
-			<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Label Content="R" FontFamily="SF Mono" FontSize="14" FontWeight="Bold" Padding="0" />
-				<Label Content="{Binding Red, FallbackValue=255}"
-				       FontFamily="SF Mono" FontSize="14" Padding="2,0,0,0" />
-			</StackPanel>
+        <DrawingBrush x:Key="CheckerBrush" Viewport="0,0,16,16" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="#E5E5E5">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="0,0,8,8"/>
+                                <RectangleGeometry Rect="8,8,8,8"/>
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="#FFF">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="8,0,8,8"/>
+                                <RectangleGeometry Rect="0,8,8,8"/>
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Resources>
 
-			<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Label Content="G" FontFamily="SF Mono" FontSize="14" FontWeight="Bold" Padding="0" />
-				<Label Content="{Binding Green, FallbackValue=255}"
-				       FontFamily="SF Mono" FontSize="14" Padding="2,0,0,0" />
-			</StackPanel>
+    <StackPanel DataContext="{Binding Path=ColorWrapper, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Background="White">
+        <Border Background="{StaticResource CheckerBrush}" Height="100" Margin="4" CornerRadius="4">
+            <Border Background="{Binding Brush, FallbackValue=Transparent}" CornerRadius="4">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <TextBlock
+                        Text="{Binding Color, FallbackValue=#FF012345, Converter={StaticResource HexConv}, StringFormat=#{0}}"
+                        Foreground="{Binding Color, Converter={StaticResource ReadableConv}}"
+                        TextAlignment="Center" Typography.NumeralAlignment="Tabular"
+                        FontFamily="{StaticResource MonoFont}" FontSize="32" FontWeight="Medium" />
 
-			<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Label Content="B" FontFamily="SF Mono" FontSize="14" FontWeight="Bold" Padding="0" />
-				<Label Content="{Binding Blue, FallbackValue=255}"
-				       FontFamily="SF Mono" FontSize="14" Padding="2,0,0,0" />
-			</StackPanel>
-		</Grid>
+                    <TextBlock Text="{Binding Name, FallbackValue=ColorName}" Margin="10,0"
+                               Foreground="{Binding Color, Converter={StaticResource ReadableConv}}"
+                               FontFamily="{StaticResource MonoFont}"
+                               TextAlignment="Center" FontStyle="Italic" FontSize="14" FontWeight="Medium" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Border>
 
-		<Grid Height="40">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
+        <Grid Height="40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-			<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Label Content="H" FontFamily="SF Mono" FontSize="14" FontWeight="Bold" Padding="0" />
-				<Label Content="{Binding Hue, FallbackValue=360}" ContentStringFormat="F1"
-				       FontFamily="SF Mono" FontSize="14" Padding="2,0,0,0" />
-			</StackPanel>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Label Content="R" FontWeight="Bold" Padding="0" />
+                <Label Content="{Binding Red, FallbackValue=255}" />
+            </StackPanel>
 
-			<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Label Content="S" FontFamily="SF Mono" FontSize="14" FontWeight="Bold" Padding="0" />
-				<Label Content="{Binding Saturation, FallbackValue=1.0}" ContentStringFormat="F2"
-				       FontFamily="SF Mono" FontSize="14" Padding="2,0,0,0" />
-			</StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Label Content="G" FontWeight="Bold" Padding="0" />
+                <Label Content="{Binding Green, FallbackValue=255}" />
+            </StackPanel>
 
-			<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Label Content="V" FontFamily="SF Mono" FontSize="14" FontWeight="Bold" Padding="0" />
-				<Label Content="{Binding Value, FallbackValue=1.0}" ContentStringFormat="F2"
-				       FontFamily="SF Mono" FontSize="14" Padding="2,0,0,0" />
-			</StackPanel>
-		</Grid>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <Label Content="B" FontWeight="Bold" Padding="0" />
+                <Label Content="{Binding Blue, FallbackValue=255}" />
+            </StackPanel>
+        </Grid>
 
-		<Grid Height="40">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
+        <Grid Height="40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-			<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Label Content="A" FontFamily="SF Mono" FontSize="14" FontWeight="Bold" Padding="0" />
-				<Label Content="{Binding Alpha, FallbackValue=255}"
-				       FontFamily="SF Mono" FontSize="14" Padding="2,0,0,0" />
-			</StackPanel>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <Label Content="H" FontWeight="Bold" Padding="0" />
+                <Label Content="{Binding Hue, FallbackValue=360}" ContentStringFormat="F1" />
+            </StackPanel>
 
-			<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-				<Label Content="L" FontFamily="SF Mono" FontSize="14" FontWeight="Bold" Padding="0" />
-				<Label Content="{Binding Luma, FallbackValue=1.0}" ContentStringFormat="F2"
-				       FontFamily="SF Mono" FontSize="14" Padding="2,0,0,0" />
-			</StackPanel>
-		</Grid>
-	</StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <Label Content="S" FontWeight="Bold" Padding="0" />
+                <Label Content="{Binding Saturation, FallbackValue=1.0}" ContentStringFormat="F2" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <Label Content="V" FontWeight="Bold" Padding="0" />
+                <Label Content="{Binding Value, FallbackValue=1.0}" ContentStringFormat="F2" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Height="40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <Label Content="A" FontWeight="Bold" Padding="0" />
+                <Label Content="{Binding Alpha, FallbackValue=255}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <Label Content="L" FontWeight="Bold" Padding="0" />
+                <Label Content="{Binding Luma, FallbackValue=1.0}" ContentStringFormat="F2" />
+            </StackPanel>
+        </Grid>
+    </StackPanel>
 </UserControl>

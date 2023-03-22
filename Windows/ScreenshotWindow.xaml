@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:DeadEye.Controls" 
+        xmlns:controls="clr-namespace:DeadEye.Controls"
         xmlns:local="clr-namespace:DeadEye"
         Loaded="ScreenshotFrameWindow_OnLoaded"
         mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize"
@@ -12,39 +12,40 @@
         RenderOptions.BitmapScalingMode="NearestNeighbor"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Deactivated="ScreenshotFrameWindow_OnDeactivated"
-		SourceInitialized="ScreenshotFrameWindow_OnSourceInitialized" Closed="ScreenshotFrameWindow_OnClosed"
+        SourceInitialized="ScreenshotFrameWindow_OnSourceInitialized" Closed="ScreenshotFrameWindow_OnClosed"
         KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp"
-        MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown" MouseLeftButtonUp="ScreenshotFrameWindow_OnMouseLeftButtonUp"
+        MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown"
+        MouseLeftButtonUp="ScreenshotFrameWindow_OnMouseLeftButtonUp"
         MouseMove="ScreenshotFrameWindow_OnMouseMove">
-	<Grid>
-		<Image x:Name="WindowBackgroundImage" />
+    <Grid>
+        <Image x:Name="WindowBackgroundImage" />
 
-		<controls:PassepartoutView CutoutRect="{Binding SelectionBounds}"
-		                           DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+        <controls:PassepartoutView CutoutRect="{Binding SelectionBounds}"
+                                   DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
 
-		<Canvas Background="Transparent">
-			<controls:GuideGrid x:Name="GuideGrid"
-			                    GridOpacity="0.6"
-			                    GridType="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.GridType}"
-			                    MarkCenter="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.MarkCenter}"
-			                    Canvas.Top="{Binding SelectionBoundsClamped.Top}"
-			                    Canvas.Left="{Binding SelectionBoundsClamped.Left}"
-			                    Width="{Binding SelectionBoundsClamped.Width}"
-			                    Height="{Binding SelectionBoundsClamped.Height}" />
-		</Canvas>
+        <Canvas Background="Transparent">
+            <controls:GuideGrid x:Name="GuideGrid"
+                                GridOpacity="0.6"
+                                GridType="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.GridType}"
+                                MarkCenter="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.MarkCenter}"
+                                Canvas.Top="{Binding SelectionBoundsClamped.Top}"
+                                Canvas.Left="{Binding SelectionBoundsClamped.Left}"
+                                Width="{Binding SelectionBoundsClamped.Width}"
+                                Height="{Binding SelectionBoundsClamped.Height}" />
+        </Canvas>
 
-		<Canvas Background="Transparent"
-		        Visibility="{Binding
+        <Canvas Background="Transparent"
+                Visibility="{Binding
 				Source={x:Static local:Settings.SharedSettings}, 
 				Path=SharedSettings.ShowDimensions, 
 				Converter={StaticResource BoolToVis}}">
-			<controls:RectWHDisplay x:Name="RectDisplay"
-			                        DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-			                        FontSize="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.TextSize}"
-			                        Canvas.Top="{Binding BoundsDisplayCoords.Y}"
-			                        Canvas.Left="{Binding BoundsDisplayCoords.X}"
-			                        DisplayRect="{Binding SelectionBoundsClamped}"
-			                        Visibility="{Binding IsMakingSelection, Converter={StaticResource BoolToVis}}" />
-		</Canvas>
-	</Grid>
+            <controls:RectWHDisplay x:Name="RectDisplay"
+                                    DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                                    FontSize="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.TextSize}"
+                                    Canvas.Top="{Binding BoundsDisplayCoords.Y}"
+                                    Canvas.Left="{Binding BoundsDisplayCoords.X}"
+                                    DisplayRect="{Binding SelectionBoundsClamped}"
+                                    Visibility="{Binding IsMakingSelection, Converter={StaticResource BoolToVis}}" />
+        </Canvas>
+    </Grid>
 </Window>

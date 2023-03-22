@@ -3,21 +3,24 @@ using System.Drawing.Imaging;
 using System.Windows;
 using DeadEye.Extensions;
 
-namespace DeadEye.Helpers {
-	internal class ScreenshotHelper {
-		public static Rect GetVirtualScreenRect() {
-			return new Rect(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenWidth, SystemParameters.VirtualScreenHeight);
-		}
+namespace DeadEye.Helpers;
 
-		public static Bitmap GetFullscreenScreenshotGDI() {
-			var rect = GetVirtualScreenRect().ToRectangle();
+internal sealed class ScreenshotHelper
+{
+	public static Rect GetVirtualScreenRect()
+	{
+		return new Rect(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenWidth, SystemParameters.VirtualScreenHeight);
+	}
 
-			var bm = new Bitmap(rect.Width, rect.Height, PixelFormat.Format24bppRgb);
-			using var g = Graphics.FromImage(bm);
+	public static Bitmap GetFullscreenScreenshotGDI()
+	{
+		var rect = GetVirtualScreenRect().ToRectangle();
 
-			g.CopyFromScreen(rect.X, rect.Y, 0, 0, bm.Size, CopyPixelOperation.SourceCopy);
+		var bm = new Bitmap(rect.Width, rect.Height, PixelFormat.Format24bppRgb);
+		using var g = Graphics.FromImage(bm);
 
-			return bm;
-		}
+		g.CopyFromScreen(rect.X, rect.Y, 0, 0, bm.Size, CopyPixelOperation.SourceCopy);
+
+		return bm;
 	}
 }

@@ -1,48 +1,52 @@
 ﻿using System.Windows.Media;
 using DeadEye.Extensions;
 
-namespace DeadEye.Helpers {
-	public class ColorWrapper {
-		public ColorWrapper(string name, Brush brush) {
-			this.Name = name;
-			this.Brush = brush;
+namespace DeadEye.Helpers;
 
-			var col = this.Color;
-			var hsv = col.ToHsv();
+public sealed class ColorWrapper
+{
+	public ColorWrapper(string name, Brush brush)
+	{
+		this.Name = name;
+		this.Brush = brush;
 
-			this.Red = col.R;
-			this.Green = col.G;
-			this.Blue = col.B;
-			this.Alpha = col.A;
+		var col = this.Color;
+		var hsv = col.ToHsv();
 
-			this.Hue = hsv.H;
-			this.Saturation = hsv.S;
-			this.Value = hsv.V;
+		this.Red = col.R;
+		this.Green = col.G;
+		this.Blue = col.B;
+		this.Alpha = col.A;
 
-			this.Luma = col.GetLuma();
-		}
+		this.Hue = hsv.H;
+		this.Saturation = hsv.S;
+		this.Value = hsv.V;
 
-		public string Name { get; }
-		public Brush Brush { get; }
+		this.Luma = col.GetLuma();
+	}
 
-		public int Red { get; }
-		public int Green { get; }
-		public int Blue { get; }
-		public int Alpha { get; }
+	public string Name { get; }
+	public Brush Brush { get; }
 
-		public double Hue { get; }
-		public double Saturation { get; }
-		public double Value { get; }
+	public int Red { get; }
+	public int Green { get; }
+	public int Blue { get; }
+	public int Alpha { get; }
 
-		public double Luma { get; }
+	public double Hue { get; }
+	public double Saturation { get; }
+	public double Value { get; }
 
-		public Color Color {
-			get {
-				if (this.Brush is SolidColorBrush brush)
-					return brush.Color;
+	public double Luma { get; }
 
-				return Colors.Magenta;
-			}
+	public Color Color
+	{
+		get
+		{
+			if (this.Brush is SolidColorBrush brush)
+				return brush.Color;
+
+			return Colors.Magenta;
 		}
 	}
 }
