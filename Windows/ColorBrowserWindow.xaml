@@ -9,30 +9,6 @@
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         Title="Color Browser" Width="750" Height="420" MinWidth="750" MinHeight="420"
         Background="{x:Static SystemColors.MenuBrush}">
-    <Window.Resources>
-        <DrawingBrush x:Key="CheckerBrush" Viewport="0,0,16,16" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
-            <DrawingBrush.Drawing>
-                <DrawingGroup>
-                    <GeometryDrawing Brush="#E5E5E5">
-                        <GeometryDrawing.Geometry>
-                            <GeometryGroup>
-                                <RectangleGeometry Rect="0,0,8,8"/>
-                                <RectangleGeometry Rect="8,8,8,8"/>
-                            </GeometryGroup>
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                    <GeometryDrawing Brush="#FFF">
-                        <GeometryDrawing.Geometry>
-                            <GeometryGroup>
-                                <RectangleGeometry Rect="8,0,8,8"/>
-                                <RectangleGeometry Rect="0,8,8,8"/>
-                            </GeometryGroup>
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                </DrawingGroup>
-            </DrawingBrush.Drawing>
-        </DrawingBrush>
-    </Window.Resources>
     <Grid>
         <TabControl Margin="8" SelectedIndex="0"
                     ItemsSource="{Binding Tabs, RelativeSource={RelativeSource AncestorType=Window}}">

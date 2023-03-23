@@ -48,12 +48,7 @@ public partial class DummyWindow : IDisposable
 			}
 			catch (COMException e)
 			{
-				var message = string.Join("\n", new string[]
-				{
-					"Can't copy image into the Clipboard.",
-					"To fix this, click here to open the Settings and click \"Clear clipboard data\".",
-					$"More Info: 0x{e.HResult:X8}",
-				});
+				var message = string.Join("\n", "Can't copy image into the Clipboard.", "To fix this, click here to open the Settings and click \"Clear clipboard data\".", $"More Info: 0x{e.HResult:X8}");
 				this.TaskbarIcon.ShowBalloonTip("Clipboard Error", message, BalloonIcon.Error);
 			}
 
@@ -82,10 +77,15 @@ public partial class DummyWindow : IDisposable
 
 		// Register hotkeys
 		this._overlayHotkey = new Hotkey(ModifierKeys.Alt | ModifierKeys.Shift, Key.S, this, this.OverlayHotkeyAction);
-		
-		this.TaskbarIcon.TrayMiddleMouseUp += (_, _) =>
+
+		this.TaskbarIcon.TrayMouseDoubleClick += (_, _) =>
 		{
-			Process.Start("ms-settings:clipboard");
+			var alt = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
+			if (!alt)
+				return;
+
+			var psi = new ProcessStartInfo("ms-settings:clipboard") { UseShellExecute = true };
+			Process.Start(psi);
 		};
 	}
 
@@ -115,8 +115,6 @@ public partial class DummyWindow : IDisposable
 	{
 		var appPath = Path.GetFullPath(Assembly.GetExecutingAssembly().Location);
 		var psi = new ProcessStartInfo("explorer.exe", $"/select,\"{appPath}\"");
-		Debug.WriteLine($"{psi.FileName} {psi.Arguments}");
-
 		Process.Start(psi);
 	}
 
@@ -134,7 +132,7 @@ public partial class DummyWindow : IDisposable
 		}
 
 		this._settingsWindow = new SettingsWindow();
-		this._settingsWindow.Closed += (a, b) => this._settingsWindow = null;
+		this._settingsWindow.Closed += (_, _) => this._settingsWindow = null;
 		this._settingsWindow.Show();
 	}
 
@@ -147,7 +145,7 @@ public partial class DummyWindow : IDisposable
 		}
 
 		this._aboutWindow = new AboutWindow();
-		this._aboutWindow.Closed += (a, b) => this._aboutWindow = null;
+		this._aboutWindow.Closed += (_, _) => this._aboutWindow = null;
 		this._aboutWindow.Show();
 	}
 

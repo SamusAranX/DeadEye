@@ -5,8 +5,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DeadEye.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="180" d:DesignWidth="180">
+    <UserControl.Resources>
+        <ScaleTransform x:Key="ImageTransform" ScaleX="2" ScaleY="2" />
+
+        <Style TargetType="Border">
+            <Setter Property="CornerRadius" Value="180" />
+        </Style>
+
+        <Image x:Key="ExampleImage" Source="../Images/grid_preview.png" />
+    </UserControl.Resources>
+
     <Grid>
-            
+        <Border Background="White" x:Name="ImageContainer" Margin="4" />
+
+        <Border Background="{StaticResource TranslucentBlack}">
+            <Border Background="White" Margin="1">
+                <Border Background="{StaticResource TranslucentBlack}" Margin="3">
+                    <Border.OpacityMask>
+                        <VisualBrush Visual="{Binding ElementName=ImageContainer}"></VisualBrush>
+                    </Border.OpacityMask>
+
+                    <Border Background="Magenta" Margin="1" 
+                            RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased">
+                        <Canvas>
+                            <Image Source="../Images/square_example.png" Stretch="UniformToFill" 
+                                   RenderTransform="{StaticResource ImageTransform}" RenderTransformOrigin="0.5,0.5" />
+                        </Canvas>
+                    </Border>
+                </Border>
+            </Border>
+        </Border>
     </Grid>
 </UserControl>

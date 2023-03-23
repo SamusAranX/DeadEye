@@ -10,7 +10,7 @@
         UseLayoutRounding="True" SourceInitialized="LoadAutostartStatus" Activated="LoadAutostartStatus"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
-        Title="Settings" Width="322" Height="420" SizeToContent="Height" ResizeMode="NoResize"
+        Title="Settings" Width="322" Height="500" SizeToContent="Height" ResizeMode="NoResize"
         Background="{x:Static SystemColors.MenuBrush}">
     <Window.Resources>
         <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
@@ -34,9 +34,14 @@
     </Window.Resources>
 
     <StackPanel Margin="8">
+        <DockPanel Margin="0,-5,0,5">
+            <Label DockPanel.Dock="Left" FontWeight="Bold" Padding="0,5,5,5">Screenshot Settings</Label>
+            <Separator />
+        </DockPanel>
+
         <!-- Grid preview -->
         <Grid Margin="0,0,0,8" Height="169" Effect="{StaticResource PreviewShadow}">
-            <Border Name="PreviewMask" Background="White" CornerRadius="4" />
+            <Border Name="PreviewMask" Background="Magenta" CornerRadius="4" />
 
             <Grid>
                 <Grid.OpacityMask>
@@ -131,9 +136,18 @@
             </Grid>
         </Grid>
 
-        <Separator />
+        <!-- Color Picker options -->
+        <!--<DockPanel Margin="0,0,0,5">
+            <Label DockPanel.Dock="Left" FontWeight="Bold" Padding="0,5,5,5">Color Picker Settings</Label>
+            <Separator />
+        </DockPanel>-->
 
-        <!-- Additional options -->
+        <!-- Misc options -->
+        <DockPanel>
+            <Label DockPanel.Dock="Left" FontWeight="Bold" Padding="0,5,5,5">Misc Settings</Label>
+            <Separator />
+        </DockPanel>
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="90" />
@@ -144,9 +158,6 @@
                 <RowDefinition Height="22" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-
-            <TextBlock Grid.Column="0" Grid.Row="0"
-                       Text="Misc. Settings:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
             <CheckBox Grid.Column="2" Grid.Row="0" x:Name="AutostartCheckbox" Content="Enable Autostart"
                       VerticalContentAlignment="Center" VerticalAlignment="Center"

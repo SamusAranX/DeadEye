@@ -9,8 +9,6 @@
         <converters:ReadableColorConverter x:Key="ReadableConv" />
         <converters:ColorHexConverter x:Key="HexConv" />
 
-        <FontFamily x:Key="MonoFont">IBM Plex Mono, Consolas, Courier New</FontFamily>
-
         <Style TargetType="Label">
             <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
             <Setter Property="FontSize" Value="14" />
@@ -18,29 +16,6 @@
             <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
             <Setter Property="Typography.SlashedZero" Value="True" />
         </Style>
-
-        <DrawingBrush x:Key="CheckerBrush" Viewport="0,0,16,16" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
-            <DrawingBrush.Drawing>
-                <DrawingGroup>
-                    <GeometryDrawing Brush="#E5E5E5">
-                        <GeometryDrawing.Geometry>
-                            <GeometryGroup>
-                                <RectangleGeometry Rect="0,0,8,8"/>
-                                <RectangleGeometry Rect="8,8,8,8"/>
-                            </GeometryGroup>
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                    <GeometryDrawing Brush="#FFF">
-                        <GeometryDrawing.Geometry>
-                            <GeometryGroup>
-                                <RectangleGeometry Rect="8,0,8,8"/>
-                                <RectangleGeometry Rect="0,8,8,8"/>
-                            </GeometryGroup>
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                </DrawingGroup>
-            </DrawingBrush.Drawing>
-        </DrawingBrush>
     </UserControl.Resources>
 
     <StackPanel DataContext="{Binding Path=ColorWrapper, RelativeSource={RelativeSource AncestorType=UserControl}}"
