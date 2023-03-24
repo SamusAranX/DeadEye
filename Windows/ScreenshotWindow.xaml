@@ -9,6 +9,7 @@
         mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize"
         Title="ScreenshotFrameWindow" Height="240" Width="320"
         UseLayoutRounding="True" Cursor="Cross"
+        TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         RenderOptions.BitmapScalingMode="NearestNeighbor"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Deactivated="ScreenshotFrameWindow_OnDeactivated"
