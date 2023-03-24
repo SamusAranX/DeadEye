@@ -135,8 +135,11 @@ dotnet_diagnostic.ca2201.severity = none # Exception type is not sufficiently sp
 dotnet_diagnostic.ide0010.severity = none # Populate switch
 dotnet_diagnostic.ide0011.severity = none # Add braces to 'if/else' statement
 dotnet_diagnostic.ide0045.severity = none # 'if' statement can be simplified
+dotnet_diagnostic.ide0046.severity = none # 'if' statement can be simplified
+dotnet_diagnostic.ide0055.severity = none # Fix formatting
 dotnet_diagnostic.ide0058.severity = none # Expression value is never used
 dotnet_diagnostic.ide0160.severity = none # Convert to block scoped namespace
+dotnet_diagnostic.ide0270.severity = none # Null check can be simplified
 dotnet_diagnostic.syslib1054.severity = none # LibraryImportAttribute bullshit
 #dotnet_diagnostic.xls1106.severity = none
 

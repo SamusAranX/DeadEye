@@ -8,13 +8,13 @@ namespace DeadEye.Converters;
 
 internal sealed class ReadableColorConverter : MarkupExtension, IValueConverter
 {
-	private static ReadableColorConverter _converter;
+	private static ReadableColorConverter? _converter;
 
 	private static readonly SolidColorBrush MAGENTA = new(Colors.Magenta);
 	private static readonly SolidColorBrush BLACK = new(Colors.Black);
 	private static readonly SolidColorBrush WHITE = new(Colors.White);
 
-	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value == null)
 			return BLACK;

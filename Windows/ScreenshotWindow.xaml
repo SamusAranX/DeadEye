@@ -26,8 +26,8 @@
         <Canvas Background="Transparent">
             <controls:GuideGrid x:Name="GuideGrid"
                                 GridOpacity="0.6"
-                                GridType="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.GridType}"
-                                MarkCenter="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.MarkCenter}"
+                                GridType="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.GridType}"
+                                MarkCenter="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.MarkCenter}"
                                 Canvas.Top="{Binding SelectionBoundsClamped.Top}"
                                 Canvas.Left="{Binding SelectionBoundsClamped.Left}"
                                 Width="{Binding SelectionBoundsClamped.Width}"
@@ -36,12 +36,12 @@
 
         <Canvas Background="Transparent"
                 Visibility="{Binding
-				Source={x:Static local:Settings.SharedSettings}, 
-				Path=SharedSettings.ShowDimensions, 
+				Source={x:Static local:Settings.Shared}, 
+				Path=Shared.ShowDimensions, 
 				Converter={StaticResource BoolToVis}}">
             <controls:RectWHDisplay x:Name="RectDisplay"
                                     DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                                    FontSize="{Binding Source={x:Static local:Settings.SharedSettings}, Path=SharedSettings.TextSize}"
+                                    FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.TextSize}"
                                     Canvas.Top="{Binding BoundsDisplayCoords.Y}"
                                     Canvas.Left="{Binding BoundsDisplayCoords.X}"
                                     DisplayRect="{Binding SelectionBoundsClamped}"

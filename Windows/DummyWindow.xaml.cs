@@ -9,22 +9,54 @@ using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
 using DeadEye.Hotkeys;
+using DeadEye.Win32;
 using NotifyIcon;
 
 namespace DeadEye.Windows;
 
-public partial class DummyWindow : IDisposable
+public partial class DummyWindow
 {
-	private AboutWindow _aboutWindow;
-	private ColorBrowserWindow _colorBrowserWindow;
-	private Hotkey _overlayHotkey;
-	private ScreenshotFrameWindow _screenshotWindow;
-	private SettingsWindow _settingsWindow;
+	private AboutWindow? _aboutWindow;
+	private ColorBrowserWindow? _colorBrowserWindow;
+	private ScreenshotFrameWindow? _screenshotWindow;
+	private SettingsWindow? _settingsWindow;
+
+	#region Initialization and Shutdown
+
+	private void DummyWindow_OnSourceInitialized(object sender, EventArgs e)
+	{
+		Debug.WriteLine("OnSourceInitialized");
+
+		// Make screenshotWindow message-only
+		const int HWND_MESSAGE = -3;
+		if (PresentationSource.FromVisual(this) is HwndSource hwndSource)
+			User32.SetParent(hwndSource.Handle, HWND_MESSAGE);
+
+		// initialize the hotkey manager and give it a reference to this window because *some* window is needed to receive events
+		HotkeyManager.InitShared(this);
+		HotkeyManager.Shared.RegisterHotkey();
+		HotkeyManager.Shared.HotkeyPressed += this.OverlayHotkeyAction;
+
+		this.TaskbarIcon.TrayMouseDoubleClick += (_, _) =>
+		{
+			var alt = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
+			if (!alt)
+				return;
+
+			var psi = new ProcessStartInfo("ms-settings:clipboard") { UseShellExecute = true };
+			Process.Start(psi);
+		};
+	}
+
+	#endregion
 
 	#region Hotkey Actions
 
-	private void OverlayHotkeyAction(Hotkey key)
+	private void OverlayHotkeyAction(object _, HotkeyPressedEventArgs e)
 	{
+		if (Settings.Shared.WaitingForHotkey)
+			return;
+
 		Debug.WriteLine("Overlay Hotkey!");
 
 		if (this._screenshotWindow != null)
@@ -46,9 +78,9 @@ public partial class DummyWindow : IDisposable
 			{
 				Clipboard.SetImage(croppedBitmap);
 			}
-			catch (COMException e)
+			catch (COMException ex)
 			{
-				var message = string.Join("\n", "Can't copy image into the Clipboard.", "To fix this, click here to open the Settings and click \"Clear clipboard data\".", $"More Info: 0x{e.HResult:X8}");
+				var message = string.Join("\n", "Can't copy image into the Clipboard.", "To fix this, click here to open the Settings and click \"Clear clipboard data\".", $"More Info: 0x{ex.HResult:X8}");
 				this.TaskbarIcon.ShowBalloonTip("Clipboard Error", message, BalloonIcon.Error);
 			}
 
@@ -57,41 +89,6 @@ public partial class DummyWindow : IDisposable
 		this._screenshotWindow.Closed += (sender, args) => { this._screenshotWindow = null; };
 
 		this._screenshotWindow.Show();
-	}
-
-	#endregion
-
-	#region Initialization and Shutdown
-
-	[DllImport("user32.dll")]
-	private static extern nint SetParent(nint hwnd, nint hwndNewParent);
-
-	private void DummyWindow_OnSourceInitialized(object sender, EventArgs e)
-	{
-		Debug.WriteLine("OnSourceInitialized");
-
-		// Make screenshotWindow message-only
-		const int HWND_MESSAGE = -3;
-		if (PresentationSource.FromVisual(this) is HwndSource hwndSource)
-			SetParent(hwndSource.Handle, HWND_MESSAGE);
-
-		// Register hotkeys
-		this._overlayHotkey = new Hotkey(ModifierKeys.Alt | ModifierKeys.Shift, Key.S, this, this.OverlayHotkeyAction);
-
-		this.TaskbarIcon.TrayMouseDoubleClick += (_, _) =>
-		{
-			var alt = Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
-			if (!alt)
-				return;
-
-			var psi = new ProcessStartInfo("ms-settings:clipboard") { UseShellExecute = true };
-			Process.Start(psi);
-		};
-	}
-
-	public void Dispose()
-	{
-		this._overlayHotkey.Dispose();
 	}
 
 	#endregion
@@ -151,7 +148,7 @@ public partial class DummyWindow : IDisposable
 
 	private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
 	{
-		Settings.SharedSettings.Save();
+		Settings.Shared.Save();
 		Application.Current.Shutdown();
 	}
 

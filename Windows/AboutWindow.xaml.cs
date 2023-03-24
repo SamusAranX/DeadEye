@@ -5,8 +5,8 @@ namespace DeadEye.Windows;
 
 public partial class AboutWindow
 {
-	private string _appVersion;
-	private string _gitVersion;
+	private string? _appVersion;
+	private string? _gitVersion;
 
 	public AboutWindow()
 	{

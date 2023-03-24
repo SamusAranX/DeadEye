@@ -1,11 +1,12 @@
 ﻿using System.Windows;
 using DeadEye.Helpers;
+using DeadEye.Hotkeys;
 
 namespace DeadEye;
 
 public partial class App : IDisposable
 {
-	private SingleInstanceHelper _singleInstanceHelper;
+	private SingleInstanceHelper? _singleInstanceHelper;
 
 	public bool IsDebugMode
 	{
@@ -14,9 +15,15 @@ public partial class App : IDisposable
 #if DEBUG
 			return true;
 #else
-				return false;
+			return false;
 #endif
 		}
+	}
+	
+	public void Dispose()
+	{
+		this._singleInstanceHelper?.Dispose();
+		HotkeyManager.Shared.Dispose();
 	}
 
 	private void App_OnStartup(object sender, StartupEventArgs e)
@@ -25,13 +32,8 @@ public partial class App : IDisposable
 
 		if (this._singleInstanceHelper.IsOtherInstanceRunning())
 		{
-			MessageBox.Show("There's already a running instance of DeadEye.", "Error starting DeadEye", MessageBoxButton.OK, MessageBoxImage.Warning);
+			MessageBox.Show("There's already a running instance of DeadEye.", "Instance already running", MessageBoxButton.OK, MessageBoxImage.Warning);
 			this.Shutdown();
 		}
-	}
-
-	public void Dispose()
-	{
-		this._singleInstanceHelper.Dispose();
 	}
 }

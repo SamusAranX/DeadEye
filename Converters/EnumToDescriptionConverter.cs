@@ -6,7 +6,7 @@ namespace DeadEye.Converters;
 
 public sealed class EnumToDescriptionConverter : IValueConverter
 {
-	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value == null)
 			return string.Empty;
@@ -23,12 +23,14 @@ public sealed class EnumToDescriptionConverter : IValueConverter
 
 	private static string GetDescription(Type enumType, object enumValue)
 	{
+		var enumValueStr = enumValue.ToString()!;
+
 		return
 			enumType
-				.GetField(enumValue.ToString())
+				.GetField(enumValueStr)!
 				.GetCustomAttributes(typeof(DescriptionAttribute), false)
 				.FirstOrDefault() is DescriptionAttribute descriptionAttribute
 				? descriptionAttribute.Description
-				: enumValue.ToString();
+				: enumValueStr;
 	}
 }

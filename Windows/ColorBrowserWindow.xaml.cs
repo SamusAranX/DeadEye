@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using DeadEye.Helpers;
+using DeadEye.Win32;
 
 namespace DeadEye.Windows;
 
@@ -25,9 +26,9 @@ public partial class ColorBrowserWindow : INotifyPropertyChanged
 
 	public List<TabItemWrapper> Tabs { get; set; }
 
-	public event PropertyChangedEventHandler PropertyChanged;
+	public event PropertyChangedEventHandler? PropertyChanged;
 
-	private void OnPropertyChanged(string propertyName = null)
+	private void OnPropertyChanged(string? propertyName = null)
 	{
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
@@ -44,6 +45,9 @@ public partial class ColorBrowserWindow : INotifyPropertyChanged
 
 			var typeName = (nint)Marshal.PtrToStructure(typeNamePtr, typeof(nint))!;
 			var colorName = Marshal.PtrToStringUni(typeName);
+			if (colorName == null)
+				continue;
+
 			var color = UXTheme.GetImmersiveColorByString($"Immersive{colorName}");
 
 			colorList.Add(new ColorWrapper(colorName, new SolidColorBrush(color)));
@@ -66,7 +70,11 @@ public partial class ColorBrowserWindow : INotifyPropertyChanged
 			if (resName.EndsWith("Brush", StringComparison.InvariantCulture))
 				resName = resName.Remove(propInfo.Name.Length - 5);
 
-			var brush = (Brush)propInfo.GetValue(null);
+			var propObj = propInfo.GetValue(null);
+			if (propObj == null)
+				continue;
+
+			var brush = (Brush)propObj;
 
 			brushList.Add(new ColorWrapper(resName, brush));
 		}

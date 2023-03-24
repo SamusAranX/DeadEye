@@ -4,10 +4,11 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using DeadEye.Win32;
 
 namespace DeadEye.Hotkeys;
 
-public class HotkeyException : Exception
+public sealed class HotkeyException : Exception
 {
 	public HotkeyException() { }
 
@@ -35,18 +36,18 @@ public sealed class Hotkey : IDisposable
 	public Hotkey(ModifierKeys modifierKeys, Key key, WindowInteropHelper window)
 		: this(modifierKeys, key, window.Handle) { }
 
-	public Hotkey(ModifierKeys modifierKeys, Key key, Window window, Action<Hotkey> onKeyAction)
+	public Hotkey(ModifierKeys modifierKeys, Key key, Window window, Action<Hotkey>? onKeyAction)
 		: this(modifierKeys, key, new WindowInteropHelper(window), onKeyAction) { }
 
-	public Hotkey(ModifierKeys modifierKeys, Key key, WindowInteropHelper window, Action<Hotkey> onKeyAction)
+	public Hotkey(ModifierKeys modifierKeys, Key key, WindowInteropHelper window, Action<Hotkey>? onKeyAction)
 		: this(modifierKeys, key, window.Handle, onKeyAction) { }
 
-	public Hotkey(ModifierKeys modifierKeys, Key key, nint windowHandle, Action<Hotkey> onKeyAction = null)
+	public Hotkey(ModifierKeys modifierKeys, Key key, nint windowHandle, Action<Hotkey>? onKeyAction = null)
 	{
 		this.Key = key;
 		this.KeyModifier = modifierKeys;
 		this._id = this.GetHashCode();
-		this._handle = windowHandle == nint.Zero ? GetForegroundWindow() : windowHandle;
+		this._handle = windowHandle == nint.Zero ? User32.GetForegroundWindow() : windowHandle;
 		this._currentDispatcher = Dispatcher.CurrentDispatcher;
 		this.RegisterHotkey();
 		ComponentDispatcher.ThreadPreprocessMessage += this.ThreadPreprocessMessageMethod;
@@ -77,21 +78,12 @@ public sealed class Hotkey : IDisposable
 		}
 	}
 
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool RegisterHotKey(nint hWnd, int id, ModifierKeys fsModifiers, int vk);
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool UnregisterHotKey(nint hWnd, int id);
-
-	[DllImport("user32.dll")]
-	private static extern nint GetForegroundWindow();
-
 	~Hotkey()
 	{
 		this.Dispose();
 	}
 
-	public event Action<Hotkey> HotkeyPressedEventHandler;
+	public event Action<Hotkey>? HotkeyPressedEventHandler;
 
 	private void OnHotkeyPressed()
 	{
@@ -113,7 +105,7 @@ public sealed class Hotkey : IDisposable
 		if (this._isKeyRegistered)
 			this.UnregisterHotkey();
 
-		this._isKeyRegistered = RegisterHotKey(this._handle, this._id, this.KeyModifier, this.InteropKey);
+		this._isKeyRegistered = User32.RegisterHotKey(this._handle, this._id, this.KeyModifier, this.InteropKey);
 
 		if (!this._isKeyRegistered)
 		{
@@ -128,7 +120,7 @@ public sealed class Hotkey : IDisposable
 
 	private void UnregisterHotkey()
 	{
-		this._isKeyRegistered = !UnregisterHotKey(this._handle, this._id);
+		this._isKeyRegistered = !User32.UnregisterHotKey(this._handle, this._id);
 	}
 
 	private void ThreadPreprocessMessageMethod(ref MSG msg, ref bool handled)

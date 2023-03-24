@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using System.Xml;
 using System.Xml.Serialization;
 using DeadEye.Helpers;
@@ -28,16 +29,22 @@ public sealed class Settings : INotifyPropertyChanged
 	private bool _showDimensions;
 	private double _textSize = 11;
 
+	private bool _waitingForHotkey;
+	private ModifierKeys _screenshotModifierKeys = ModifierKeys.Shift | ModifierKeys.Alt;
+	private Key _screenshotKey = Key.S;
+
+	private readonly ModifierKeys[] _allModifiers = { ModifierKeys.Control, ModifierKeys.Shift, ModifierKeys.Alt, ModifierKeys.Windows };
+
 	public Settings()
 	{
 		this._autostartEnabled = AutostartHelper.CheckAutostartStatus();
 	}
 
-	#region "Singleton"
+	#region Singleton
 
-	private static Settings _sharedSettings;
+	private static Settings? _sharedSettings;
 
-	public static Settings SharedSettings
+	public static Settings Shared
 	{
 		get { return _sharedSettings ??= Load(); }
 
@@ -46,18 +53,18 @@ public sealed class Settings : INotifyPropertyChanged
 
 	#endregion
 
-	#region "INotifyPropertyChanged"
+	#region INotifyPropertyChanged
 
-	public event PropertyChangedEventHandler PropertyChanged;
+	public event PropertyChangedEventHandler? PropertyChanged;
 
-	private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+	private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
 	{
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
 	#endregion
 
-	#region "Properties for Bindings"
+	#region Properties for Bindings
 
 	public GridType GridType
 	{
@@ -131,9 +138,63 @@ public sealed class Settings : INotifyPropertyChanged
 		}
 	}
 
+	[XmlIgnore]
+	public bool WaitingForHotkey
+	{
+		get => this._waitingForHotkey;
+		set
+		{
+			this._waitingForHotkey = value;
+			this.OnPropertyChanged();
+		}
+	}
+
+	public ModifierKeys ScreenshotModifierKeys
+	{
+		get => this._screenshotModifierKeys;
+		set
+		{
+			this._screenshotModifierKeys = value;
+			this.OnPropertyChanged();
+			this.OnPropertyChanged(nameof(this.ScreenshotKeysReadable));
+		}
+	}
+
+	public Key ScreenshotKey
+	{
+		get => this._screenshotKey;
+		set
+		{
+			this._screenshotKey = value;
+			this.OnPropertyChanged();
+			this.OnPropertyChanged(nameof(this.ScreenshotKeysReadable));
+		}
+	}
+
+	[XmlIgnore]
+	public string ScreenshotKeysReadable
+	{
+		get
+		{
+			if (this._screenshotKey == Key.None)
+				return "None";
+
+			var keyList = new List<string>();
+			foreach (var modifier in this._allModifiers)
+			{
+				if (this._screenshotModifierKeys.HasFlag(modifier))
+					keyList.Add(modifier.ToString().ToUpperInvariant());
+			}
+
+			keyList.Add(this._screenshotKey.ToString().ToUpperInvariant());
+
+			return string.Join("+", keyList);
+		}
+	}
+
 	#endregion
 
-	#region "Loading and Saving"
+	#region Loading and Saving
 
 	private static readonly string SETTINGS_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DeadEye", "settings.xml");
 
@@ -152,7 +213,12 @@ public sealed class Settings : INotifyPropertyChanged
 			using var reader = XmlReader.Create(stream, readerSettings);
 
 			var x = new XmlSerializer(typeof(Settings));
-			return (Settings)x.Deserialize(reader);
+			var xd = x.Deserialize(reader);
+
+			if (xd != null)
+				return (Settings) xd;
+
+			throw new InvalidDataException("Can't deserialize settings file");
 		}
 		catch (Exception e)
 		{
@@ -168,7 +234,7 @@ public sealed class Settings : INotifyPropertyChanged
 	{
 		var settingsDir = Path.GetDirectoryName(SETTINGS_PATH);
 		if (settingsDir == null)
-			throw new DirectoryNotFoundException("no");
+			throw new DirectoryNotFoundException("Can't find settings directory.");
 
 		Directory.CreateDirectory(settingsDir);
 

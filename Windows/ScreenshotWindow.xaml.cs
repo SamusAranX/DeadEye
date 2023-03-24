@@ -34,6 +34,8 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 
 	private Point _selectionStartPoint, _selectionEndPoint;
 
+	public event ScreenshotTakenEventHandler? ScreenshotTaken;
+
 	public ScreenshotFrameWindow()
 	{
 		this.InitializeComponent();
@@ -48,8 +50,6 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 	{
 		this.WindowBackgroundImage.Source = screenshotSource;
 	}
-
-	public event ScreenshotTakenEventHandler ScreenshotTaken;
 
 	private void ScreenshotFrameWindow_OnSourceInitialized(object sender, EventArgs e)
 	{
@@ -82,7 +82,7 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 		this.WindowBackgroundImage.Source = null;
 	}
 
-	#region "Bound Properties and derivatives"
+	#region Bound Properties and derivatives
 
 	public Point SelectionStartPoint
 	{
@@ -169,16 +169,16 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 		}
 	}
 
-	public event PropertyChangedEventHandler PropertyChanged;
+	public event PropertyChangedEventHandler? PropertyChanged;
 
-	private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+	private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
 	{
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
 	#endregion
 
-	#region "Mouse and Key Handlers"
+	#region Mouse and Key Handlers
 
 	private void ScreenshotFrameWindow_OnKeyDown(object sender, KeyEventArgs e)
 	{
@@ -261,7 +261,7 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 
 	#endregion
 
-	#region "Frame drawing logic"
+	#region Frame drawing logic
 
 	private void StartDrawingFrame(Point mousePosition)
 	{

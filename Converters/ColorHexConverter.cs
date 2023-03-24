@@ -7,9 +7,9 @@ namespace DeadEye.Converters;
 
 internal sealed class ColorHexConverter : MarkupExtension, IValueConverter
 {
-	private static ColorHexConverter _converter;
+	private static ColorHexConverter? _converter;
 
-	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value == null)
 			return "#--------";
