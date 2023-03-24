@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using Microsoft.Win32;
 
@@ -19,16 +20,11 @@ public enum AutostartStatus
 
 internal sealed class AutostartHelper
 {
-#if DEBUG
-	private const string KEY_NAME = "DeadEye (Debug)";
-#else
 	private const string KEY_NAME = "DeadEye";
-#endif
-
 	private const string RUN_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
 	private const string RUN_APPROVED_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
 
-	private static readonly string APP_PATH = $"\"{Assembly.GetExecutingAssembly().Location}\"";
+	private static readonly string APP_PATH = $"\"{Path.Join(AppContext.BaseDirectory, Path.GetFileName(Environment.GetCommandLineArgs()[0]))}\"";
 
 	public static bool CheckAutostartStatus()
 	{
@@ -42,7 +38,8 @@ internal sealed class AutostartHelper
 
 		if ((string)value != APP_PATH)
 		{
-			Debug.WriteLine("Registry contains outdated path. Updating.");
+			Debug.WriteLine($"Registry contains outdated path {(string)value}.");
+			Debug.WriteLine($"Updating registry using new path {APP_PATH}.");
 			EnableAutostart(); // refresh binary path in the registry
 		}
 
@@ -74,7 +71,7 @@ internal sealed class AutostartHelper
 				return AutostartStatus.Enabled;
 
 			if (headerValue == 3)
-			{ 
+			{
 				// 3: disabled
 				var dateLong = BitConverter.ToInt64(byteArray, 4);
 				var dateTime = DateTime.FromFileTime(dateLong);
