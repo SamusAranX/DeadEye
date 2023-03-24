@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using Microsoft.Win32;
 
 namespace DeadEye.Helpers;

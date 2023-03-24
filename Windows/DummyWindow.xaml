@@ -9,7 +9,7 @@
         Visibility="Collapsed" IsHitTestVisible="False" ShowInTaskbar="False" ShowActivated="False" WindowStyle="None"
         mc:Ignorable="d" Title="Dummy Window" Height="60" Width="200">
     <Grid>
-        <notifyIcon:TaskbarIcon IconSource="/Images/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye" x:Name="TaskbarIcon">
+        <notifyIcon:TaskbarIcon x:Name="TaskbarIcon" IconSource="/Images/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye">
             <notifyIcon:TaskbarIcon.ContextMenu>
                 <ContextMenu TextOptions.TextFormattingMode="Display">
                     <MenuItem Header="Colors (Debug)" Click="ColorMenuItem_OnClick"
