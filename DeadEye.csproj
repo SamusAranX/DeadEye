@@ -81,7 +81,7 @@
     <StartupObject>DeadEye.App</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <Copyright>Copyright (c) 2021–2023 Emma Alyx Wunder</Copyright>
+    <Copyright>Copyright © 2021–2023 Emma Alyx Wunder</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en</NeutralLanguage>
     <AssemblyVersion>0.3.2.0</AssemblyVersion>
