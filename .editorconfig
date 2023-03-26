@@ -128,6 +128,7 @@ resharper_suggest_var_or_type_simple_types_highlighting = hint
 dotnet_analyzer_diagnostic.severity = warning
 dotnet_diagnostic.ca1051.severity = none # Do not declare visible instance fields
 dotnet_diagnostic.ca1416.severity = none # Call site is reachable on all platforms
+dotnet_diagnostic.ca1707.severity = none # Remove the underscores from member name
 dotnet_diagnostic.ca1711.severity = none # Rename type to avoid suffix
 dotnet_diagnostic.ca1816.severity = none # Change App.Dispose() to call GC.SuppressFinalize()
 dotnet_diagnostic.CA1822.severity = none # Member can be made static

@@ -48,9 +48,11 @@
     <Page Remove="NotifyIcon\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Images\deadeye256.png" />
     <None Remove="Images\square_example.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\deadeye256.png" />
     <Resource Include="Images\grid_preview.png" />
   </ItemGroup>
   <ItemGroup>
@@ -73,7 +75,6 @@
     </None>
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>git describe --always --dirty --long &gt; "$(ProjectDir)\version.txt"</PreBuildEvent>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <StartupObject>DeadEye.App</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -81,7 +82,7 @@
     <Copyright>Copyright © 2021–2023 Emma Alyx Wunder</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en</NeutralLanguage>
-    <AssemblyVersion>0.3.2.0</AssemblyVersion>
+    <AssemblyVersion>0.4.0.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Title>DeadEye</Title>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
@@ -89,8 +90,15 @@
     <Nullable>enable</Nullable>
     <Authors>Emma Alyx Wunder</Authors>
     <Company>Emma Alyx Wunder</Company>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="powershell -ExecutionPolicy Bypass -File .\scripts\gitversion.ps1 ." />
+  </Target>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="git restore Version.cs" />
+  </Target>
 </Project>

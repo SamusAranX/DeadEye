@@ -12,8 +12,7 @@
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         Title="Settings" Width="322" Height="500" SizeToContent="Height" ResizeMode="NoResize"
         Background="{x:Static SystemColors.MenuBrush}"
-        PreviewKeyDown="SettingsWindow_OnPreviewKeyDown"
-        >
+        PreviewKeyDown="SettingsWindow_OnPreviewKeyDown">
     <Window.Resources>
         <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
         <converters:TextSizeNameConverter x:Key="TextSizeNameConverter" />
