@@ -51,9 +51,6 @@
     <None Remove="Images\square_example.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="version.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\grid_preview.png" />
   </ItemGroup>
   <ItemGroup>
