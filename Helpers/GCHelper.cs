@@ -4,8 +4,7 @@ internal sealed class GCHelper
 {
 	public static void CleanUp()
 	{
-		GC.Collect();
+		GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 		GC.WaitForPendingFinalizers();
-		GC.Collect();
 	}
 }

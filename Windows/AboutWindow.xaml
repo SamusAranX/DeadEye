@@ -10,42 +10,75 @@
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         SizeToContent="WidthAndHeight" ResizeMode="NoResize"
         Background="{x:Static SystemColors.MenuBrush}">
-    <StackPanel Orientation="Vertical" Margin="16,8,16,12">
-        <Image Source="../Images/deadeye256.png" Width="100" />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-        <TextBlock FontSize="28" FontWeight="SemiBold" TextAlignment="Center" TextOptions.TextFormattingMode="Ideal" Text="DeadEye" />
-
-        <Grid Margin="0,4,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="6" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Grid.Row="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="22" />
-                <RowDefinition Height="22" />
-                <RowDefinition Height="22" />
-                <RowDefinition Height="22" />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <Grid.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                </Style>
-            </Grid.Resources>
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform CenterX="40" CenterY="40" ScaleX="2.25" />
+                    <RotateTransform CenterX="40" CenterY="40" Angle="-45" />
+                    <TranslateTransform X="-12" Y="-12" />
+                </TransformGroup>
+            </Grid.RenderTransform>
 
-            <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Version" />
-            <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" Text="Branch" />
-            <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Right" Text="Commit" />
-            <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="Build Time" />
-
-            <TextBlock Grid.Column="2" Grid.Row="0" Text="{x:Static local:Version.GIT_TAG}" />
-            <TextBlock Grid.Column="2" Grid.Row="1" Text="{x:Static local:Version.GIT_BRANCH}" />
-            <TextBlock Grid.Column="2" Grid.Row="2" Text="{x:Static local:Version.GIT_COMMIT_SHORT}" />
-            <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding BuildDateTime, StringFormat=g}" />
+            <Border Grid.Row="0" Grid.RowSpan="5" Background="#5BCEFA" />
+            <Border Grid.Row="1" Grid.RowSpan="3" Background="#F5A9B8" />
+            <Border Grid.Row="2" Background="#FFFFFF" />
         </Grid>
 
-        <Separator Margin="0,8" />
+        <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" 
+                    Orientation="Vertical" Margin="16,8,16,12">
+            <Image Source="../Images/deadeye256.png" Width="100" />
 
-        <TextBlock Text="{Binding Copyright}" />
-    </StackPanel>
+            <TextBlock FontSize="28" FontWeight="SemiBold" TextAlignment="Center" TextOptions.TextFormattingMode="Ideal" Text="DeadEye" />
+
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="22" />
+                    <RowDefinition Height="22" />
+                    <RowDefinition Height="22" />
+                    <RowDefinition Height="22" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </Grid.Resources>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Version" />
+                <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" Text="Branch" />
+                <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Right" Text="Commit" />
+                <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="Build Time" />
+
+                <TextBlock Grid.Column="2" Grid.Row="0" Text="{x:Static local:Version.GIT_TAG}" />
+                <TextBlock Grid.Column="2" Grid.Row="1" Text="{x:Static local:Version.GIT_BRANCH}" />
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="{x:Static local:Version.GIT_COMMIT_SHORT}" />
+                <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding BuildDateTime, StringFormat=g}" />
+            </Grid>
+
+            <Separator Margin="0,8" />
+
+            <TextBlock Text="{Binding Copyright}" />
+        </StackPanel>
+    </Grid>
 </Window>

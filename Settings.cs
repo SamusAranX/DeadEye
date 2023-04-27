@@ -30,10 +30,7 @@ public sealed class Settings : INotifyPropertyChanged
 	private double _textSize = 11;
 
 	private bool _waitingForHotkey;
-	private ModifierKeys _screenshotModifierKeys = ModifierKeys.Shift | ModifierKeys.Alt;
-	private Key _screenshotKey = Key.S;
-
-	private readonly ModifierKeys[] _allModifiers = { ModifierKeys.Control, ModifierKeys.Shift, ModifierKeys.Alt, ModifierKeys.Windows };
+	private ShortcutKey _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
 
 	public Settings()
 	{
@@ -46,8 +43,7 @@ public sealed class Settings : INotifyPropertyChanged
 
 	public static Settings Shared
 	{
-		get { return _sharedSettings ??= Load(); }
-
+		get => _sharedSettings ??= Load();
 		set => _sharedSettings = value;
 	}
 
@@ -149,46 +145,13 @@ public sealed class Settings : INotifyPropertyChanged
 		}
 	}
 
-	public ModifierKeys ScreenshotModifierKeys
-	{
-		get => this._screenshotModifierKeys;
-		set
-		{
-			this._screenshotModifierKeys = value;
-			this.OnPropertyChanged();
-			this.OnPropertyChanged(nameof(this.ScreenshotKeysReadable));
-		}
-	}
-
-	public Key ScreenshotKey
+	public ShortcutKey ScreenshotKey
 	{
 		get => this._screenshotKey;
 		set
 		{
 			this._screenshotKey = value;
 			this.OnPropertyChanged();
-			this.OnPropertyChanged(nameof(this.ScreenshotKeysReadable));
-		}
-	}
-
-	[XmlIgnore]
-	public string ScreenshotKeysReadable
-	{
-		get
-		{
-			if (this._screenshotKey == Key.None)
-				return "None";
-
-			var keyList = new List<string>();
-			foreach (var modifier in this._allModifiers)
-			{
-				if (this._screenshotModifierKeys.HasFlag(modifier))
-					keyList.Add(modifier.ToString().ToUpperInvariant());
-			}
-
-			keyList.Add(this._screenshotKey.ToString().ToUpperInvariant());
-
-			return string.Join("+", keyList);
 		}
 	}
 

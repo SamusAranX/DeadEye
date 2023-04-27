@@ -1,11 +1,17 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
+using PInvoke;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace DeadEye.Windows;
 
@@ -34,6 +40,8 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 
 	private Point _selectionStartPoint, _selectionEndPoint;
 
+	private static readonly Rect ZERO_RECT = new(0, 0, 0, 0);
+
 	public event ScreenshotTakenEventHandler? ScreenshotTaken;
 
 	public ScreenshotFrameWindow()
@@ -42,9 +50,8 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 
 		var virtualScreenRect = ScreenshotHelper.GetVirtualScreenRect();
 		this.SetSize(virtualScreenRect);
-		this._virtualScreenRectNormalized = virtualScreenRect;
-		this._virtualScreenRectNormalized.X = 0;
-		this._virtualScreenRectNormalized.Y = 0;
+
+		this._virtualScreenRectNormalized = ScreenshotHelper.GetVirtualScreenRectNormalized();
 	}
 
 	public ScreenshotFrameWindow(ImageSource screenshotSource) : this()

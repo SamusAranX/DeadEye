@@ -6,11 +6,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
-using DeadEye.Extensions;
 using DeadEye.Helpers;
 using DeadEye.Hotkeys;
-using DeadEye.Win32;
 using NotifyIcon;
+using PInvoke;
 
 namespace DeadEye.Windows;
 
@@ -35,6 +34,12 @@ public partial class DummyWindow
 		HotkeyManager.InitShared(this);
 		HotkeyManager.Shared.RegisterHotkey();
 		HotkeyManager.Shared.HotkeyPressed += this.OverlayHotkeyAction;
+
+		this.TaskbarIcon.TrayBalloonTipClicked += (_, _) =>
+		{
+			var psi = new ProcessStartInfo("ms-settings:clipboard") { UseShellExecute = true };
+			Process.Start(psi);
+		};
 
 		this.TaskbarIcon.TrayMouseDoubleClick += (_, _) =>
 		{
@@ -64,14 +69,22 @@ public partial class DummyWindow
 			return;
 		}
 
+		// get screenshot bitmap and convert to bitmapsource
 		using var bm = ScreenshotHelper.GetFullscreenScreenshotGDI();
-		var bitmapImage = bm.ToBitmapSource();
+		var hBitmap = bm.GetHbitmap();
+		var bitmapImage = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+		bitmapImage.Freeze();
+
+		if (!Gdi32.DeleteObject(hBitmap))
+			Debug.WriteLine("Couldn't delete screenshot bitmap");
 
 		this._screenshotWindow = new ScreenshotFrameWindow(bitmapImage);
-		this._screenshotWindow.ScreenshotTaken += (sender, args) =>
+		this._screenshotWindow.Closed += (_, _) => { this._screenshotWindow = null; };
+		this._screenshotWindow.ScreenshotTaken += (_, args) =>
 		{
 			Debug.WriteLine("Screenshot taken.");
 			var croppedBitmap = new CroppedBitmap(bitmapImage, args.CroppedRect);
+			croppedBitmap.Freeze();
 
 			try
 			{
@@ -83,9 +96,9 @@ public partial class DummyWindow
 				this.TaskbarIcon.ShowBalloonTip("Clipboard Error", message, BalloonIcon.Error);
 			}
 
+			croppedBitmap = null;
 			bitmapImage = null;
 		};
-		this._screenshotWindow.Closed += (sender, args) => { this._screenshotWindow = null; };
 
 		this._screenshotWindow.Show();
 	}

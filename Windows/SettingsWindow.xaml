@@ -6,6 +6,7 @@
         xmlns:deadeye="clr-namespace:DeadEye"
         xmlns:converters="clr-namespace:DeadEye.Converters"
         xmlns:controls="clr-namespace:DeadEye.Controls"
+        xmlns:helpers="clr-namespace:DeadEye.Helpers"
         mc:Ignorable="d" Icon="/Images/camera.ico" Closing="SettingsWindow_OnClosing"
         UseLayoutRounding="True" SourceInitialized="LoadAutostartStatus" Activated="LoadAutostartStatus"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -32,6 +33,13 @@
         <Rect x:Key="DemoRectangle" X="30" Y="10" Width="180" Height="102" />
         <Point x:Key="CrossCursorPosition" X="201" Y="103" />
         <Point x:Key="RectHWDisplayPosition" X="214" Y="116" />
+
+        <Style x:Key="InfoLabelStyle" TargetType="TextBlock">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
     </Window.Resources>
 
     <StackPanel Margin="8">
@@ -143,16 +151,12 @@
             <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="4">
                 <Button Padding="8,2"
                         Click="HotkeyButton_OnClick"
-                        Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.ScreenshotKeysReadable, FallbackValue=Placeholder}">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <!--<Setter Property="Content" Value="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.ScreenshotKeysReadable}" />-->
-                        </Style>
-                    </Button.Style>
-                </Button>
+                        Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.ScreenshotKey, FallbackValue=Placeholder}" />
 
                 <TextBlock VerticalAlignment="Center" Margin="8,0,0,0"
-                           Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.WaitingForHotkey, Converter={StaticResource BoolToVis}}">Waiting…</TextBlock>
+                           Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.WaitingForHotkey, Converter={StaticResource BoolToVis}}">
+                    Waiting…
+                </TextBlock>
             </StackPanel>
         </Grid>
 
@@ -189,7 +193,14 @@
                         <Style.Triggers>
                             <DataTrigger
                                 Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
-                                Value="Disabled">
+                                Value="{x:Static helpers:AutostartStatus.Disabled}">
+                                <DataTrigger.Setters>
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                            <DataTrigger
+                                Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
+                                Value="{x:Static helpers:AutostartStatus.Debugging}">
                                 <DataTrigger.Setters>
                                     <Setter Property="IsEnabled" Value="False" />
                                 </DataTrigger.Setters>
@@ -199,16 +210,13 @@
                 </CheckBox.Style>
             </CheckBox>
 
-            <TextBlock Grid.Column="2" Grid.Row="1"
-                       Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" FontWeight="Bold"
-                       TextWrapping="Wrap">
+            <TextBlock Grid.Column="2" Grid.Row="1">
                 <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Visibility" Value="Collapsed" />
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource InfoLabelStyle}">
                         <Style.Triggers>
                             <DataTrigger
                                 Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
-                                Value="Disabled">
+                                Value="{x:Static helpers:AutostartStatus.Disabled}">
                                 <DataTrigger.Setters>
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger.Setters>
@@ -216,8 +224,24 @@
                         </Style.Triggers>
                     </Style>
                 </TextBlock.Style>
-
                 <Run>Disabled on the Task Manager's Startup tab</Run>
+            </TextBlock>
+
+            <TextBlock Grid.Column="2" Grid.Row="1">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource InfoLabelStyle}">
+                        <Style.Triggers>
+                            <DataTrigger
+                                Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
+                                Value="{x:Static helpers:AutostartStatus.Debugging}">
+                                <DataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+                <Run>Not running as .exe</Run>
             </TextBlock>
 
             <!--<CheckBox Grid.Column="2" Grid.Row="1" Content="Use Fast Screenshot Capture" VerticalAlignment="Center"

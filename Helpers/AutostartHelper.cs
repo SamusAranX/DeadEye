@@ -15,6 +15,9 @@ public enum AutostartStatus
 
 	[Description("Enabled")]
 	Enabled,
+
+	[Description("Debugging")]
+	Debugging,
 }
 
 internal sealed class AutostartHelper
@@ -24,9 +27,16 @@ internal sealed class AutostartHelper
 	private const string RUN_APPROVED_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
 
 	private static readonly string APP_PATH = $"\"{Path.Join(AppContext.BaseDirectory, Path.GetFileName(Environment.GetCommandLineArgs()[0]))}\"";
+	private static readonly bool APP_IS_DEBUG = !APP_PATH.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase);
 
 	public static bool CheckAutostartStatus()
 	{
+		if (APP_IS_DEBUG)
+		{
+			Debug.WriteLine("App is not an .exe, skipping autostart check.");
+			return false;
+		}
+
 		using var registryKey = Registry.CurrentUser.OpenSubKey(RUN_KEY, false);
 		if (registryKey == null)
 			throw new KeyNotFoundException("The Run key does not exist.");
@@ -45,15 +55,13 @@ internal sealed class AutostartHelper
 		return true;
 	}
 
-	/// <summary>
-	/// Checks the task manager autostart status of the app.
-	/// </summary>
-	/// <returns>
-	/// A Tuple of AutostartStatus and (if explicitly disabled) a DateTime object representing the date and time at
-	/// which autostart was disabled in the Task Manager.
-	/// </returns>
+	/// <summary>Checks the autostart status of the app.</summary>
+	/// <returns>The current autostart status.</returns>
 	public static AutostartStatus GetTaskmgrAutostartStatus()
 	{
+		if (APP_IS_DEBUG)
+			return AutostartStatus.Debugging;
+
 		using var registryKey = Registry.CurrentUser.OpenSubKey(RUN_APPROVED_KEY, false);
 
 		var value = registryKey?.GetValue(KEY_NAME);
@@ -73,7 +81,7 @@ internal sealed class AutostartHelper
 			{
 				// 3: disabled
 				var dateLong = BitConverter.ToInt64(byteArray, 4);
-				var dateTime = DateTime.FromFileTime(dateLong);
+				var dateTime = DateTime.FromFileTimeUtc(dateLong);
 				return AutostartStatus.Disabled;
 			}
 
@@ -89,6 +97,12 @@ internal sealed class AutostartHelper
 
 	public static void EnableAutostart()
 	{
+		if (APP_IS_DEBUG)
+		{
+			Trace.WriteLine("CALLED EnableAutostart() EVEN THOUGH APP IS NOT RUNNING AS .EXE");
+			return;
+		}
+
 		using var registryKey = Registry.CurrentUser.OpenSubKey(RUN_KEY, true);
 		if (registryKey == null)
 			throw new KeyNotFoundException("The Run key does not exist.");
@@ -99,6 +113,12 @@ internal sealed class AutostartHelper
 
 	public static void DisableAutostart()
 	{
+		if (APP_IS_DEBUG)
+		{
+			Trace.WriteLine("CALLED DisableAutostart() EVEN THOUGH APP IS NOT RUNNING AS .EXE");
+			return;
+		}
+
 		using var registryKey = Registry.CurrentUser.OpenSubKey(RUN_KEY, true);
 		if (registryKey == null)
 			throw new KeyNotFoundException("The Run key does not exist.");

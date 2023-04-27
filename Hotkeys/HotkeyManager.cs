@@ -42,7 +42,7 @@ internal sealed class HotkeyManager: IDisposable
 		if (this._overlayHotkey != null)
 			return;
 
-		this._overlayHotkey = new Hotkey(Settings.Shared.ScreenshotModifierKeys, Settings.Shared.ScreenshotKey, this._hotkeyWindow, this.HotkeyPressedAction);
+		this._overlayHotkey = new Hotkey(Settings.Shared.ScreenshotKey.ModifierKeys, Settings.Shared.ScreenshotKey.Key, this._hotkeyWindow, this.HotkeyPressedAction);
 	}
 
 	public void UnregisterHotkey()

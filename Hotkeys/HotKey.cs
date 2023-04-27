@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using DeadEye.Win32;
+using PInvoke;
 
 namespace DeadEye.Hotkeys;
 
@@ -105,7 +106,7 @@ public sealed class Hotkey : IDisposable
 		if (this._isKeyRegistered)
 			this.UnregisterHotkey();
 
-		this._isKeyRegistered = User32.RegisterHotKey(this._handle, this._id, this.KeyModifier, this.InteropKey);
+		this._isKeyRegistered = HotKey.RegisterHotKey(this._handle, this._id, this.KeyModifier, this.InteropKey);
 
 		if (!this._isKeyRegistered)
 		{
@@ -120,7 +121,7 @@ public sealed class Hotkey : IDisposable
 
 	private void UnregisterHotkey()
 	{
-		this._isKeyRegistered = !User32.UnregisterHotKey(this._handle, this._id);
+		this._isKeyRegistered = !HotKey.UnregisterHotKey(this._handle, this._id);
 	}
 
 	private void ThreadPreprocessMessageMethod(ref MSG msg, ref bool handled)

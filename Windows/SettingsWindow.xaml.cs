@@ -10,9 +10,6 @@ namespace DeadEye.Windows;
 
 public partial class SettingsWindow
 {
-	private readonly ModifierKeys[] _allModifiers = { ModifierKeys.Control, ModifierKeys.Shift, ModifierKeys.Alt, ModifierKeys.Windows };
-	private readonly Key[] _ignoredKeys = { Key.System, Key.LeftCtrl, Key.RightCtrl, Key.LeftShift, Key.RightShift, Key.LeftAlt, Key.RightAlt, Key.LWin, Key.RWin };
-
 	public SettingsWindow()
 	{
 		this.InitializeComponent();
@@ -52,13 +49,15 @@ public partial class SettingsWindow
 	private void HotkeyButton_OnClick(object sender, RoutedEventArgs e)
 	{
 		Settings.Shared.WaitingForHotkey = !Settings.Shared.WaitingForHotkey;
-		RestoreHotkey();
+		EnsureHotkeyStatus();
 	}
 
-	private static void RestoreHotkey()
+	private static void EnsureHotkeyStatus()
 	{
 		if (Settings.Shared.WaitingForHotkey)
+		{
 			HotkeyManager.Shared.UnregisterHotkey();
+		}
 		else
 			HotkeyManager.Shared.RegisterHotkey();
 
@@ -73,33 +72,24 @@ public partial class SettingsWindow
 		e.Handled = true;
 
 		var modifiers = Keyboard.Modifiers;
-		var key = e.Key;
+		Key? key = e.Key;
 
 		if (key == Key.System)
 			key = e.SystemKey;
 
-		var modList = new List<string>();
-		foreach (var modifier in this._allModifiers)
+		if (ShortcutKey.IgnoredKeys.Contains(key.Value))
+			key = null;
+
+		Debug.WriteLine($"key: {key}");
+
+		// if key is not null here, we may have found our new hotkey
+		if (key.HasValue && key != Key.Escape)
 		{
-			if (modifiers.HasFlag(modifier))
-				modList.Add(modifier.ToString().ToUpperInvariant());
-		}
-
-		if (key != Key.Escape)
-		{
-			if (modList.Count > 0)
-				Debug.WriteLine($"{string.Join("+", modList)} - {key}");
-			else
-				Debug.WriteLine("key");
-
-			// todo: logic goes here
-			Settings.Shared.ScreenshotModifierKeys = modifiers;
-			Settings.Shared.ScreenshotKey = key;
-		}
-
-		if (!this._ignoredKeys.Contains(key))
+			// we actually have a new hotkey
+			Settings.Shared.ScreenshotKey = new ShortcutKey(modifiers, key.Value);
 			Settings.Shared.WaitingForHotkey = false;
+		}
 
-		RestoreHotkey();
+		EnsureHotkeyStatus();
 	}
 }
