@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using Microsoft.Win32;
 
 namespace DeadEye.Helpers;
@@ -26,7 +27,8 @@ internal sealed class AutostartHelper
 	private const string RUN_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
 	private const string RUN_APPROVED_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
 
-	private static readonly string APP_PATH = $"\"{Path.Join(AppContext.BaseDirectory, Path.GetFileName(Environment.GetCommandLineArgs()[0]))}\"";
+	private static readonly string APP_PATH = $"{Path.Join(AppContext.BaseDirectory, Path.GetFileName(Environment.GetCommandLineArgs()[0]))}";
+	private static readonly string QUOTED_APP_PATH = $"\"{APP_PATH}\"";
 	private static readonly bool APP_IS_DEBUG = !APP_PATH.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase);
 
 	public static bool CheckAutostartStatus()
@@ -45,10 +47,10 @@ internal sealed class AutostartHelper
 		if (value == null)
 			return false;
 
-		if ((string)value != APP_PATH)
+		if ((string)value != QUOTED_APP_PATH)
 		{
 			Debug.WriteLine($"Registry contains outdated path {(string)value}.");
-			Debug.WriteLine($"Updating registry using new path {APP_PATH}.");
+			Debug.WriteLine($"Updating registry using new path {QUOTED_APP_PATH}.");
 			EnableAutostart(); // refresh binary path in the registry
 		}
 
@@ -107,7 +109,7 @@ internal sealed class AutostartHelper
 		if (registryKey == null)
 			throw new KeyNotFoundException("The Run key does not exist.");
 
-		registryKey.SetValue(KEY_NAME, APP_PATH);
+		registryKey.SetValue(KEY_NAME, QUOTED_APP_PATH);
 		Debug.WriteLine("Autostart enabled.");
 	}
 
