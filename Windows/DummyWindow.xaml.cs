@@ -17,7 +17,6 @@ namespace DeadEye.Windows;
 public partial class DummyWindow
 {
 	private AboutWindow? _aboutWindow;
-	private ColorBrowserWindow? _colorBrowserWindow;
 	private ScreenshotFrameWindow? _screenshotWindow;
 	private SettingsWindow? _settingsWindow;
 
@@ -94,19 +93,6 @@ public partial class DummyWindow
 	#endregion
 
 	#region Context Menu Actions
-
-	private void ColorMenuItem_OnClick(object sender, RoutedEventArgs e)
-	{
-		if (this._colorBrowserWindow != null)
-		{
-			this._colorBrowserWindow.Activate();
-			return;
-		}
-
-		this._colorBrowserWindow = new ColorBrowserWindow();
-		this._colorBrowserWindow.Closed += (a, b) => this._colorBrowserWindow = null;
-		this._colorBrowserWindow.Show();
-	}
 
 	private void AppDirMenuItem_OnClick(object sender, RoutedEventArgs e)
 	{

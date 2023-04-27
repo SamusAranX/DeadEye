@@ -25,7 +25,7 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 {
 	private const double BOUNDS_DISPLAY_PADDING = 4;
 
-	// copy of the virtual screen rect with the X coordinate set to 0
+	// copy of the virtual screen rect with the X and Y coordinates set to 0
 	private readonly Rect _virtualScreenRectNormalized;
 
 	private bool _isMakingSelection;
@@ -44,6 +44,7 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 		this.SetSize(virtualScreenRect);
 		this._virtualScreenRectNormalized = virtualScreenRect;
 		this._virtualScreenRectNormalized.X = 0;
+		this._virtualScreenRectNormalized.Y = 0;
 	}
 
 	public ScreenshotFrameWindow(ImageSource screenshotSource) : this()
@@ -111,15 +112,21 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 	}
 
 	public Rect SelectionBounds => new(this.SelectionStartPoint, this.SelectionEndPoint);
-	public Rect SelectionBoundsClamped => this._virtualScreenRectNormalized == Rect.Empty ? this.SelectionBounds : Rect.Intersect(this.SelectionBounds, this._virtualScreenRectNormalized);
+	public Rect SelectionBoundsClamped => this._virtualScreenRectNormalized == ZERO_RECT ? this.SelectionBounds : Rect.Intersect(this.SelectionBounds, this._virtualScreenRectNormalized);
 
+	/// <summary>
+	/// The coordinates at which the RectWHDisplay thingy is displayed.
+	/// </summary>
 	public Point BoundsDisplayCoords
 	{
 		get
 		{
 			var boundsBounds = new Size(this.RectDisplay.ActualWidth, this.RectDisplay.ActualHeight);
 
+			// cursor is on the right edge of the selection rectangle
 			var isRight = this._selectionEndPoint.X >= this._selectionStartPoint.X;
+
+			// cursor is on the bottom edge of the selection rectangle
 			var isBottom = this._selectionEndPoint.Y >= this._selectionStartPoint.Y;
 
 			double newX, newY;

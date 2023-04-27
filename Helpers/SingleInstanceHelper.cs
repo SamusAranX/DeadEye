@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using System.Runtime.InteropServices;
-
-namespace DeadEye.Helpers;
+﻿namespace DeadEye.Helpers;
 
 internal sealed class SingleInstanceHelper : IDisposable
 {

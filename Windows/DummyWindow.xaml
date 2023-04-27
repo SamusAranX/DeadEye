@@ -12,8 +12,6 @@
         <notifyIcon:TaskbarIcon x:Name="TaskbarIcon" IconSource="/Images/camera.ico" MenuActivation="RightClick" ToolTipText="DeadEye">
             <notifyIcon:TaskbarIcon.ContextMenu>
                 <ContextMenu TextOptions.TextFormattingMode="Display">
-                    <MenuItem Header="Colors (Debug)" Click="ColorMenuItem_OnClick"
-                              Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
                     <MenuItem Header="Open App Dir" Click="AppDirMenuItem_OnClick"
                               Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
                     <MenuItem Header="GC.Collect()" Click="GarbageMenuItem_OnClick"
