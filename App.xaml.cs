@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using DeadEye.Helpers;
 using DeadEye.Hotkeys;
 
@@ -34,6 +35,14 @@ public partial class App : IDisposable
 		{
 			MessageBox.Show("There's already a running instance of DeadEye.", "Instance already running", MessageBoxButton.OK, MessageBoxImage.Warning);
 			this.Shutdown();
+		}
+
+		for (var i = 0; i < Screen.AllScreens.Length; i++)
+		{
+			var screen = Screen.AllScreens[i];
+			var isPrimary = screen.IsPrimary ? "*" : "";
+			Debug.WriteLine($"[{i}{isPrimary}] {screen}");
+			//Debug.WriteLine($"[{i}{isPrimary}] \"{screen.DeviceName}\" {screen.Bounds} {screen.LocationNormalized} {screen.Resolution}");
 		}
 	}
 }

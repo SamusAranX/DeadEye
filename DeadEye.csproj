@@ -86,7 +86,7 @@
     <Copyright>Copyright © 2021–2023 Emma Alyx Wunder</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en</NeutralLanguage>
-    <AssemblyVersion>0.5.1.0</AssemblyVersion>
+    <AssemblyVersion>0.5.2.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Title>DeadEye</Title>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>

@@ -1,8 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows;
 using DeadEye.Win32;
 using Microsoft.Win32;
 using PInvoke;
+
 #pragma warning disable CA1852
 
 namespace DeadEye.Helpers;
@@ -11,7 +13,7 @@ public static class RECTExtensions
 {
 	public static Rect ToRect(this RECT rect)
 	{
-		return new Rect(rect.left, rect.top, rect.right, rect.bottom);
+		return new Rect(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
 	}
 }
 
@@ -67,12 +69,47 @@ internal sealed class Screen
 			Gdi32.DeleteDC(safeScreenDC);
 	}
 
-	public bool IsPrimary { get; }
-	public Rect Bounds { get; }
-	public Point VirtualScreenPosition => this.Bounds.Location;
-	public Size Resolution => this.Bounds.Size;
+	private static Point TopLeftCorner { get; set; }
+
+	/// <summary>
+	/// The display device's name. Typically follows the pattern "\\.\DISPLAY1".
+	/// </summary>
 	public string DeviceName { get; }
+
+	/// <summary>
+	/// The product of bits per pixel and number of channels. Typically 32 for normal displays, might be more for deep color or HDR displays.
+	/// </summary>
 	public int BitDepth { get; }
+
+	/// <summary>
+	/// Whether this is the primary display.
+	/// </summary>
+	public bool IsPrimary { get; }
+
+	/// <summary>
+	/// The rectangle this screen occupies on the larger virtual screen rect. Location might have negative components.
+	/// </summary>
+	public Rect Bounds { get; }
+
+	/// <summary>
+	/// The location of the Bounds property.
+	/// </summary>
+	public Point Location => this.Bounds.Location;
+
+	/// <summary>
+	/// The location of the Bounds property, but normalized to have positive X and Y components.
+	/// </summary>
+	public Point LocationNormalized => new(this.Location.X - TopLeftCorner.X, this.Location.Y - TopLeftCorner.Y);
+
+	/// <summary>
+	/// This screen's resolution in pixels.
+	/// </summary>
+	public Size Resolution => new(this.Bounds.Right - this.Bounds.Left, this.Bounds.Bottom - this.Bounds.Top);
+
+	/// <summary>
+	/// The rectangle this screen occupies on the larger virtual screen rect, but normalized to have positive X and Y components.
+	/// </summary>
+	public Rect BoundsNormalized => new(this.LocationNormalized, this.Resolution);
 
 	/// <summary>
 	/// Gets an array of all of the displays on the system.
@@ -96,6 +133,10 @@ internal sealed class Screen
 				}
 				else
 					_screens = new[] { PrimaryScreen! };
+
+				var leftmostScreenX = _screens.OrderBy(s => s.Location.X).First().Location.X;
+				var topmostScreenY = _screens.OrderBy(s => s.Location.Y).First().Location.Y;
+				TopLeftCorner = new Point(leftmostScreenX, topmostScreenY);
 			}
 
 			SystemEvents.DisplaySettingsChanging += OnDisplaySettingsChanging;
@@ -130,11 +171,13 @@ internal sealed class Screen
 
 	/// <summary>
 	/// Called by the SystemEvents class when our display settings are
-	/// changing.  We cache screen information and at this point we must
+	/// changing. We cache screen information and at this point we must
 	/// invalidate our cache.
 	/// </summary>
 	private static void OnDisplaySettingsChanging(object? sender, EventArgs e)
 	{
+		Debug.WriteLine("OnDisplaySettingsChanging");
+
 		// Now that we've responded to this event, we don't need it again until
 		// someone re-queries. We will re-add the event at that time.
 		SystemEvents.DisplaySettingsChanging -= OnDisplaySettingsChanging;
@@ -144,10 +187,24 @@ internal sealed class Screen
 	}
 
 	/// <summary>
+	/// Retrieves a <see cref="Screen" /> for the monitor that contains the specified point.
+	/// </summary>
+	public static Screen FromPoint(Point point)
+	{
+		var pt = default(POINT);
+		pt.x = (int)point.X;
+		pt.y = (int)point.Y;
+
+		return SystemInformation.MultiMonitorSupport
+			? new Screen(User32.MonitorFromPoint(pt, User32.MonitorOptions.MONITOR_DEFAULTTONEAREST))
+			: new Screen(PRIMARY_MONITOR);
+	}
+
+	/// <summary>
 	/// Retrieves a string representing this object.
 	/// </summary>
 	public override string ToString()
 	{
-		return $"{this.GetType().Name}[Bounds={this.Bounds} Primary={this.IsPrimary} DeviceName={this.DeviceName}]";
+		return $"{this.GetType().Name}[DeviceName={this.DeviceName} Primary={this.IsPrimary} BitDepth={this.BitDepth} Bounds={this.Bounds}]";
 	}
 }

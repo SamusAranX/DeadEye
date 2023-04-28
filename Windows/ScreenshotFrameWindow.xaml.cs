@@ -153,6 +153,13 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 				newY -= BOUNDS_DISPLAY_PADDING;
 			}
 
+			// TODO: make sure bounds display is never out of bounds
+			//this.RectDisplay
+			//foreach (var screen in Screen.AllScreens)
+			//{
+				
+			//}
+
 			return new Point(newX + BOUNDS_DISPLAY_PADDING, newY + BOUNDS_DISPLAY_PADDING);
 		}
 	}
@@ -243,16 +250,26 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 
 	private void ScreenshotFrameWindow_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 	{
+		Debug.WriteLine("----- OnMouseLeftButtonUp");
 		if (!this.IsMakingSelection)
 		{
 			Debug.WriteLine("Selection already disabled");
 			return;
 		}
 
-		var cropRect = this.SelectionBounds;
-		cropRect.Intersect(this._virtualScreenRectNormalized);
+		var cursorPos = e.GetPosition(this);
+		cursorPos.Offset(this.Left, this.Top);
 
-		Debug.WriteLine($"Crop Rect Size: {cropRect.Width}×{cropRect.Height}");
+		var cropRect = this.SelectionBounds;
+		cropRect.Intersect(this._virtualScreenRectNormalized); // limit crop rect to the virtual screen bounds
+		cropRect.Offset(this.Left, this.Top); // move crop rect into un-normalized virtual screen space
+
+		//Debug.WriteLine(ScreenshotHelper.GetVirtualScreenRect());
+		//Debug.WriteLine(this._virtualScreenRectNormalized);
+
+		//Debug.WriteLine($"Window TopLeft: {this.Left};{this.Top}");
+		//Debug.WriteLine($"Crop Rect: {cropRect}");
+		//Debug.WriteLine($"Cursor: {cursorPos}");
 
 		if (cropRect.Width == 0 || cropRect.Height == 0)
 		{
@@ -261,7 +278,36 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 			return;
 		}
 
-		// A valid region has been selected. Fire event.
+		var (correctedX, correctedY) = (false, false);
+		foreach (var screen in Screen.AllScreens)
+		{
+			if (!cropRect.IntersectsWith(screen.Bounds))
+				continue;
+
+			Debug.WriteLine($"Crop Rect intersects {screen.DeviceName}");
+
+			if (!correctedX && (int)cropRect.Right == (int)screen.Bounds.Right - 1)
+			{
+				cropRect.Union(new Point(screen.Bounds.Right, cropRect.Bottom));
+				correctedX = true;
+				Debug.WriteLine("Width corrected");
+			}
+
+			if (!correctedY && (int)cropRect.Bottom == (int)screen.Bounds.Bottom - 1)
+			{
+				cropRect.Union(new Point(cropRect.Right, screen.Bounds.Bottom));
+				correctedY = true;
+				Debug.WriteLine("Height corrected");
+			}
+		}
+
+		if (correctedX || correctedY)
+			Debug.WriteLine($"Corrected Crop Rect: {cropRect}");
+
+		// move crop rect back into normalized virtual screen space so it can be used to actually crop bitmaps
+		cropRect.Offset(-this.Left, -this.Top); 
+
+		// A valid region has been selected. Fire event
 		var eventArgs = new ScreenshotEventArgs(cropRect.ToInt32Rect());
 		this.OnScreenshot(eventArgs);
 		this.Close();
