@@ -19,7 +19,7 @@ public partial class App : IDisposable
 #endif
 		}
 	}
-	
+
 	public void Dispose()
 	{
 		this._singleInstanceHelper?.Dispose();

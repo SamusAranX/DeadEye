@@ -1,7 +1,6 @@
 ﻿<Application x:Class="DeadEye.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:converters="clr-namespace:DeadEye.Converters"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Startup="App_OnStartup" StartupUri="Windows/DummyWindow.xaml"
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
@@ -17,16 +16,16 @@
                     <GeometryDrawing Brush="#E5E5E5">
                         <GeometryDrawing.Geometry>
                             <GeometryGroup>
-                                <RectangleGeometry Rect="0,0,8,8"/>
-                                <RectangleGeometry Rect="8,8,8,8"/>
+                                <RectangleGeometry Rect="0,0,8,8" />
+                                <RectangleGeometry Rect="8,8,8,8" />
                             </GeometryGroup>
                         </GeometryDrawing.Geometry>
                     </GeometryDrawing>
                     <GeometryDrawing Brush="#FFF">
                         <GeometryDrawing.Geometry>
                             <GeometryGroup>
-                                <RectangleGeometry Rect="8,0,8,8"/>
-                                <RectangleGeometry Rect="0,8,8,8"/>
+                                <RectangleGeometry Rect="8,0,8,8" />
+                                <RectangleGeometry Rect="0,8,8,8" />
                             </GeometryGroup>
                         </GeometryDrawing.Geometry>
                     </GeometryDrawing>

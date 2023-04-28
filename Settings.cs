@@ -26,11 +26,11 @@ public sealed class Settings : INotifyPropertyChanged
 
 	private GridType _gridType = GridType.None;
 	private bool _markCenter;
+	private ShortcutKey _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
 	private bool _showDimensions;
 	private double _textSize = 11;
 
 	private bool _waitingForHotkey;
-	private ShortcutKey _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
 
 	public Settings()
 	{
@@ -179,7 +179,7 @@ public sealed class Settings : INotifyPropertyChanged
 			var xd = x.Deserialize(reader);
 
 			if (xd != null)
-				return (Settings) xd;
+				return (Settings)xd;
 
 			throw new InvalidDataException("Can't deserialize settings file");
 		}

@@ -55,9 +55,7 @@ public partial class SettingsWindow
 	private static void EnsureHotkeyStatus()
 	{
 		if (Settings.Shared.WaitingForHotkey)
-		{
 			HotkeyManager.Shared.UnregisterHotkey();
-		}
 		else
 			HotkeyManager.Shared.RegisterHotkey();
 

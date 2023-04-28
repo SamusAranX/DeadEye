@@ -17,19 +17,24 @@ public sealed class HotkeyPressedEventArgs : EventArgs
 
 public delegate void HotkeyPressedEventHandler(object sender, HotkeyPressedEventArgs args);
 
-internal sealed class HotkeyManager: IDisposable
+internal sealed class HotkeyManager : IDisposable
 {
-	public event HotkeyPressedEventHandler? HotkeyPressed;
-
 	private readonly Window _hotkeyWindow;
 	private Hotkey? _overlayHotkey;
-
-	public bool IsHotkeyRegistered => this._overlayHotkey != null;
 
 	public HotkeyManager(Window window)
 	{
 		this._hotkeyWindow = window;
 	}
+
+	public bool IsHotkeyRegistered => this._overlayHotkey != null;
+
+	public void Dispose()
+	{
+		this.UnregisterHotkey();
+	}
+
+	public event HotkeyPressedEventHandler? HotkeyPressed;
 
 	private void HotkeyPressedAction(Hotkey key)
 	{
@@ -49,11 +54,6 @@ internal sealed class HotkeyManager: IDisposable
 	{
 		this._overlayHotkey?.Dispose();
 		this._overlayHotkey = null;
-	}
-
-	public void Dispose()
-	{
-		this.UnregisterHotkey();
 	}
 
 	#region Singleton

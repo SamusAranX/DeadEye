@@ -37,9 +37,9 @@
 
         <Canvas Background="Transparent"
                 Visibility="{Binding
-				Source={x:Static local:Settings.Shared}, 
-				Path=Shared.ShowDimensions, 
-				Converter={StaticResource BoolToVis}}">
+                Source={x:Static local:Settings.Shared}, 
+                Path=Shared.ShowDimensions, 
+                Converter={StaticResource BoolToVis}}">
             <controls:RectWHDisplay x:Name="RectDisplay"
                                     DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                                     FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.TextSize}"

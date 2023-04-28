@@ -1,12 +1,10 @@
-[*.{appxmanifest,asax,ascx,aspx,axaml,axml,build,c,c++,cc,cginc,compute,config,cp,cpp,cs,cshtml,csproj,css,cu,cuh,cxx,dbml,discomap,dtd,h,hh,hlsl,hlsli,hlslinc,hpp,htm,html,hxx,inc,inl,ino,ipp,js,json,jsproj,jsx,lsproj,master,mpp,mq4,mq5,mqh,njsproj,nuspec,paml,proj,props,proto,razor,resjson,resw,resx,skin,StyleCop,targets,tasks,tpp,ts,tsx,usf,ush,vb,vbproj,xaml,xamlx,xml,xoml,xsd}]
+
+[*]
+# Standard properties
+end_of_line = lf
 indent_style = tab
 indent_size = tab
 tab_width = 4
-
-[*]
-
-# Standard properties
-end_of_line = lf
 
 # Microsoft .NET properties
 csharp_new_line_before_members_in_object_initializers = false
@@ -144,12 +142,7 @@ dotnet_diagnostic.ide0270.severity = none # Null check can be simplified
 dotnet_diagnostic.syslib1054.severity = none # LibraryImportAttribute bullshit
 #dotnet_diagnostic.xls1106.severity = none
 
-[*.{appxmanifest,asax,ascx,aspx,axml,build,c,c++,cc,cginc,compute,config,cp,cpp,cs,cshtml,csproj,css,cu,cuh,cxx,dbml,discomap,dtd,fx,fxh,h,hh,hlsl,hlsli,hlslinc,hpp,htm,html,hxx,inc,inl,ino,ipp,ixx,jsproj,lsproj,master,mpp,mq4,mq5,mqh,njsproj,nuspec,proj,props,razor,resw,resx,skin,StyleCop,targets,tasks,tpp,usf,ush,vbproj,xml,xsd}]
-indent_style = tab
-indent_size = tab
-tab_width = 4
-
-[*.{axaml,paml,vb,xaml,xamlx,xoml}]
+[*.{axaml,paml,xaml,xamlx,xoml}]
 indent_style = space
 indent_size = 4
 tab_width = 4

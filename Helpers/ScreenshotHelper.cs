@@ -11,6 +11,7 @@ internal sealed class ScreenshotHelper
 	{
 		return new Rect(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenWidth, SystemParameters.VirtualScreenHeight);
 	}
+
 	public static Rect GetVirtualScreenRectNormalized()
 	{
 		var r = GetVirtualScreenRect();

@@ -41,8 +41,7 @@
             <Border Grid.Row="2" Background="#FFFFFF" />
         </Grid>
 
-        <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" 
-                    Orientation="Vertical" Margin="16,8,16,12">
+        <StackPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Orientation="Vertical" Margin="16,8,16,12">
             <Image Source="../Images/deadeye256.png" Width="100" />
 
             <TextBlock FontSize="28" FontWeight="SemiBold" TextAlignment="Center" TextOptions.TextFormattingMode="Ideal" Text="DeadEye" />
