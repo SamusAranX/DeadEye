@@ -3,6 +3,7 @@ using System.Windows;
 using DeadEye.Win32;
 using Microsoft.Win32;
 using PInvoke;
+#pragma warning disable CA1852
 
 namespace DeadEye.Helpers;
 
