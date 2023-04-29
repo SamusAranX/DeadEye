@@ -7,8 +7,32 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
         <SolidColorBrush x:Key="TranslucentBlack" Color="#66000000" />
+        <SolidColorBrush x:Key="TranslucenterBlack" Color="#33000000" />
 
         <FontFamily x:Key="MonoFont">Cascadia Mono, Consolas, Courier New</FontFamily>
+
+        <DropShadowEffect x:Key="TextShadow" BlurRadius="2" Direction="315" ShadowDepth="1" Opacity="0.6" />
+
+        <Style x:Key="WhiteOnBlack" TargetType="TextBlock">
+            <!--<Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource AncestorType=UserControl},Path=FontSize}" />-->
+            <!--<Setter Property="FontSize" Value="{Binding FontSize}" />-->
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="Effect" Value="{StaticResource TextShadow}" />
+            <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
+            <Setter Property="Typography.StylisticSet4" Value="True" />
+        </Style>
+
+        <Style x:Key="BlackOnWhite" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="Black" />
+            <!--<Setter Property="TextAlignment" Value="Right" />-->
+            <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
+            <Setter Property="Typography.StylisticSet4" Value="True" />
+        </Style>
 
         <DrawingBrush x:Key="CheckerBrush" Viewport="0,0,16,16" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
             <DrawingBrush.Drawing>

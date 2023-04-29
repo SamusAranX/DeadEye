@@ -7,10 +7,9 @@
     <UserControl.Resources>
         <!-- This should be enough for more than 4 8K screens in a horizontal arrangement -->
         <RectangleGeometry x:Key="FullscreenRect" Rect="0,0,32767,32767" />
-        <SolidColorBrush x:Key="GridUnselected" Color="#66000000" />
     </UserControl.Resources>
     <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
-        <Border x:Name="DragOverlay" Background="{StaticResource GridUnselected}">
+        <Border x:Name="DragOverlay" Background="{StaticResource TranslucentBlack}">
             <Border.Clip>
                 <GeometryGroup>
                     <StaticResource ResourceKey="FullscreenRect" />

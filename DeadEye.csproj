@@ -48,10 +48,12 @@
     <Page Remove="NotifyIcon\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Images\crop15px.png" />
     <None Remove="Images\deadeye256.png" />
     <None Remove="Images\square_example.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\crop15px.png" />
     <Resource Include="Images\deadeye256.png" />
     <Resource Include="Images\grid_preview.png" />
   </ItemGroup>

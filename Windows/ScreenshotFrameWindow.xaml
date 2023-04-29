@@ -48,5 +48,19 @@
                                     DisplayRect="{Binding SelectionBoundsClamped}"
                                     Visibility="{Binding IsMakingSelection, Converter={StaticResource BoolToVis}}" />
         </Canvas>
+
+        <!--<Canvas Background="Transparent"
+                Visibility="{Binding
+                Source={x:Static local:Settings.Shared}, 
+                Path=Shared.ShowDimensions, 
+                Converter={StaticResource BoolToVis}}">
+            <controls:ColorPicker x:Name="ColorGizmo"
+                                  Width="160" Height="160"
+                                    DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                                    FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.TextSize}"
+                                    Canvas.Top="{Binding BoundsDisplayCoords.Y}"
+                                    Canvas.Left="{Binding BoundsDisplayCoords.X}"
+                                    Visibility="{Binding IsMakingSelection, Converter={StaticResource BoolToVis}}" />
+        </Canvas>-->
     </Grid>
 </Window>
