@@ -8,8 +8,8 @@
     <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
         <Border x:Name="BoundsDisplay" Background="{StaticResource TranslucentBlack}" Padding="6,4" CornerRadius="4">
             <StackPanel Orientation="Vertical">
-                <TextBlock Style="{StaticResource WhiteOnBlack}" Text="{Binding DisplayRect.Width, FallbackValue=420}" />
-                <TextBlock Style="{StaticResource WhiteOnBlack}" Text="{Binding DisplayRect.Height, FallbackValue=69}" />
+                <TextBlock Style="{StaticResource WhiteOnBlack}" Text="{Binding DisplayRect.Width, StringFormat=0, FallbackValue=420}" />
+                <TextBlock Style="{StaticResource WhiteOnBlack}" Text="{Binding DisplayRect.Height, StringFormat=0, FallbackValue=69}" />
             </StackPanel>
         </Border>
     </Grid>
