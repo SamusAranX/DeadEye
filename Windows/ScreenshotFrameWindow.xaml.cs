@@ -9,7 +9,7 @@ using DeadEye.Helpers;
 
 namespace DeadEye.Windows;
 
-public class ScreenshotEventArgs : EventArgs
+public sealed class ScreenshotEventArgs : EventArgs
 {
 	public ScreenshotEventArgs(Int32Rect croppedRect)
 	{
@@ -23,7 +23,7 @@ public delegate void ScreenshotTakenEventHandler(object sender, ScreenshotEventA
 
 public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 {
-	private const double BOUNDS_DISPLAY_PADDING = 4;
+	private const double BOUNDS_DISPLAY_PADDING = 5;
 
 	private static readonly Rect ZERO_RECT = new(0, 0, 0, 0);
 
@@ -116,13 +116,13 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 	public Rect SelectionBoundsClamped => this._virtualScreenRectNormalized == ZERO_RECT ? this.SelectionBounds : Rect.Intersect(this.SelectionBounds, this._virtualScreenRectNormalized);
 
 	/// <summary>
-	/// The coordinates at which the RectWHDisplay thingy is displayed.
+	/// The coordinates at which the RectWHDisplay thingy is displayed. Only used as a Binding in the XAML.
 	/// </summary>
 	public Point BoundsDisplayCoords
 	{
 		get
 		{
-			var boundsBounds = new Size(this.RectDisplay.ActualWidth, this.RectDisplay.ActualHeight);
+			var boundsSize = new Size(this.RectDisplay.ActualWidth, this.RectDisplay.ActualHeight);
 
 			// cursor is on the right edge of the selection rectangle
 			var isRight = this._selectionEndPoint.X >= this._selectionStartPoint.X;
@@ -138,7 +138,7 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 			}
 			else
 			{
-				newX = this.SelectionBoundsClamped.X - boundsBounds.Width;
+				newX = this.SelectionBoundsClamped.X - boundsSize.Width;
 				newX -= BOUNDS_DISPLAY_PADDING;
 			}
 
@@ -149,18 +149,20 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 			}
 			else
 			{
-				newY = this.SelectionBoundsClamped.Y - boundsBounds.Height;
+				newY = this.SelectionBoundsClamped.Y - boundsSize.Height;
 				newY -= BOUNDS_DISPLAY_PADDING;
 			}
 
-			// TODO: make sure bounds display is never out of bounds
-			//this.RectDisplay
-			//foreach (var screen in Screen.AllScreens)
-			//{
-				
-			//}
+			var newPoint = new Point(newX, newY);
+			var newBounds = new Rect(newPoint, boundsSize);
 
-			return new Point(newX + BOUNDS_DISPLAY_PADDING, newY + BOUNDS_DISPLAY_PADDING);
+			// make sure the size display never leaves the confines of the screen the cursor is on
+			var activeScreen = Screen.FromNormalizedPoint(this._selectionEndPoint);
+			var activeScreenBounds = activeScreen.BoundsNormalized;
+			newPoint.X = Math.Clamp(newPoint.X, activeScreenBounds.Left, activeScreenBounds.Right - newBounds.Width);
+			newPoint.Y = Math.Clamp(newPoint.Y, activeScreenBounds.Top, activeScreenBounds.Bottom - newBounds.Height);
+
+			return newPoint;
 		}
 	}
 

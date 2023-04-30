@@ -201,6 +201,20 @@ internal sealed class Screen
 	}
 
 	/// <summary>
+	/// Retrieves a <see cref="Screen" /> for the monitor that contains the specified point, but correcting for normalized coordinates.
+	/// </summary>
+	public static Screen FromNormalizedPoint(Point point)
+	{
+		var pt = default(POINT);
+		pt.x = (int)(point.X + TopLeftCorner.X);
+		pt.y = (int)(point.Y + TopLeftCorner.Y);
+
+		return SystemInformation.MultiMonitorSupport
+			? new Screen(User32.MonitorFromPoint(pt, User32.MonitorOptions.MONITOR_DEFAULTTONEAREST))
+			: new Screen(PRIMARY_MONITOR);
+	}
+
+	/// <summary>
 	/// Retrieves a string representing this object.
 	/// </summary>
 	public override string ToString()

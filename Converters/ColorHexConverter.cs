@@ -11,11 +11,14 @@ internal sealed class ColorHexConverter : MarkupExtension, IValueConverter
 
 	public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
-		if (value == null)
-			return "#--------";
+		if (value is null or not Color)
+			return "N/A";
 
 		var c = (Color)value;
-		return $"{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2}";
+		if (parameter is true)
+			return $"#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2}";
+
+		return $"#{c.R:X2}{c.G:X2}{c.B:X2}";
 	}
 
 	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
