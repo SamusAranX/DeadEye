@@ -42,7 +42,6 @@ public partial class App : IDisposable
 			var screen = Screen.AllScreens[i];
 			var isPrimary = screen.IsPrimary ? "*" : "";
 			Debug.WriteLine($"[{i}{isPrimary}] {screen}");
-			//Debug.WriteLine($"[{i}{isPrimary}] \"{screen.DeviceName}\" {screen.Bounds} {screen.LocationNormalized} {screen.Resolution}");
 		}
 	}
 }

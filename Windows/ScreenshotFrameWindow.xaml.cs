@@ -307,7 +307,7 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 			Debug.WriteLine($"Corrected Crop Rect: {cropRect}");
 
 		// move crop rect back into normalized virtual screen space so it can be used to actually crop bitmaps
-		cropRect.Offset(-this.Left, -this.Top); 
+		cropRect.Offset(-this.Left, -this.Top);
 
 		// A valid region has been selected. Fire event
 		var eventArgs = new ScreenshotEventArgs(cropRect.ToInt32Rect());

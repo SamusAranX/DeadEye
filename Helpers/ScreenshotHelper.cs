@@ -2,6 +2,7 @@
 using System.Drawing.Imaging;
 using System.Windows;
 using DeadEye.Extensions;
+using DeadEye.Win32;
 
 namespace DeadEye.Helpers;
 
@@ -9,7 +10,7 @@ internal sealed class ScreenshotHelper
 {
 	public static Rect GetVirtualScreenRect()
 	{
-		return new Rect(SystemParameters.VirtualScreenLeft, SystemParameters.VirtualScreenTop, SystemParameters.VirtualScreenWidth, SystemParameters.VirtualScreenHeight);
+		return SystemInformation.VirtualScreen;
 	}
 
 	public static Rect GetVirtualScreenRectNormalized()

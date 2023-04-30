@@ -65,6 +65,13 @@ internal sealed class Screen
 		this.BitDepth = Gdi32.GetDeviceCaps(safeScreenDC, Gdi32.DeviceCap.BITSPIXEL);
 		this.BitDepth *= Gdi32.GetDeviceCaps(safeScreenDC, Gdi32.DeviceCap.PLANES);
 
+		var dpiX = Gdi32.GetDeviceCaps(safeScreenDC, Gdi32.DeviceCap.LOGPIXELSX);
+		var dpiY = Gdi32.GetDeviceCaps(safeScreenDC, Gdi32.DeviceCap.LOGPIXELSY);
+		if (dpiX != dpiY)
+			throw new ArgumentOutOfRangeException($"DPI mismatch: {dpiX} != {dpiY}");
+
+		this.DotsPerInch = dpiX;
+
 		if (hdc != screenDC)
 			Gdi32.DeleteDC(safeScreenDC);
 	}
@@ -80,6 +87,11 @@ internal sealed class Screen
 	/// The product of bits per pixel and number of channels. Typically 32 for normal displays, might be more for deep color or HDR displays.
 	/// </summary>
 	public int BitDepth { get; }
+
+	/// <summary>
+	/// The number of pixels per inch.
+	/// </summary>
+	public int DotsPerInch { get; }
 
 	/// <summary>
 	/// Whether this is the primary display.
@@ -219,6 +231,6 @@ internal sealed class Screen
 	/// </summary>
 	public override string ToString()
 	{
-		return $"{this.GetType().Name}[DeviceName={this.DeviceName} Primary={this.IsPrimary} BitDepth={this.BitDepth} Bounds={this.Bounds}]";
+		return $"{this.GetType().Name}[DeviceName={this.DeviceName} Primary={this.IsPrimary} BitDepth={this.BitDepth} DPI={this.DotsPerInch} Bounds={this.Bounds}]";
 	}
 }
