@@ -54,6 +54,36 @@ public partial class DummyWindow
 
 	#endregion
 
+	#region Clipboard methods
+
+	private void ClipboardSetText(string text)
+	{
+		try
+		{
+			Clipboard.SetText(text);
+		}
+		catch (COMException ex)
+		{
+			var message = string.Join("\n", "Can't copy text into the Clipboard.", "To fix this, click here to open the Settings and click \"Clear clipboard data\".", $"More Info: 0x{ex.HResult:X8}");
+			this.TaskbarIcon.ShowBalloonTip("Clipboard Error", message, BalloonIcon.Error);
+		}
+	}
+
+	private void ClipboardSetImage(BitmapSource image)
+	{
+		try
+		{
+			Clipboard.SetImage(image);
+		}
+		catch (COMException ex)
+		{
+			var message = string.Join("\n", "Can't copy image into the Clipboard.", "To fix this, click here to open the Settings and click \"Clear clipboard data\".", $"More Info: 0x{ex.HResult:X8}");
+			this.TaskbarIcon.ShowBalloonTip("Clipboard Error", message, BalloonIcon.Error);
+		}
+	}
+
+	#endregion
+
 	#region Hotkey Actions
 
 	private void OverlayHotkeyAction(object _, HotkeyPressedEventArgs e)
@@ -78,26 +108,29 @@ public partial class DummyWindow
 		if (!Gdi32.DeleteObject(hBitmap))
 			Debug.WriteLine("Couldn't delete screenshot bitmap");
 
-		this._screenshotWindow = new ScreenshotFrameWindow(bitmapImage);
+		this._screenshotWindow = new ScreenshotFrameWindow(ref bitmapImage);
 		this._screenshotWindow.Closed += (_, _) => { this._screenshotWindow = null; };
 		this._screenshotWindow.ScreenshotTaken += (_, args) =>
 		{
 			Debug.WriteLine("Screenshot taken.");
-			var croppedBitmap = new CroppedBitmap(bitmapImage, args.CroppedRect);
+
+			if (args.PickedColor.HasValue)
+			{
+				var c = args.PickedColor.Value;
+				this.ClipboardSetText($"#{c.R:X2}{c.G:X2}{c.B:X2}");
+				return;
+			}
+
+			if (!args.CroppedRect.HasValue)
+			{
+				Debug.WriteLine("ScreenshotEventArgs are empty!");
+				return;
+			}
+
+			var croppedBitmap = new CroppedBitmap((this._screenshotWindow.ScreenshotImage as BitmapSource)!, args.CroppedRect.Value);
 			croppedBitmap.Freeze();
 
-			try
-			{
-				Clipboard.SetImage(croppedBitmap);
-			}
-			catch (COMException ex)
-			{
-				var message = string.Join("\n", "Can't copy image into the Clipboard.", "To fix this, click here to open the Settings and click \"Clear clipboard data\".", $"More Info: 0x{ex.HResult:X8}");
-				this.TaskbarIcon.ShowBalloonTip("Clipboard Error", message, BalloonIcon.Error);
-			}
-
-			croppedBitmap = null;
-			bitmapImage = null;
+			this.ClipboardSetImage(croppedBitmap);
 		};
 
 		this._screenshotWindow.Show();

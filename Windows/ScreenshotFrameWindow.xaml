@@ -3,64 +3,109 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:DeadEye.Controls"
+        xmlns:ctrl="clr-namespace:DeadEye.Controls"
         xmlns:local="clr-namespace:DeadEye"
-        Loaded="ScreenshotFrameWindow_OnLoaded"
+        xmlns:windows="clr-namespace:DeadEye.Windows"
         mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize"
-        Title="ScreenshotFrameWindow" Height="240" Width="320"
+        Title="DeadEye Screenshot Window" Height="240" Width="320"
         UseLayoutRounding="True" Cursor="Cross"
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         RenderOptions.BitmapScalingMode="NearestNeighbor"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Deactivated="ScreenshotFrameWindow_OnDeactivated"
-        SourceInitialized="ScreenshotFrameWindow_OnSourceInitialized" Closed="ScreenshotFrameWindow_OnClosed"
+        SourceInitialized="ScreenshotFrameWindow_OnSourceInitialized"
         KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp"
         MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown"
         MouseLeftButtonUp="ScreenshotFrameWindow_OnMouseLeftButtonUp"
-        MouseMove="ScreenshotFrameWindow_OnMouseMove">
+        MouseRightButtonDown="ScreenshotFrameWindow_OnMouseRightButtonDown"
+        MouseMove="ScreenshotFrameWindow_OnMouseMove" 
+        ShowInTaskbar="False" Icon="/Images/camera.ico">
     <Grid>
-        <Image x:Name="WindowBackgroundImage" />
+        <Image x:Name="WindowBackgroundImage" Source="{Binding ScreenshotImage}" />
 
-        <controls:PassepartoutView CutoutRect="{Binding SelectionBounds}"
-                                   DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+        <ctrl:PassepartoutView x:Name="Passepartout"
+                               CutoutRect="{Binding SelectionBounds}"
+                               DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+            <ctrl:PassepartoutView.Style>
+                <Style>
+                    <Setter Property="Control.Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CurrentMode}" Value="{x:Static windows:ScreenshotFrameMode.Screenshot}">
+                            <Setter Property="Control.Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ctrl:PassepartoutView.Style>
+        </ctrl:PassepartoutView>
 
-        <Canvas Background="Transparent">
-            <controls:GuideGrid x:Name="GuideGrid"
-                                GridOpacity="0.6"
-                                GridType="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.GridType}"
-                                MarkCenter="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.MarkCenter}"
-                                Canvas.Top="{Binding SelectionBoundsClamped.Top}"
-                                Canvas.Left="{Binding SelectionBoundsClamped.Left}"
-                                Width="{Binding SelectionBoundsClamped.Width}"
-                                Height="{Binding SelectionBoundsClamped.Height}" />
+        <Canvas x:Name="GridCanvas" Background="Transparent">
+            <ctrl:GuideGrid GridOpacity="0.6"
+                            GridType="{Binding Source={x:Static local:Settings.Shared}, Path=GridType}"
+                            MarkCenter="{Binding Source={x:Static local:Settings.Shared}, Path=MarkCenter}"
+                            Canvas.Left="{Binding SelectionBoundsClamped.Left}"
+                            Canvas.Top="{Binding SelectionBoundsClamped.Top}"
+                            Width="{Binding SelectionBoundsClamped.Width}"
+                            Height="{Binding SelectionBoundsClamped.Height}">
+                <ctrl:GuideGrid.Style>
+                    <Style>
+                        <Setter Property="Control.Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding CurrentMode}" Value="{x:Static windows:ScreenshotFrameMode.Screenshot}" />
+                                    <Condition Binding="{Binding IsMakingSelection}" Value="true" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Control.Visibility" Value="Visible" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ctrl:GuideGrid.Style>
+            </ctrl:GuideGrid>
         </Canvas>
 
-        <Canvas Background="Transparent"
-                Visibility="{Binding
-                Source={x:Static local:Settings.Shared}, 
-                Path=Shared.ShowDimensions, 
-                Converter={StaticResource BoolToVis}}">
-            <controls:RectWHDisplay x:Name="RectDisplay"
-                                    DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                                    FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.TextSize}"
-                                    Canvas.Top="{Binding BoundsDisplayCoords.Y}"
-                                    Canvas.Left="{Binding BoundsDisplayCoords.X}"
-                                    DisplayRect="{Binding SelectionBoundsClamped}"
-                                    Visibility="{Binding IsMakingSelection, Converter={StaticResource BoolToVis}}" />
+        <Canvas x:Name="BoundsDisplayCanvas" Background="Transparent">
+            <ctrl:BoundsDisplay x:Name="BoundsDisplay"
+                                DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                                FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=TextSize}"
+                                Canvas.Left="{Binding BoundsDisplayPosition.X}"
+                                Canvas.Top="{Binding BoundsDisplayPosition.Y}"
+                                DisplayRect="{Binding SelectionBoundsClamped}">
+                <ctrl:BoundsDisplay.Style>
+                    <Style>
+                        <Setter Property="Control.Visibility" Value="Hidden" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding CurrentMode}" Value="{x:Static windows:ScreenshotFrameMode.Screenshot}" />
+                                    <Condition Binding="{Binding Source={x:Static local:Settings.Shared}, Path=ShowDimensions}" Value="true" />
+                                    <Condition Binding="{Binding IsMakingSelection}" Value="true" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Control.Visibility" Value="Visible" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ctrl:BoundsDisplay.Style>
+            </ctrl:BoundsDisplay>
         </Canvas>
 
-        <!--<Canvas Background="Transparent"
-                Visibility="{Binding
-                Source={x:Static local:Settings.Shared}, 
-                Path=Shared.ShowDimensions, 
-                Converter={StaticResource BoolToVis}}">
-            <controls:ColorPicker x:Name="ColorGizmo"
-                                  Width="160" Height="160"
-                                    DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                                    FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=Shared.TextSize}"
-                                    Canvas.Top="{Binding BoundsDisplayCoords.Y}"
-                                    Canvas.Left="{Binding BoundsDisplayCoords.X}"
-                                    Visibility="{Binding IsMakingSelection, Converter={StaticResource BoolToVis}}" />
-        </Canvas>-->
+        <Canvas x:Name="ColorPickerCanvas" Background="Transparent">
+            <ctrl:ColorPicker x:Name="ColorGizmo"
+                              DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                              ImageSource="{Binding ColorPickerCroppedBitmap}"
+                              PixelColor="{Binding ColorPickerPixelColor}"
+                              Canvas.Left="{Binding ColorPickerPosition.X}"
+                              Canvas.Top="{Binding ColorPickerPosition.Y}">
+                <ctrl:ColorPicker.Style>
+                    <Style>
+                        <Setter Property="Control.Visibility" Value="Hidden" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentMode}" Value="{x:Static windows:ScreenshotFrameMode.ColorPicker}">
+                                <Setter Property="Control.Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ctrl:ColorPicker.Style>
+            </ctrl:ColorPicker>
+        </Canvas>
     </Grid>
 </Window>

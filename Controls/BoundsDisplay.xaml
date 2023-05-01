@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="DeadEye.Controls.RectWHDisplay"
+﻿<UserControl x:Class="DeadEye.Controls.BoundsDisplay"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,7 +6,7 @@
              mc:Ignorable="d" FontSize="40"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
-        <Border x:Name="BoundsDisplay" Background="{StaticResource TranslucentBlack}" Padding="6,4" CornerRadius="4">
+        <Border x:Name="Container" Background="{StaticResource TranslucentBlack}" Padding="6,4" CornerRadius="4">
             <StackPanel Orientation="Vertical">
                 <TextBlock Style="{StaticResource WhiteOnBlack}" Text="{Binding DisplayRect.Width, StringFormat=0, FallbackValue=420}" />
                 <TextBlock Style="{StaticResource WhiteOnBlack}" Text="{Binding DisplayRect.Height, StringFormat=0, FallbackValue=69}" />

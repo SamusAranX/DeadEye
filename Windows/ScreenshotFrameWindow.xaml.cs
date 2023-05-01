@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using DeadEye.Controls;
 using DeadEye.Extensions;
 using DeadEye.Helpers;
 
@@ -16,25 +18,40 @@ public sealed class ScreenshotEventArgs : EventArgs
 		this.CroppedRect = croppedRect;
 	}
 
-	public Int32Rect CroppedRect { get; set; }
+	public ScreenshotEventArgs(Color pickedColor)
+	{
+		this.PickedColor = pickedColor;
+	}
+
+	public Int32Rect? CroppedRect { get; private set; }
+	public Color? PickedColor { get; private set; }
 }
 
 public delegate void ScreenshotTakenEventHandler(object sender, ScreenshotEventArgs args);
 
+public enum ScreenshotFrameMode
+{
+	Screenshot,
+	ColorPicker,
+}
+
 public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 {
 	private const double BOUNDS_DISPLAY_PADDING = 5;
-
-	private static readonly Rect ZERO_RECT = new(0, 0, 0, 0);
 
 	// copy of the virtual screen rect with the X and Y coordinates set to 0
 	private readonly Rect _virtualScreenRectNormalized;
 
 	private bool _isMakingSelection;
 	private bool _isMovingSelection;
-	private Point _moveSelectionStart, _moveSelectionEnd, _moveSelectionOffset;
 
+	private Point _cursorPosition, _colorPickerPosition;
+	private Point _moveSelectionStart, _moveSelectionEnd, _moveSelectionOffset;
 	private Point _selectionStartPoint, _selectionEndPoint;
+
+	private ImageSource? _screenshotImage;
+
+	private ScreenshotFrameMode _currentMode = ScreenshotFrameMode.Screenshot;
 
 	public ScreenshotFrameWindow()
 	{
@@ -46,9 +63,9 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 		this._virtualScreenRectNormalized = ScreenshotHelper.GetVirtualScreenRectNormalized();
 	}
 
-	public ScreenshotFrameWindow(ImageSource screenshotSource) : this()
+	public ScreenshotFrameWindow(ref BitmapSource screenshotSource): this()
 	{
-		this.WindowBackgroundImage.Source = screenshotSource;
+		this.ScreenshotImage = screenshotSource;
 	}
 
 	public event ScreenshotTakenEventHandler? ScreenshotTaken;
@@ -59,16 +76,10 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 			this.Topmost = true;
 #endif
 	}
-
+	
 	private void OnScreenshot(ScreenshotEventArgs e)
 	{
 		this.ScreenshotTaken?.Invoke(this, e);
-	}
-
-	private void ScreenshotFrameWindow_OnLoaded(object sender, RoutedEventArgs e)
-	{
-		if (!this.Activate())
-			Debug.WriteLine("couldn't bring screenshot window to front");
 	}
 
 	private void ScreenshotFrameWindow_OnDeactivated(object sender, EventArgs e)
@@ -79,12 +90,17 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 			this.Close();
 	}
 
-	private void ScreenshotFrameWindow_OnClosed(object sender, EventArgs e)
-	{
-		this.WindowBackgroundImage.Source = null;
-	}
-
 	#region Bound Properties and derivatives
+
+	public ImageSource? ScreenshotImage
+	{
+		get => this._screenshotImage;
+		set
+		{
+			this._screenshotImage = value;
+			this.OnPropertyChanged();
+		}
+	}
 
 	public Point SelectionStartPoint
 	{
@@ -95,7 +111,6 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 			this.OnPropertyChanged();
 			this.OnPropertyChanged(nameof(this.SelectionBounds));
 			this.OnPropertyChanged(nameof(this.SelectionBoundsClamped));
-			this.OnPropertyChanged(nameof(this.BoundsDisplayCoords));
 		}
 	}
 
@@ -108,21 +123,20 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 			this.OnPropertyChanged();
 			this.OnPropertyChanged(nameof(this.SelectionBounds));
 			this.OnPropertyChanged(nameof(this.SelectionBoundsClamped));
-			this.OnPropertyChanged(nameof(this.BoundsDisplayCoords));
 		}
 	}
 
 	public Rect SelectionBounds => new(this.SelectionStartPoint, this.SelectionEndPoint);
-	public Rect SelectionBoundsClamped => this._virtualScreenRectNormalized == ZERO_RECT ? this.SelectionBounds : Rect.Intersect(this.SelectionBounds, this._virtualScreenRectNormalized);
+	public Rect SelectionBoundsClamped => Rect.Intersect(this.SelectionBounds, this._virtualScreenRectNormalized);
 
 	/// <summary>
-	/// The coordinates at which the RectWHDisplay thingy is displayed. Only used as a Binding in the XAML.
+	/// The coordinates at which the BoundsDisplay thingy is displayed. Only used as a Binding in the XAML.
 	/// </summary>
-	public Point BoundsDisplayCoords
+	public Point BoundsDisplayPosition
 	{
 		get
 		{
-			var boundsSize = new Size(this.RectDisplay.ActualWidth, this.RectDisplay.ActualHeight);
+			var boundsSize = new Size(this.BoundsDisplay.ActualWidth, this.BoundsDisplay.ActualHeight);
 
 			// cursor is on the right edge of the selection rectangle
 			var isRight = this._selectionEndPoint.X >= this._selectionStartPoint.X;
@@ -186,6 +200,89 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 		}
 	}
 
+	public ScreenshotFrameMode CurrentMode
+	{
+		get => this._currentMode;
+		set
+		{
+			this._currentMode = value;
+			this.OnPropertyChanged();
+		}
+	}
+
+	#endregion
+
+	#region ColorPicker support properties
+
+	private double _colorPickerSize;
+
+	public Point CursorPosition
+	{
+		get => this._cursorPosition;
+		private set
+		{
+			this.OnPropertyChanged(nameof(this.BoundsDisplayPosition));
+
+			if (this._colorPickerSize == 0 && this.ColorGizmo.ActualWidth > 0)
+				this._colorPickerSize = this.ColorGizmo.ActualWidth;
+
+			this._cursorPosition = value;
+			this.OnPropertyChanged();
+			value.X = (int)Math.Floor(value.X - this._colorPickerSize / 2);
+			value.Y = (int)Math.Floor(value.Y - this._colorPickerSize / 2);
+			this.ColorPickerPosition = value;
+			this.UpdateCroppedImage();
+		}
+	}
+
+	private void UpdateCroppedImage()
+	{
+		if (this.ScreenshotImage == null)
+			return;
+
+		this.ColorPickerCroppedBitmap = new CroppedBitmap((this.ScreenshotImage as BitmapSource)!, this.ColorPickerSourceRect);
+		var offset = (int)Math.Floor((double)ColorPicker.SOURCE_RECT_SIZE / 2);
+		var cb = new CroppedBitmap(this.ColorPickerCroppedBitmap, new Int32Rect(offset, offset, 1, 1));
+		var pixels = new byte[4]; // bgra
+		cb.CopyPixels(pixels, 4, 0);
+		this.ColorPickerPixelColor = Color.FromArgb(255, pixels[2], pixels[1], pixels[0]);
+		this.OnPropertyChanged(nameof(this.ColorPickerCroppedBitmap));
+		this.OnPropertyChanged(nameof(this.ColorPickerPixelColor));
+	}
+
+	public Point ColorPickerPosition
+	{
+		get => this._colorPickerPosition;
+		set
+		{
+			this._colorPickerPosition = value;
+			this.OnPropertyChanged();
+		}
+	}
+
+	public Int32Rect ColorPickerSourceRect
+	{
+		get
+		{
+			var pos = this.CursorPosition;
+			pos.X -= Math.Floor((double)ColorPicker.SOURCE_RECT_SIZE / 2);
+			pos.Y -= Math.Floor((double)ColorPicker.SOURCE_RECT_SIZE / 2);
+			pos.X = Math.Clamp(pos.X, 0, this.ActualWidth);
+			pos.Y = Math.Clamp(pos.Y, 0, this.ActualHeight);
+
+			var rect = new Int32Rect((int)pos.X, (int)pos.Y, ColorPicker.SOURCE_RECT_SIZE, ColorPicker.SOURCE_RECT_SIZE);
+			return rect;
+		}
+	}
+
+	public Color ColorPickerPixelColor { get; private set; }
+
+	public CroppedBitmap? ColorPickerCroppedBitmap { get; private set; }
+
+	#endregion
+
+	#region INotifyPropertyChanged
+
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -223,6 +320,22 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 				this._moveSelectionOffset = this.SelectionEndPoint;
 
 				break;
+			case Key.C:
+				// toggle color picker modes
+				if (this.CurrentMode == ScreenshotFrameMode.Screenshot)
+				{
+					if (this.IsMakingSelection)
+						this.ResetDrawingFrame();
+
+					this.IsMakingSelection = false;
+					this.IsMovingSelection = false;
+
+					this.CurrentMode = ScreenshotFrameMode.ColorPicker;
+				}
+				else if (this.CurrentMode == ScreenshotFrameMode.ColorPicker)
+					this.CurrentMode = ScreenshotFrameMode.Screenshot;
+
+				break;
 		}
 	}
 
@@ -238,12 +351,22 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 		this.StartDrawingFrame(pos);
 	}
 
+	private void ScreenshotFrameWindow_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+	{
+		if (this.IsMakingSelection)
+			this.ResetDrawingFrame();
+		else
+			this.Close(); // Screenshot was cancelled by pressing RMOUSE
+	}
+
 	private void ScreenshotFrameWindow_OnMouseMove(object sender, MouseEventArgs e)
 	{
-		if (!this.IsMakingSelection || e.LeftButton != MouseButtonState.Pressed)
+		var pos = e.GetPosition(this);
+		this.CursorPosition = pos;
+
+		if (!this.IsMakingSelection || this.CurrentMode != ScreenshotFrameMode.Screenshot || e.LeftButton != MouseButtonState.Pressed)
 			return;
 
-		var pos = e.GetPosition(this);
 		if (this.IsMovingSelection)
 			this.MoveDrawingFrame(pos);
 		else
@@ -253,7 +376,7 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 	private void ScreenshotFrameWindow_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 	{
 		Debug.WriteLine("----- OnMouseLeftButtonUp");
-		if (!this.IsMakingSelection)
+		if (this.CurrentMode == ScreenshotFrameMode.Screenshot && !this.IsMakingSelection)
 		{
 			Debug.WriteLine("Selection already disabled");
 			return;
@@ -261,6 +384,15 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 
 		var cursorPos = e.GetPosition(this);
 		cursorPos.Offset(this.Left, this.Top);
+
+		if (this.CurrentMode == ScreenshotFrameMode.ColorPicker)
+		{
+			// A pixel has been selected with the color picker. Fire event
+			var colorEventArgs = new ScreenshotEventArgs(this.ColorPickerPixelColor);
+			this.OnScreenshot(colorEventArgs);
+			this.Close();
+			return;
+		}
 
 		var cropRect = this.SelectionBounds;
 		cropRect.Intersect(this._virtualScreenRectNormalized); // limit crop rect to the virtual screen bounds

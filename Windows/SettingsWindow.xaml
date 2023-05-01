@@ -67,19 +67,18 @@
                                         Canvas.Left="{Binding X, Source={StaticResource DemoRectangle}, Mode=OneTime}"
                                         Canvas.Top="{Binding Y, Source={StaticResource DemoRectangle}, Mode=OneTime}"
                                         GridOpacity="0.6"
-                                        GridType="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.GridType}"
-                                        MarkCenter="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.MarkCenter}" />
+                                        GridType="{Binding Source={x:Static deadeye:Settings.Shared}, Path=GridType}"
+                                        MarkCenter="{Binding Source={x:Static deadeye:Settings.Shared}, Path=MarkCenter}" />
 
                     <Image Source="{StaticResource CrossCursor}"
                            Canvas.Left="{Binding X, Source={StaticResource CrossCursorPosition}, Mode=OneTime}"
                            Canvas.Top="{Binding Y, Source={StaticResource CrossCursorPosition}, Mode=OneTime}" />
 
-                    <controls:RectWHDisplay DisplayRect="{StaticResource DemoRectangle}"
+                    <controls:BoundsDisplay DisplayRect="{StaticResource DemoRectangle}"
                                             Canvas.Left="{Binding X, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
                                             Canvas.Top="{Binding Y, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
-                                            FontSize="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.TextSize}"
-                                            Visibility="{Binding Source={x:Static deadeye:Settings.Shared},
-                                        Path=Shared.ShowDimensions, Converter={StaticResource BoolToVis}}" />
+                                            FontSize="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}"
+                                            Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowDimensions, Converter={StaticResource BoolToVis}}" />
                 </Canvas>
 
                 <Label Content="Live Preview" Foreground="White" FontWeight="UltraBlack"
@@ -107,7 +106,7 @@
 
             <ComboBox Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"
                       ItemsSource="{Binding GridTypes}"
-                      SelectedItem="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.GridType}">
+                      SelectedItem="{Binding Source={x:Static deadeye:Settings.Shared}, Path=GridType}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
@@ -120,11 +119,11 @@
 
             <CheckBox Grid.Column="2" Grid.Row="1" Content="Mark Frame Center" VerticalAlignment="Center"
                       VerticalContentAlignment="Center"
-                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.MarkCenter}" />
+                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=MarkCenter}" />
 
             <CheckBox Grid.Column="2" Grid.Row="2" Content="Show Selection Dimensions" VerticalAlignment="Center"
                       VerticalContentAlignment="Center"
-                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.ShowDimensions}" />
+                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowDimensions}" />
 
             <TextBlock Grid.Column="0" Grid.Row="3"
                        Text="Text Size:" VerticalAlignment="Center" HorizontalAlignment="Right" />
@@ -137,12 +136,10 @@
 
                 <Slider Grid.Column="0" x:Name="TextSizeSlider" VerticalAlignment="Center"
                         TickFrequency="1" IsSnapToTickEnabled="True" Minimum="10" Maximum="16"
-                        Value="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.TextSize}" />
+                        Value="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}" />
 
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
-                           Text="{Binding Source={x:Static deadeye:Settings.Shared}, 
-                       Path=Shared.TextSize,
-                       Converter={StaticResource TextSizeNameConverter}}" />
+                           Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={StaticResource TextSizeNameConverter}}" />
             </Grid>
 
             <TextBlock Grid.Column="0" Grid.Row="4"
@@ -151,10 +148,10 @@
             <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="4">
                 <Button Padding="8,2"
                         Click="HotkeyButton_OnClick"
-                        Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.ScreenshotKey, FallbackValue=Placeholder}" />
+                        Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ScreenshotKey, FallbackValue=Placeholder}" />
 
                 <TextBlock VerticalAlignment="Center" Margin="8,0,0,0"
-                           Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.WaitingForHotkey, Converter={StaticResource BoolToVis}}">
+                           Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=WaitingForHotkey, Converter={StaticResource BoolToVis}}">
                     Waiting…
                 </TextBlock>
             </StackPanel>
@@ -186,7 +183,7 @@
             <CheckBox Grid.Column="2" Grid.Row="0" x:Name="AutostartCheckbox" Content="Enable Autostart"
                       VerticalContentAlignment="Center" VerticalAlignment="Center"
                       Checked="AutostartCheckBox_OnCheckUncheck" Unchecked="AutostartCheckBox_OnCheckUncheck"
-                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=Shared.AutostartEnabled}">
+                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartEnabled}">
                 <CheckBox.Style>
                     <Style TargetType="CheckBox">
                         <Setter Property="IsEnabled" Value="True" />

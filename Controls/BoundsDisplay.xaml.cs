@@ -2,15 +2,15 @@
 
 namespace DeadEye.Controls;
 
-public partial class RectWHDisplay
+public partial class BoundsDisplay
 {
 	public static readonly DependencyProperty DisplayRectProperty = DependencyProperty.RegisterAttached(
 		"DisplayRect",
 		typeof(Rect),
-		typeof(RectWHDisplay),
+		typeof(BoundsDisplay),
 		new FrameworkPropertyMetadata(new Rect(), FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
 
-	public RectWHDisplay()
+	public BoundsDisplay()
 	{
 		this.InitializeComponent();
 	}

@@ -3,14 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" Height="158" Width="158"
+             mc:Ignorable="d"
+             Height="158" Width="158"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <Style TargetType="Border">
             <Setter Property="CornerRadius" Value="180" />
         </Style>
 
-        <SolidColorBrush x:Key="ColorBrush" Color="{Binding InspectColor}" />
+        <BitmapImage x:Key="DefaultImage" UriSource="../Images/crop15px.png" />
 
         <DrawingBrush x:Key="GridBrush" Viewport="0,0,10,10" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
             <DrawingBrush.Drawing>
@@ -31,7 +32,7 @@
         </DrawingBrush>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
         <!-- masking border. margin must be the sum of the following borders' margins -->
         <Border Background="White" x:Name="ImageMask" Margin="4" />
 
@@ -59,7 +60,7 @@
                         <Border Grid.ColumnSpan="4" Grid.RowSpan="6"
                                 Background="Magenta" Margin="0" ClipToBounds="True"
                                 RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased">
-                            <Image Source="../Images/crop15px.png" />
+                            <Image Source="{Binding ImageSource, FallbackValue={StaticResource DefaultImage}}" />
                         </Border>
 
                         <Border x:Name="GridOverlay"
@@ -86,9 +87,12 @@
 
                                     <TextBlock x:Name="ColorName" 
                                                Style="{StaticResource BlackOnWhite}" VerticalAlignment="Center" 
-                                               Text="{Binding InspectColor, Converter={StaticResource HexConv}, FallbackValue=#EB4619}" />
+                                               Text="{Binding PixelColor, Converter={StaticResource HexConv}, FallbackValue=#EB4619}" />
 
-                                    <Border x:Name="ColorWell" Grid.Column="2" CornerRadius="2" Background="{DynamicResource ColorBrush}">
+                                    <Border x:Name="ColorWell" Grid.Column="2" CornerRadius="2">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding PixelColor}" />
+                                        </Border.Background>
                                         <Border CornerRadius="2" BorderThickness="1" BorderBrush="{StaticResource TranslucenterBlack}" />
                                     </Border>
                                 </Grid>

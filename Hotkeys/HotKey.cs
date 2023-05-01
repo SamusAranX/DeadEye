@@ -124,6 +124,7 @@ public sealed class Hotkey : IDisposable
 		this._isKeyRegistered = !HotKey.UnregisterHotKey(this._handle, this._id);
 	}
 
+	[DebuggerStepThrough]
 	private void ThreadPreprocessMessageMethod(ref MSG msg, ref bool handled)
 	{
 		if (handled)
