@@ -9,18 +9,6 @@ public partial class App : IDisposable
 {
 	private SingleInstanceHelper? _singleInstanceHelper;
 
-	public bool IsDebugMode
-	{
-		get
-		{
-#if DEBUG
-			return true;
-#else
-			return false;
-#endif
-		}
-	}
-
 	public void Dispose()
 	{
 		this._singleInstanceHelper?.Dispose();

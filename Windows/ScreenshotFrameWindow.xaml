@@ -25,18 +25,7 @@
 
         <ctrl:PassepartoutView x:Name="Passepartout"
                                CutoutRect="{Binding SelectionBounds}"
-                               DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
-            <ctrl:PassepartoutView.Style>
-                <Style>
-                    <Setter Property="Control.Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding CurrentMode}" Value="{x:Static windows:ScreenshotFrameMode.Screenshot}">
-                            <Setter Property="Control.Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ctrl:PassepartoutView.Style>
-        </ctrl:PassepartoutView>
+                               DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
 
         <Canvas x:Name="GridCanvas" Background="Transparent">
             <ctrl:GuideGrid GridOpacity="0.6"
@@ -52,7 +41,6 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding CurrentMode}" Value="{x:Static windows:ScreenshotFrameMode.Screenshot}" />
                                     <Condition Binding="{Binding IsMakingSelection}" Value="true" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="Control.Visibility" Value="Visible" />
@@ -76,7 +64,6 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding CurrentMode}" Value="{x:Static windows:ScreenshotFrameMode.Screenshot}" />
                                     <Condition Binding="{Binding Source={x:Static local:Settings.Shared}, Path=ShowDimensions}" Value="true" />
                                     <Condition Binding="{Binding IsMakingSelection}" Value="true" />
                                 </MultiDataTrigger.Conditions>
@@ -86,26 +73,6 @@
                     </Style>
                 </ctrl:BoundsDisplay.Style>
             </ctrl:BoundsDisplay>
-        </Canvas>
-
-        <Canvas x:Name="ColorPickerCanvas" Background="Transparent">
-            <ctrl:ColorPicker x:Name="ColorGizmo"
-                              DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                              ImageSource="{Binding ColorPickerCroppedBitmap}"
-                              PixelColor="{Binding ColorPickerPixelColor}"
-                              Canvas.Left="{Binding ColorPickerPosition.X}"
-                              Canvas.Top="{Binding ColorPickerPosition.Y}">
-                <ctrl:ColorPicker.Style>
-                    <Style>
-                        <Setter Property="Control.Visibility" Value="Hidden" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding CurrentMode}" Value="{x:Static windows:ScreenshotFrameMode.ColorPicker}">
-                                <Setter Property="Control.Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ctrl:ColorPicker.Style>
-            </ctrl:ColorPicker>
         </Canvas>
     </Grid>
 </Window>

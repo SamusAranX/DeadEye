@@ -1,0 +1,34 @@
+﻿<Window x:Class="DeadEye.Windows.ColorPickerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ctrl="clr-namespace:DeadEye.Controls"
+        xmlns:local="clr-namespace:DeadEye"
+        xmlns:windows="clr-namespace:DeadEye.Windows"
+        mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize"
+        Title="DeadEye Screenshot Window" Height="240" Width="320"
+        UseLayoutRounding="True" Cursor="None"
+        TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
+        RenderOptions.BitmapScalingMode="NearestNeighbor"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Deactivated="ColorPickerWindow_OnDeactivated"
+        SourceInitialized="ColorPickerWindow_OnSourceInitialized"
+        KeyDown="ColorPickerWindow_OnKeyDown"
+        MouseLeftButtonDown="ColorPickerWindow_OnMouseLeftButtonDown"
+        MouseRightButtonDown="ColorPickerWindow_OnMouseRightButtonDown"
+        MouseMove="ColorPickerWindow_OnMouseMove" 
+        ShowInTaskbar="False" Icon="/Images/camera.ico">
+    <Grid>
+        <Image x:Name="WindowBackgroundImage" Source="{Binding ScreenshotImage}" />
+
+        <Canvas x:Name="ColorPickerCanvas" Background="Transparent">
+            <ctrl:ColorPicker x:Name="ColorGizmo"
+                              DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                              ImageSource="{Binding ColorPickerCroppedBitmap}"
+                              PixelColor="{Binding ColorPickerPixelColor}"
+                              Canvas.Left="{Binding ColorPickerPosition.X}"
+                              Canvas.Top="{Binding ColorPickerPosition.Y}" />
+        </Canvas>
+    </Grid>
+</Window>

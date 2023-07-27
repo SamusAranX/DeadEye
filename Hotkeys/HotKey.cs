@@ -91,10 +91,8 @@ public sealed class Hotkey : IDisposable
 		this._currentDispatcher.Invoke(
 			delegate { this.HotkeyPressedEventHandler?.Invoke(this); });
 	}
-
-	/// <summary>
-	/// </summary>
-	/// <exception cref="HotkeyException">An error has occurred that prevents the </exception>
+	
+	/// <exception cref="HotkeyException">An error has occurred that prevents the hotkey from being registered.</exception>
 	private void RegisterHotkey()
 	{
 		if (this.Key == Key.None)

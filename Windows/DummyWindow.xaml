@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:notifyIcon="clr-namespace:NotifyIcon;assembly=NotifyIcon"
+        xmlns:helpers="clr-namespace:DeadEye.Helpers"
         UseLayoutRounding="True" Icon="/Images/camera.ico"
         SourceInitialized="DummyWindow_OnSourceInitialized"
         Visibility="Collapsed" IsHitTestVisible="False" ShowInTaskbar="False" ShowActivated="False" WindowStyle="None"
@@ -13,11 +14,11 @@
             <notifyIcon:TaskbarIcon.ContextMenu>
                 <ContextMenu TextOptions.TextFormattingMode="Display">
                     <MenuItem Header="Open App Dir" Click="AppDirMenuItem_OnClick"
-                              Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
+                              Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugMode}, Converter={StaticResource BoolToVis}}" />
                     <MenuItem Header="GC.Collect()" Click="GarbageMenuItem_OnClick"
-                              Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
+                              Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugMode}, Converter={StaticResource BoolToVis}}" />
                     <Separator
-                        Visibility="{Binding IsDebugMode, Source={x:Static Application.Current}, Converter={StaticResource BoolToVis}}" />
+                        Visibility="{Binding Source={x:Static helpers:DebugHelper.IsDebugMode}, Converter={StaticResource BoolToVis}}" />
 
                     <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick" />
                     <MenuItem Header="About" Click="AboutMenuItem_OnClick" />

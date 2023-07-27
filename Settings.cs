@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using System.Xml.Serialization;
@@ -26,9 +27,11 @@ public sealed class Settings : INotifyPropertyChanged
 
 	private GridType _gridType = GridType.None;
 	private bool _markCenter;
-	private ShortcutKey _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
 	private bool _showDimensions;
 	private double _textSize = 11;
+
+	private ShortcutKey? _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
+	private ShortcutKey? _colorPickerKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.C);
 
 	private bool _waitingForHotkey;
 
@@ -145,12 +148,22 @@ public sealed class Settings : INotifyPropertyChanged
 		}
 	}
 
-	public ShortcutKey ScreenshotKey
+	public ShortcutKey? ScreenshotKey
 	{
 		get => this._screenshotKey;
 		set
 		{
 			this._screenshotKey = value;
+			this.OnPropertyChanged();
+		}
+	}
+
+	public ShortcutKey? ColorPickerKey
+	{
+		get => this._colorPickerKey;
+		set
+		{
+			this._colorPickerKey = value;
 			this.OnPropertyChanged();
 		}
 	}
@@ -178,10 +191,18 @@ public sealed class Settings : INotifyPropertyChanged
 			var x = new XmlSerializer(typeof(Settings));
 			var xd = x.Deserialize(reader);
 
-			if (xd != null)
-				return (Settings)xd;
+			if (xd == null)
+				throw new InvalidDataException("Can't deserialize settings file");
 
-			throw new InvalidDataException("Can't deserialize settings file");
+			var settings = (Settings)xd;
+			if (settings.ScreenshotKey == settings.ColorPickerKey)
+			{
+				settings.ScreenshotKey = null;
+				settings.ColorPickerKey = null;
+				MessageBox.Show("All shortcut keys were reset because of conflicts. Please reassign the shortcut keys in the Settings.");
+			}
+
+			return settings;
 		}
 		catch (Exception e)
 		{

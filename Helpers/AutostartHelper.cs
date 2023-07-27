@@ -26,15 +26,14 @@ internal sealed class AutostartHelper
 	private const string RUN_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
 	private const string RUN_APPROVED_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
 
-	private static readonly string APP_PATH = $"{Path.Join(AppContext.BaseDirectory, Path.GetFileName(Environment.GetCommandLineArgs()[0]))}";
-	private static readonly string QUOTED_APP_PATH = $"\"{APP_PATH}\"";
-	private static readonly bool APP_IS_DEBUG = !APP_PATH.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase);
+	public static readonly string AppPath = $"{Path.Join(AppContext.BaseDirectory, Path.GetFileName(Environment.GetCommandLineArgs()[0]))}";
+	private static readonly string QUOTED_APP_PATH = $"\"{AppPath}\"";
 
 	public static bool CheckAutostartStatus()
 	{
-		if (APP_IS_DEBUG)
+		if (DebugHelper.IsDebugMode)
 		{
-			Debug.WriteLine("App is not an .exe, skipping autostart check.");
+			Debug.WriteLine("App is in debug mode or is not an .exe, skipping autostart check.");
 			return false;
 		}
 
@@ -60,7 +59,7 @@ internal sealed class AutostartHelper
 	/// <returns>The current autostart status.</returns>
 	public static AutostartStatus GetTaskmgrAutostartStatus()
 	{
-		if (APP_IS_DEBUG)
+		if (DebugHelper.IsDebugMode)
 			return AutostartStatus.Debugging;
 
 		using var registryKey = Registry.CurrentUser.OpenSubKey(RUN_APPROVED_KEY, false);
@@ -98,9 +97,9 @@ internal sealed class AutostartHelper
 
 	public static void EnableAutostart()
 	{
-		if (APP_IS_DEBUG)
+		if (DebugHelper.IsDebugMode)
 		{
-			Trace.WriteLine("CALLED EnableAutostart() EVEN THOUGH APP IS NOT RUNNING AS .EXE");
+			Trace.WriteLine("CALLED EnableAutostart() EVEN THOUGH APP IS IN DEBUG MODE OR NOT RUNNING AS .EXE");
 			return;
 		}
 
@@ -114,9 +113,9 @@ internal sealed class AutostartHelper
 
 	public static void DisableAutostart()
 	{
-		if (APP_IS_DEBUG)
+		if (DebugHelper.IsDebugMode)
 		{
-			Trace.WriteLine("CALLED DisableAutostart() EVEN THOUGH APP IS NOT RUNNING AS .EXE");
+			Trace.WriteLine("CALLED DisableAutostart() EVEN THOUGH APP IS IN DEBUG MODE OR NOT RUNNING AS .EXE");
 			return;
 		}
 

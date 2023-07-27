@@ -1,59 +1,91 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 
 namespace DeadEye.Hotkeys;
 
-public sealed class HotkeyPressedEventArgs : EventArgs
+internal sealed class HotkeyPressedEventArgs : EventArgs
 {
 	public readonly Key Key;
 	public readonly ModifierKeys Modifiers;
+	public readonly HotkeyType Type;
 
-	public HotkeyPressedEventArgs(ModifierKeys modifiers, Key key)
+	public HotkeyPressedEventArgs(ModifierKeys modifiers, Key key, HotkeyType type)
 	{
 		this.Modifiers = modifiers;
 		this.Key = key;
+		this.Type = type;
 	}
 }
 
-public delegate void HotkeyPressedEventHandler(object sender, HotkeyPressedEventArgs args);
+internal delegate void HotkeyPressedEventHandler(object sender, HotkeyPressedEventArgs args);
+
+internal enum HotkeyType
+{
+	Screenshot,
+	ColorPicker,
+}
 
 internal sealed class HotkeyManager : IDisposable
 {
 	private readonly Window _hotkeyWindow;
-	private Hotkey? _overlayHotkey;
+
+	private Hotkey? _screenshotHotkey;
+	private Hotkey? _colorPickerHotkey;
 
 	public HotkeyManager(Window window)
 	{
 		this._hotkeyWindow = window;
 	}
 
-	public bool IsHotkeyRegistered => this._overlayHotkey != null;
+	public bool IsScreenshotHotkeyRegistered => this._screenshotHotkey != null;
+	public bool IsColorPickerHotkeyRegistered => this._colorPickerHotkey != null;
 
 	public void Dispose()
 	{
-		this.UnregisterHotkey();
+		this.UnregisterHotkeys();
 	}
 
 	public event HotkeyPressedEventHandler? HotkeyPressed;
 
 	private void HotkeyPressedAction(Hotkey key)
 	{
-		var e = new HotkeyPressedEventArgs(key.KeyModifier, key.Key);
+		HotkeyType type;
+		if (Settings.Shared.ScreenshotKey != null && key.KeyModifier == Settings.Shared.ScreenshotKey.ModifierKeys && key.Key == Settings.Shared.ScreenshotKey.Key)
+			type = HotkeyType.Screenshot;
+		else if (Settings.Shared.ColorPickerKey != null && key.KeyModifier == Settings.Shared.ColorPickerKey.ModifierKeys && key.Key == Settings.Shared.ColorPickerKey.Key)
+			type = HotkeyType.ColorPicker;
+		else
+		{
+			Debug.WriteLine("Invalid Hotkey configuration");
+			return;
+		}
+
+		var e = new HotkeyPressedEventArgs(key.KeyModifier, key.Key, type);
 		this.HotkeyPressed?.Invoke(this, e);
 	}
 
-	public void RegisterHotkey()
+	public void RegisterHotkeys()
 	{
-		if (this._overlayHotkey != null)
-			return;
+		if (this._screenshotHotkey == null && Settings.Shared.ScreenshotKey != null)
+		{
+			this._screenshotHotkey = new Hotkey(Settings.Shared.ScreenshotKey.ModifierKeys, Settings.Shared.ScreenshotKey.Key, this._hotkeyWindow, this.HotkeyPressedAction);
+			Debug.WriteLine("Screenshot Hotkey registered");
+		}
 
-		this._overlayHotkey = new Hotkey(Settings.Shared.ScreenshotKey.ModifierKeys, Settings.Shared.ScreenshotKey.Key, this._hotkeyWindow, this.HotkeyPressedAction);
+		if (this._colorPickerHotkey == null && Settings.Shared.ColorPickerKey != null)
+		{
+			this._colorPickerHotkey = new Hotkey(Settings.Shared.ColorPickerKey.ModifierKeys, Settings.Shared.ColorPickerKey.Key, this._hotkeyWindow, this.HotkeyPressedAction);
+			Debug.WriteLine("Color Picker Hotkey registered");
+		}
 	}
 
-	public void UnregisterHotkey()
+	public void UnregisterHotkeys()
 	{
-		this._overlayHotkey?.Dispose();
-		this._overlayHotkey = null;
+		this._screenshotHotkey?.Dispose();
+		this._screenshotHotkey = null;
+		this._colorPickerHotkey?.Dispose();
+		this._colorPickerHotkey = null;
 	}
 
 	#region Singleton

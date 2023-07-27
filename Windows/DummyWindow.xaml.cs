@@ -17,6 +17,7 @@ public partial class DummyWindow
 {
 	private AboutWindow? _aboutWindow;
 	private ScreenshotFrameWindow? _screenshotWindow;
+	private ColorPickerWindow? _colorPickerWindow;
 	private SettingsWindow? _settingsWindow;
 
 	#region Initialization and Shutdown
@@ -32,8 +33,8 @@ public partial class DummyWindow
 
 		// initialize the hotkey manager and give it a reference to this window because *some* window is needed to receive events
 		HotkeyManager.InitShared(this);
-		HotkeyManager.Shared.RegisterHotkey();
-		HotkeyManager.Shared.HotkeyPressed += this.OverlayHotkeyAction;
+		HotkeyManager.Shared.RegisterHotkeys();
+		HotkeyManager.Shared.HotkeyPressed += this.HotkeyPressedHandler;
 
 		this.TaskbarIcon.TrayBalloonTipClicked += (_, _) =>
 		{
@@ -84,18 +85,31 @@ public partial class DummyWindow
 
 	#endregion
 
-	#region Hotkey Actions
+	#region Hotkey Handlers
 
-	private void OverlayHotkeyAction(object _, HotkeyPressedEventArgs e)
+	private void ScreenshotTaken(object sender, ScreenshotEventArgs args)
+	{
+		Debug.WriteLine("Screenshot taken.");
+		this.ClipboardSetImage(args.Screenshot);
+	}
+
+	private void ColorPicked(object sender, ColorPickEventArgs args)
+	{
+		Debug.WriteLine("Color picked.");
+		var c = args.PickedColor;
+		this.ClipboardSetText($"#{c.R:X2}{c.G:X2}{c.B:X2}");
+	}
+
+	private void HotkeyPressedHandler(object _, HotkeyPressedEventArgs e)
 	{
 		if (Settings.Shared.WaitingForHotkey)
 			return;
 
-		Debug.WriteLine("Overlay Hotkey!");
+		Debug.WriteLine("Hotkey Pressed!");
 
-		if (this._screenshotWindow != null)
+		if (this._screenshotWindow != null || this._colorPickerWindow != null)
 		{
-			Debug.WriteLine("Window is already open");
+			Debug.WriteLine("A Window is already open");
 			return;
 		}
 
@@ -108,32 +122,24 @@ public partial class DummyWindow
 		if (!Gdi32.DeleteObject(hBitmap))
 			Debug.WriteLine("Couldn't delete screenshot bitmap");
 
-		this._screenshotWindow = new ScreenshotFrameWindow(ref bitmapImage);
-		this._screenshotWindow.Closed += (_, _) => { this._screenshotWindow = null; };
-		this._screenshotWindow.ScreenshotTaken += (_, args) =>
+		switch (e.Type)
 		{
-			Debug.WriteLine("Screenshot taken.");
+			case HotkeyType.Screenshot:
+				this._screenshotWindow = new ScreenshotFrameWindow(ref bitmapImage);
+				this._screenshotWindow.Closed += (_, _) => { this._screenshotWindow = null; };
+				this._screenshotWindow.ScreenshotTaken += this.ScreenshotTaken;
+				this._screenshotWindow.Show();
+				break;
+			case HotkeyType.ColorPicker:
 
-			if (args.PickedColor.HasValue)
-			{
-				var c = args.PickedColor.Value;
-				this.ClipboardSetText($"#{c.R:X2}{c.G:X2}{c.B:X2}");
-				return;
-			}
-
-			if (!args.CroppedRect.HasValue)
-			{
-				Debug.WriteLine("ScreenshotEventArgs are empty!");
-				return;
-			}
-
-			var croppedBitmap = new CroppedBitmap((this._screenshotWindow.ScreenshotImage as BitmapSource)!, args.CroppedRect.Value);
-			croppedBitmap.Freeze();
-
-			this.ClipboardSetImage(croppedBitmap);
-		};
-
-		this._screenshotWindow.Show();
+				this._colorPickerWindow = new ColorPickerWindow(ref bitmapImage);
+				this._colorPickerWindow.Closed += (_, _) => { this._colorPickerWindow = null; };
+				this._colorPickerWindow.ColorPicked += this.ColorPicked;
+				this._colorPickerWindow.Show();
+				break;
+			default:
+				throw new NotImplementedException($"Invalid hotkey type {e.Type}");
+		}
 	}
 
 	#endregion

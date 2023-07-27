@@ -55,11 +55,12 @@ public partial class SettingsWindow
 	private static void EnsureHotkeyStatus()
 	{
 		if (Settings.Shared.WaitingForHotkey)
-			HotkeyManager.Shared.UnregisterHotkey();
+			HotkeyManager.Shared.UnregisterHotkeys();
 		else
-			HotkeyManager.Shared.RegisterHotkey();
+			HotkeyManager.Shared.RegisterHotkeys();
 
-		Debug.WriteLine($"Hotkey active: {HotkeyManager.Shared.IsHotkeyRegistered}");
+		Debug.WriteLine($"Screenshot Hotkey active: {HotkeyManager.Shared.IsScreenshotHotkeyRegistered}");
+		Debug.WriteLine($"Color Picker Hotkey active: {HotkeyManager.Shared.IsColorPickerHotkeyRegistered}");
 	}
 
 	private void SettingsWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
