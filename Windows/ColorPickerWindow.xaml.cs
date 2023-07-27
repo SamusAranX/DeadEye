@@ -42,17 +42,21 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 		this.ScreenshotImage = screenshotSource;
 	}
 
-	private void ColorPickerWindow_OnSourceInitialized(object sender, EventArgs e)
-	{
-#if !DEBUG
-			this.Topmost = true;
-#endif
-	}
-
 	public event ColorPickedEventHandler? ColorPicked;
 	private void OnColorPicked(ColorPickEventArgs e)
 	{
 		this.ColorPicked?.Invoke(this, e);
+	}
+
+	private void ColorPickerWindow_OnSourceInitialized(object sender, EventArgs e)
+	{
+		this.Topmost = !DebugHelper.IsDebugMode;
+	}
+
+	private void ColorPickerWindow_OnActivated(object? sender, EventArgs e)
+	{
+		Debug.WriteLine("got focus");
+		this.ColorPickerPosition = Mouse.GetPosition(this);
 	}
 
 	private void ColorPickerWindow_OnDeactivated(object sender, EventArgs e)

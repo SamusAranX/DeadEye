@@ -54,17 +54,15 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 	}
 
 	public event ScreenshotTakenEventHandler? ScreenshotTaken;
-
-	private void ScreenshotFrameWindow_OnSourceInitialized(object sender, EventArgs e)
-	{
-#if !DEBUG
-			this.Topmost = true;
-#endif
-	}
 	
 	private void OnScreenshot(ScreenshotEventArgs e)
 	{
 		this.ScreenshotTaken?.Invoke(this, e);
+	}
+
+	private void ScreenshotFrameWindow_OnSourceInitialized(object sender, EventArgs e)
+	{
+		this.Topmost = !DebugHelper.IsDebugMode;
 	}
 
 	private void ScreenshotFrameWindow_OnDeactivated(object sender, EventArgs e)
