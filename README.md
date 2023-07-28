@@ -22,6 +22,8 @@ Launching DeadEye will make its icon appear in the tray. Right-clicking the icon
 ![Screenshot of DeadEye's icon in the tray, with the context menu open](screenshots/trayicon.png)
 
 The Settings window offers a few cosmetic options and an autostart option:
-![Screenshot of DeadEye's settings window](screenshots/settings.png)
+![Screenshot of DeadEye's settings window](screenshots/settings_screenshot.png)
+![Screenshot of DeadEye's settings window](screenshots/settings_colorpicker.png)
 
-Pressing Alt+Shift+S will take a screenshot and present the area selection UI. After selecting a crop area, DeadEye will put the cropped screenshot into your clipboard.
+By default, pressing Shift+Alt+4 will take a screenshot and present the area selection UI. After selecting a crop area, DeadEye will put the cropped screenshot into your clipboard.
+Pressing Shift+Alt+C will open a color picker. Clicking any part of the image will copy a hex color value like `#ABCDEF` into the clipboard.
