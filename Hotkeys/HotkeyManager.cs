@@ -20,7 +20,7 @@ internal sealed class HotkeyPressedEventArgs : EventArgs
 
 internal delegate void HotkeyPressedEventHandler(object sender, HotkeyPressedEventArgs args);
 
-internal enum HotkeyType
+public enum HotkeyType
 {
 	Screenshot,
 	ColorPicker,

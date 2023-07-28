@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Xml;
 using System.Xml.Serialization;
 using DeadEye.Helpers;
+using DeadEye.Hotkeys;
 
 namespace DeadEye;
 
@@ -17,6 +18,33 @@ public enum GridType
 
 	[Description("Rule of Thirds")]
 	RuleOfThirds,
+}
+
+public enum PickerType
+{
+	[Description("Circle")]
+	Circle,
+
+	[Description("Square")]
+	Square,
+}
+
+public enum PickerSize
+{
+	[Description("Smallest")]
+	Smallest = 118,
+
+	[Description("Small")]
+	Small = 128,
+
+	[Description("Medium")]
+	Medium = 138,
+
+	[Description("Large")]
+	Large = 148,
+
+	[Description("Largest")]
+	Largest = 158,
 }
 
 public sealed class Settings : INotifyPropertyChanged
@@ -30,10 +58,13 @@ public sealed class Settings : INotifyPropertyChanged
 	private bool _showDimensions;
 	private double _textSize = 11;
 
+	private PickerType _pickerType = PickerType.Circle;
+	private PickerSize _pickerSize = PickerSize.Large;
+
 	private ShortcutKey? _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
 	private ShortcutKey? _colorPickerKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.C);
 
-	private bool _waitingForHotkey;
+	private HotkeyType? _waitingForHotkey;
 
 	public Settings()
 	{
@@ -115,6 +146,26 @@ public sealed class Settings : INotifyPropertyChanged
 		}
 	}
 
+	public PickerType PickerType
+	{
+		get => this._pickerType;
+		set
+		{
+			this._pickerType = value;
+			this.OnPropertyChanged();
+		}
+	}
+
+	public PickerSize PickerSize
+	{
+		get => this._pickerSize;
+		set
+		{
+			this._pickerSize = value;
+			this.OnPropertyChanged();
+		}
+	}
+
 	[XmlIgnore]
 	public bool AutostartEnabled
 	{
@@ -138,7 +189,7 @@ public sealed class Settings : INotifyPropertyChanged
 	}
 
 	[XmlIgnore]
-	public bool WaitingForHotkey
+	public HotkeyType? WaitingForHotkey
 	{
 		get => this._waitingForHotkey;
 		set

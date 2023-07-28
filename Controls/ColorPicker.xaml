@@ -3,24 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DeadEye"
              mc:Ignorable="d"
-             Height="158" Width="158"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             x:Name="ColorPickerControl"
+             DataContext="{Binding ElementName=ColorPickerControl}"
+             FontSize="20"
+             Width="143"
+             Height="143">
     <UserControl.Resources>
         <Style TargetType="Border">
-            <Setter Property="CornerRadius" Value="180" />
+            <Setter Property="CornerRadius"
+                    Value="{Binding CornerRadius, ElementName=ColorPickerControl, FallbackValue=180}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Source={x:Static local:Settings.Shared}, Path=PickerType}" Value="Square">
+                    <Setter Property="CornerRadius" Value="0" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Source={x:Static local:Settings.Shared}, Path=PickerType}" Value="Circle">
+                    <Setter Property="CornerRadius" Value="{Binding CornerRadius, ElementName=ColorPickerControl}" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
-        <BitmapImage x:Key="DefaultImage" UriSource="../Images/crop15px.png" />
+        <CroppedBitmap x:Key="DefaultImage" Source="../Images/grid_preview.png" SourceRect="353,233,15,15" />
 
-        <DrawingBrush x:Key="GridBrush" Viewport="0,0,10,10" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
+        <DrawingBrush x:Key="GridBrush" Viewport="0,0,9,9" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
             <DrawingBrush.Drawing>
                 <DrawingGroup>
                     <GeometryDrawing>
                         <GeometryDrawing.Geometry>
                             <GeometryGroup>
-                                <LineGeometry StartPoint="0,0" EndPoint="10,0" />
-                                <LineGeometry StartPoint="0,0" EndPoint="0,10" />
+                                <LineGeometry StartPoint="0,0" EndPoint="9,0" />
+                                <LineGeometry StartPoint="0,0" EndPoint="0,9" />
                             </GeometryGroup>
                         </GeometryDrawing.Geometry>
                         <GeometryDrawing.Pen>
@@ -33,7 +46,7 @@
     </UserControl.Resources>
 
     <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
-        <!-- masking border. margin must be the sum of the following borders' margins -->
+        <!-- masking border. margin must be the sum of the following 3 borders' margins -->
         <Border Background="White" x:Name="ImageMask" Margin="4" />
 
         <Border x:Name="OuterBorder" Background="{StaticResource TranslucentBlack}">
@@ -79,21 +92,20 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="4" />
-                                        <ColumnDefinition Width="14" />
+                                        <ColumnDefinition MaxWidth="24" />
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="14" />
-                                    </Grid.RowDefinitions>
 
-                                    <TextBlock x:Name="ColorName" 
-                                               Style="{StaticResource BlackOnWhite}" VerticalAlignment="Center" 
+                                    <TextBlock x:Name="ColorName"
+                                               Style="{StaticResource BlackOnWhite}" VerticalAlignment="Center"
                                                Text="{Binding PixelColor, Converter={StaticResource HexConv}, FallbackValue=#EB4619}" />
 
-                                    <Border x:Name="ColorWell" Grid.Column="2" CornerRadius="2">
+                                    <Border x:Name="ColorWell" Grid.Column="2" CornerRadius="2" Height="Auto"
+                                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}">
                                         <Border.Background>
                                             <SolidColorBrush Color="{Binding PixelColor}" />
                                         </Border.Background>
-                                        <Border CornerRadius="2" BorderThickness="1" BorderBrush="{StaticResource TranslucenterBlack}" />
+                                        <Border CornerRadius="2" BorderThickness="1"
+                                                BorderBrush="{StaticResource TranslucenterBlack}" />
                                     </Border>
                                 </Grid>
                             </Border>

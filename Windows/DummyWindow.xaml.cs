@@ -102,7 +102,7 @@ public partial class DummyWindow
 
 	private void HotkeyPressedHandler(object _, HotkeyPressedEventArgs e)
 	{
-		if (Settings.Shared.WaitingForHotkey)
+		if (Settings.Shared.WaitingForHotkey.HasValue)
 			return;
 
 		Debug.WriteLine("Hotkey Pressed!");

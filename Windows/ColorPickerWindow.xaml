@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:DeadEye"
         xmlns:windows="clr-namespace:DeadEye.Windows"
         mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize"
-        Title="DeadEye Screenshot Window" Height="240" Width="320"
+        Title="DeadEye Color Picker Window" Height="240" Width="320"
         UseLayoutRounding="True" Cursor="None"
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         RenderOptions.BitmapScalingMode="NearestNeighbor"
@@ -26,10 +26,12 @@
         <Canvas x:Name="ColorPickerCanvas" Background="Transparent">
             <ctrl:ColorPicker x:Name="ColorGizmo"
                               DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                              ImageSource="{Binding ColorPickerCroppedBitmap}"
-                              PixelColor="{Binding ColorPickerPixelColor}"
                               Canvas.Left="{Binding ColorPickerPosition.X}"
-                              Canvas.Top="{Binding ColorPickerPosition.Y}" />
+                              Canvas.Top="{Binding ColorPickerPosition.Y}"
+                              ImageSource="{Binding ColorPickerCroppedBitmap}"
+                              FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=TextSize}"
+                              PixelColor="{Binding ColorPickerPixelColor}"
+                              PickerType="{Binding Source={x:Static local:Settings.Shared}, Path=PickerType}" />
         </Canvas>
     </Grid>
 </Window>

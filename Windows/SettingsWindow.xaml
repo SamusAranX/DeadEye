@@ -11,12 +11,13 @@
         UseLayoutRounding="True" SourceInitialized="LoadAutostartStatus" Activated="LoadAutostartStatus"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
-        Title="Settings" Width="322" Height="500" SizeToContent="Height" ResizeMode="NoResize"
+        Title="Settings" Width="340" Height="500" SizeToContent="Height" ResizeMode="NoResize"
         Background="{x:Static SystemColors.MenuBrush}"
         PreviewKeyDown="SettingsWindow_OnPreviewKeyDown">
     <Window.Resources>
         <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
         <converters:TextSizeNameConverter x:Key="TextSizeNameConverter" />
+        <converters:HotkeyTypeToVisConverter x:Key="HotkeyTypeToVisConverter" />
 
         <DropShadowEffect x:Key="PreviewShadow" BlurRadius="8" Direction="270" ShadowDepth="2" Opacity="0.6" />
 
@@ -34,6 +35,7 @@
         <Point x:Key="CrossCursorPosition" X="201" Y="103" />
         <Point x:Key="RectHWDisplayPosition" X="214" Y="116" />
 
+        <!-- Used by the "disabled in the task manager" info label next to the Autostart checkbox -->
         <Style x:Key="InfoLabelStyle" TargetType="TextBlock">
             <Setter Property="Visibility" Value="Collapsed" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" />
@@ -42,210 +44,285 @@
         </Style>
     </Window.Resources>
 
-    <StackPanel Margin="8">
-        <DockPanel Margin="0,-5,0,5">
-            <Label DockPanel.Dock="Left" FontWeight="Bold" Padding="0,5,5,5">Screenshot Settings</Label>
-            <Separator />
-        </DockPanel>
+    <StackPanel Margin="6,8">
+        <TabControl SelectionChanged="Selector_OnSelectionChanged" Background="#F9F9F9">
+            <TabItem Header="Screenshot">
+                <StackPanel>
+                    <!-- Grid preview -->
+                    <Grid Margin="0,0,0,8" Height="169" Effect="{StaticResource PreviewShadow}">
+                        <Border Name="ScreenshotPreviewMask" Background="#F9F9F9" CornerRadius="4" />
 
-        <!-- Grid preview -->
-        <Grid Margin="0,0,0,8" Height="169" Effect="{StaticResource PreviewShadow}">
-            <Border Name="PreviewMask" Background="Magenta" CornerRadius="4" />
+                        <Grid>
+                            <Grid.OpacityMask>
+                                <VisualBrush Visual="{Binding ElementName=ScreenshotPreviewMask}" />
+                            </Grid.OpacityMask>
 
-            <Grid>
-                <Grid.OpacityMask>
-                    <VisualBrush Visual="{Binding ElementName=PreviewMask}" />
-                </Grid.OpacityMask>
+                            <Image Source="../Images/grid_preview.png" Stretch="UniformToFill" />
 
-                <Image Source="/Images/grid_preview.png" Stretch="UniformToFill" />
+                            <controls:PassepartoutView CutoutRect="{StaticResource DemoRectangle}" />
 
-                <controls:PassepartoutView CutoutRect="{StaticResource DemoRectangle}" />
+                            <Canvas>
+                                <controls:GuideGrid
+                                    Width="{Binding Width, Source={StaticResource DemoRectangle}, Mode=OneTime}"
+                                    Height="{Binding Height, Source={StaticResource DemoRectangle}, Mode=OneTime}"
+                                    Canvas.Left="{Binding X, Source={StaticResource DemoRectangle}, Mode=OneTime}"
+                                    Canvas.Top="{Binding Y, Source={StaticResource DemoRectangle}, Mode=OneTime}"
+                                    GridOpacity="0.6"
+                                    GridType="{Binding Source={x:Static deadeye:Settings.Shared}, Path=GridType}"
+                                    MarkCenter="{Binding Source={x:Static deadeye:Settings.Shared}, Path=MarkCenter}" />
 
-                <Canvas>
-                    <controls:GuideGrid Width="{Binding Width, Source={StaticResource DemoRectangle}, Mode=OneTime}"
-                                        Height="{Binding Height, Source={StaticResource DemoRectangle}, Mode=OneTime}"
-                                        Canvas.Left="{Binding X, Source={StaticResource DemoRectangle}, Mode=OneTime}"
-                                        Canvas.Top="{Binding Y, Source={StaticResource DemoRectangle}, Mode=OneTime}"
-                                        GridOpacity="0.6"
-                                        GridType="{Binding Source={x:Static deadeye:Settings.Shared}, Path=GridType}"
-                                        MarkCenter="{Binding Source={x:Static deadeye:Settings.Shared}, Path=MarkCenter}" />
+                                <Image Source="{StaticResource CrossCursor}"
+                                       Canvas.Left="{Binding X, Source={StaticResource CrossCursorPosition}, Mode=OneTime}"
+                                       Canvas.Top="{Binding Y, Source={StaticResource CrossCursorPosition}, Mode=OneTime}" />
 
-                    <Image Source="{StaticResource CrossCursor}"
-                           Canvas.Left="{Binding X, Source={StaticResource CrossCursorPosition}, Mode=OneTime}"
-                           Canvas.Top="{Binding Y, Source={StaticResource CrossCursorPosition}, Mode=OneTime}" />
+                                <controls:BoundsDisplay DisplayRect="{StaticResource DemoRectangle}"
+                                                        Canvas.Left="{Binding X, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
+                                                        Canvas.Top="{Binding Y, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
+                                                        FontSize="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}"
+                                                        Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowDimensions, Converter={StaticResource BoolToVis}}" />
+                            </Canvas>
 
-                    <controls:BoundsDisplay DisplayRect="{StaticResource DemoRectangle}"
-                                            Canvas.Left="{Binding X, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
-                                            Canvas.Top="{Binding Y, Source={StaticResource RectHWDisplayPosition}, Mode=OneTime}"
-                                            FontSize="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}"
-                                            Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowDimensions, Converter={StaticResource BoolToVis}}" />
-                </Canvas>
+                            <Label Content="Live Preview" Foreground="White" FontWeight="UltraBlack"
+                                   VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                        </Grid>
+                    </Grid>
 
-                <Label Content="Live Preview" Foreground="White" FontWeight="UltraBlack"
-                       VerticalAlignment="Bottom" HorizontalAlignment="Left" />
-            </Grid>
-        </Grid>
+                    <Grid Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="22" />
+                        </Grid.RowDefinitions>
 
-        <!-- Screenshot options -->
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="90" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="22" />
-                <RowDefinition Height="22" />
-                <RowDefinition Height="22" />
-                <RowDefinition Height="22" />
-                <RowDefinition Height="22" />
-            </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0"
+                                   Text="Grid Type:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-            <TextBlock Grid.Column="0" Grid.Row="0"
-                       Text="Grid Type:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                        <ComboBox Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"
+                                  ItemsSource="{Binding GridTypes}"
+                                  SelectedItem="{Binding Source={x:Static deadeye:Settings.Shared}, Path=GridType}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-            <ComboBox Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"
-                      ItemsSource="{Binding GridTypes}"
-                      SelectedItem="{Binding Source={x:Static deadeye:Settings.Shared}, Path=GridType}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+                        <TextBlock Grid.Column="0" Grid.Row="1"
+                                   Text="Grid Settings:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-            <TextBlock Grid.Column="0" Grid.Row="1"
-                       Text="Grid Settings:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                        <CheckBox Grid.Column="2" Grid.Row="1" Content="Mark Frame Center" VerticalAlignment="Center"
+                                  VerticalContentAlignment="Center"
+                                  IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=MarkCenter}" />
 
-            <CheckBox Grid.Column="2" Grid.Row="1" Content="Mark Frame Center" VerticalAlignment="Center"
-                      VerticalContentAlignment="Center"
-                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=MarkCenter}" />
+                        <CheckBox Grid.Column="2" Grid.Row="2" Content="Show Selection Dimensions"
+                                  VerticalAlignment="Center"
+                                  VerticalContentAlignment="Center"
+                                  IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowDimensions}" />
 
-            <CheckBox Grid.Column="2" Grid.Row="2" Content="Show Selection Dimensions" VerticalAlignment="Center"
-                      VerticalContentAlignment="Center"
-                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowDimensions}" />
+                        <TextBlock Grid.Column="0" Grid.Row="3"
+                                   Text="Text Size:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-            <TextBlock Grid.Column="0" Grid.Row="3"
-                       Text="Text Size:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                        <Grid Grid.Column="2" Grid.Row="3" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="60" />
+                            </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="2" Grid.Row="3" VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="60" />
-                </Grid.ColumnDefinitions>
+                            <Slider Grid.Column="0" x:Name="TextSizeSlider" VerticalAlignment="Center"
+                                    TickFrequency="1" IsSnapToTickEnabled="True" Minimum="11" Maximum="15"
+                                    Value="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}" />
 
-                <Slider Grid.Column="0" x:Name="TextSizeSlider" VerticalAlignment="Center"
-                        TickFrequency="1" IsSnapToTickEnabled="True" Minimum="10" Maximum="16"
-                        Value="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}" />
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={StaticResource TextSizeNameConverter}}" />
+                        </Grid>
 
-                <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
-                           Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={StaticResource TextSizeNameConverter}}" />
-            </Grid>
+                        <TextBlock Grid.Column="0" Grid.Row="4"
+                                   Text="Hotkey:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-            <TextBlock Grid.Column="0" Grid.Row="4"
-                       Text="Hotkey:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="4">
+                            <Button Padding="8,2"
+                                    Click="ScreenshotHotkeyButton_OnClick"
+                                    Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ScreenshotKey, FallbackValue=Placeholder}" />
 
-            <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="4">
-                <Button Padding="8,2"
-                        Click="HotkeyButton_OnClick"
-                        Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ScreenshotKey, FallbackValue=Placeholder}" />
+                            <TextBlock VerticalAlignment="Center" Margin="8,0,0,0"
+                                       Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=WaitingForHotkey, Converter={StaticResource HotkeyTypeToVisConverter}}">
+                                Waiting…
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
 
-                <TextBlock VerticalAlignment="Center" Margin="8,0,0,0"
-                           Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=WaitingForHotkey, Converter={StaticResource BoolToVis}}">
-                    Waiting…
-                </TextBlock>
-            </StackPanel>
-        </Grid>
+            <TabItem Header="Color Picker">
+                <StackPanel>
+                    <!-- Grid preview -->
+                    <Grid Margin="0,0,0,8" Height="169" Effect="{StaticResource PreviewShadow}">
+                        <Border Name="ColorPickerPreviewMask" Background="#F9F9F9" CornerRadius="4" />
 
-        <!-- Color Picker options -->
-        <!--<DockPanel Margin="0,0,0,5">
-            <Label DockPanel.Dock="Left" FontWeight="Bold" Padding="0,5,5,5">Color Picker Settings</Label>
-            <Separator />
-        </DockPanel>-->
+                        <Grid>
+                            <Grid.OpacityMask>
+                                <VisualBrush Visual="{Binding ElementName=ColorPickerPreviewMask}" />
+                            </Grid.OpacityMask>
 
-        <!-- Misc options -->
-        <DockPanel>
-            <Label DockPanel.Dock="Left" FontWeight="Bold" Padding="0,5,5,5">Misc Settings</Label>
-            <Separator />
-        </DockPanel>
+                            <Image Source="../Images/grid_preview.png" Stretch="UniformToFill" />
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="90" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="22" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
+                            <controls:ColorPicker
+                                PixelColor="#386581"
+                                FontSize="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}"
+                                PickerType="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerType}"
+                                Margin="24,0,0,0">
+                                <controls:ColorPicker.ImageSource>
+                                    <CroppedBitmap Source="../Images/grid_preview.png" SourceRect="353,233,15,15" />
+                                </controls:ColorPicker.ImageSource>
+                            </controls:ColorPicker>
 
-            <CheckBox Grid.Column="2" Grid.Row="0" x:Name="AutostartCheckbox" Content="Enable Autostart"
-                      VerticalContentAlignment="Center" VerticalAlignment="Center"
-                      Checked="AutostartCheckBox_OnCheckUncheck" Unchecked="AutostartCheckBox_OnCheckUncheck"
-                      IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartEnabled}">
-                <CheckBox.Style>
-                    <Style TargetType="CheckBox">
-                        <Setter Property="IsEnabled" Value="True" />
-                        <Style.Triggers>
-                            <DataTrigger
-                                Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
-                                Value="{x:Static helpers:AutostartStatus.Disabled}">
-                                <DataTrigger.Setters>
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                            <DataTrigger
-                                Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
-                                Value="{x:Static helpers:AutostartStatus.Debugging}">
-                                <DataTrigger.Setters>
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </CheckBox.Style>
-            </CheckBox>
+                            <Label Content="Live Preview" Foreground="White" FontWeight="UltraBlack"
+                                   VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                        </Grid>
+                    </Grid>
 
-            <TextBlock Grid.Column="2" Grid.Row="1">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock" BasedOn="{StaticResource InfoLabelStyle}">
-                        <Style.Triggers>
-                            <DataTrigger
-                                Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
-                                Value="{x:Static helpers:AutostartStatus.Disabled}">
-                                <DataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-                <Run>Disabled on the Task Manager's Startup tab</Run>
-            </TextBlock>
+                    <Grid Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="22" />
+                            <RowDefinition Height="22" />
+                        </Grid.RowDefinitions>
 
-            <TextBlock Grid.Column="2" Grid.Row="1">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock" BasedOn="{StaticResource InfoLabelStyle}">
-                        <Style.Triggers>
-                            <DataTrigger
-                                Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
-                                Value="{x:Static helpers:AutostartStatus.Debugging}">
-                                <DataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger.Setters>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-                <Run>Not running as .exe</Run>
-            </TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="0"
+                                   Text="Picker Type:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-            <!--<CheckBox Grid.Column="2" Grid.Row="1" Content="Use Fast Screenshot Capture" VerticalAlignment="Center"
-                      VerticalContentAlignment="Center"
-                      IsChecked="{Binding Source={x:Static deadeye:Settings.SharedSettings}, Path=SharedSettings.FastScreenshot}" />-->
-        </Grid>
+                        <ComboBox Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"
+                                  ItemsSource="{Binding PickerTypes}"
+                                  SelectedItem="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerType}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <TextBlock Grid.Column="0" Grid.Row="1"
+                                   Text="Text Size:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+
+                        <Grid Grid.Column="2" Grid.Row="1" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="60" />
+                            </Grid.ColumnDefinitions>
+
+                            <Slider Grid.Column="0" x:Name="TextSizeSlider2" VerticalAlignment="Center"
+                                    TickFrequency="1" IsSnapToTickEnabled="True" Minimum="11" Maximum="15"
+                                    Value="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}" />
+
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={StaticResource TextSizeNameConverter}}" />
+                        </Grid>
+
+                        <TextBlock Grid.Column="0" Grid.Row="2"
+                                   Text="Hotkey:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2">
+                            <Button Padding="8,2"
+                                    Click="ColorPickerHotkeyButton_OnClick"
+                                    Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ColorPickerKey, FallbackValue=Placeholder}" />
+
+                            <TextBlock VerticalAlignment="Center" Margin="8,0,0,0"
+                                       Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=WaitingForHotkey, Converter={StaticResource HotkeyTypeToVisConverter}}">
+                                Waiting…
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Autostart">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="22" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <CheckBox Grid.Column="2" Grid.Row="0" x:Name="AutostartCheckbox" Content="Enable Autostart"
+                              VerticalContentAlignment="Center" VerticalAlignment="Center"
+                              Checked="AutostartCheckBox_OnCheckUncheck" Unchecked="AutostartCheckBox_OnCheckUncheck"
+                              IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartEnabled}">
+                        <CheckBox.Style>
+                            <Style TargetType="CheckBox">
+                                <Setter Property="IsEnabled" Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
+                                        Value="{x:Static helpers:AutostartStatus.Disabled}">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
+                                        Value="{x:Static helpers:AutostartStatus.Debugging}">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </CheckBox.Style>
+                    </CheckBox>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource InfoLabelStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
+                                        Value="{x:Static helpers:AutostartStatus.Disabled}">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                        <Run>Disabled on the Task Manager's Startup tab</Run>
+                    </TextBlock>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource InfoLabelStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AutostartStatus}"
+                                        Value="{x:Static helpers:AutostartStatus.Debugging}">
+                                        <DataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger.Setters>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                        <Run>Not running as .exe</Run>
+                    </TextBlock>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Button Content="Close" HorizontalAlignment="Right" Padding="24,2" Margin="0,8,0,0" Click="CloseButton_OnClick" />
     </StackPanel>
-
-
 </Window>

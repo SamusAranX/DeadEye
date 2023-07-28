@@ -21,10 +21,16 @@ public partial class SettingsWindow
 		GridType.RuleOfThirds,
 	};
 
+	public static PickerType[] PickerTypes => new[]
+	{
+		PickerType.Circle,
+		PickerType.Square,
+	};
+
 	private void SettingsWindow_OnClosing(object sender, CancelEventArgs e)
 	{
-		// Instead of saving after every little change, save when the settings window closes
-		Settings.Shared.WaitingForHotkey = false;
+		// Instead of saving after every little change, only write the settings to disk when the settings window closes
+		Settings.Shared.WaitingForHotkey = null;
 		Settings.Shared.Save();
 	}
 
@@ -46,15 +52,34 @@ public partial class SettingsWindow
 			AutostartHelper.DisableAutostart();
 	}
 
-	private void HotkeyButton_OnClick(object sender, RoutedEventArgs e)
+	private void CloseButton_OnClick(object sender, RoutedEventArgs e)
 	{
-		Settings.Shared.WaitingForHotkey = !Settings.Shared.WaitingForHotkey;
+		this.Close();
+	}
+
+	private void ScreenshotHotkeyButton_OnClick(object sender, RoutedEventArgs e)
+	{
+		if (Settings.Shared.WaitingForHotkey.HasValue)
+			Settings.Shared.WaitingForHotkey = null;
+		else
+			Settings.Shared.WaitingForHotkey = HotkeyType.Screenshot;
+
+		EnsureHotkeyStatus();
+	}
+
+	private void ColorPickerHotkeyButton_OnClick(object sender, RoutedEventArgs e)
+	{
+		if (Settings.Shared.WaitingForHotkey.HasValue)
+			Settings.Shared.WaitingForHotkey = null;
+		else
+			Settings.Shared.WaitingForHotkey = HotkeyType.ColorPicker;
+
 		EnsureHotkeyStatus();
 	}
 
 	private static void EnsureHotkeyStatus()
 	{
-		if (Settings.Shared.WaitingForHotkey)
+		if (Settings.Shared.WaitingForHotkey.HasValue)
 			HotkeyManager.Shared.UnregisterHotkeys();
 		else
 			HotkeyManager.Shared.RegisterHotkeys();
@@ -63,9 +88,19 @@ public partial class SettingsWindow
 		Debug.WriteLine($"Color Picker Hotkey active: {HotkeyManager.Shared.IsColorPickerHotkeyRegistered}");
 	}
 
+	private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+	{
+		if (e.Source is not TabControl || !Settings.Shared.WaitingForHotkey.HasValue)
+			return;
+
+		// cancel hotkey process when switching tabs
+		Settings.Shared.WaitingForHotkey = null;
+		EnsureHotkeyStatus();
+	}
+
 	private void SettingsWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
 	{
-		if (!Settings.Shared.WaitingForHotkey)
+		if (!Settings.Shared.WaitingForHotkey.HasValue)
 			return;
 
 		e.Handled = true;
@@ -85,8 +120,18 @@ public partial class SettingsWindow
 		if (key.HasValue && key != Key.Escape)
 		{
 			// we actually have a new hotkey
-			Settings.Shared.ScreenshotKey = new ShortcutKey(modifiers, key.Value);
-			Settings.Shared.WaitingForHotkey = false;
+			var newHotkey = new ShortcutKey(modifiers, key.Value);
+			switch (Settings.Shared.WaitingForHotkey)
+			{
+				case HotkeyType.Screenshot:
+					Settings.Shared.ScreenshotKey = newHotkey;
+					break;
+				case HotkeyType.ColorPicker:
+					Settings.Shared.ColorPickerKey = newHotkey;
+					break;
+			}
+
+			Settings.Shared.WaitingForHotkey = null;
 		}
 
 		EnsureHotkeyStatus();
