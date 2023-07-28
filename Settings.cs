@@ -51,7 +51,6 @@ public sealed class Settings : INotifyPropertyChanged
 {
 	private bool _autostartEnabled;
 	private AutostartStatus _autostartStatus;
-	private bool _fastScreenshot = true;
 
 	private GridType _gridType = GridType.None;
 	private bool _markCenter;
@@ -102,16 +101,6 @@ public sealed class Settings : INotifyPropertyChanged
 		set
 		{
 			this._gridType = value;
-			this.OnPropertyChanged();
-		}
-	}
-
-	public bool FastScreenshot
-	{
-		get => this._fastScreenshot;
-		set
-		{
-			this._fastScreenshot = value;
 			this.OnPropertyChanged();
 		}
 	}
