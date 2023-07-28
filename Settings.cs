@@ -29,24 +29,6 @@ public enum PickerType
 	Square,
 }
 
-public enum PickerSize
-{
-	[Description("Smallest")]
-	Smallest = 118,
-
-	[Description("Small")]
-	Small = 128,
-
-	[Description("Medium")]
-	Medium = 138,
-
-	[Description("Large")]
-	Large = 148,
-
-	[Description("Largest")]
-	Largest = 158,
-}
-
 public sealed class Settings : INotifyPropertyChanged
 {
 	private bool _autostartEnabled;
@@ -58,7 +40,6 @@ public sealed class Settings : INotifyPropertyChanged
 	private double _textSize = 11;
 
 	private PickerType _pickerType = PickerType.Circle;
-	private PickerSize _pickerSize = PickerSize.Large;
 
 	private ShortcutKey? _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
 	private ShortcutKey? _colorPickerKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.C);
@@ -141,16 +122,6 @@ public sealed class Settings : INotifyPropertyChanged
 		set
 		{
 			this._pickerType = value;
-			this.OnPropertyChanged();
-		}
-	}
-
-	public PickerSize PickerSize
-	{
-		get => this._pickerSize;
-		set
-		{
-			this._pickerSize = value;
 			this.OnPropertyChanged();
 		}
 	}
