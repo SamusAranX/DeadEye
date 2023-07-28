@@ -19,6 +19,7 @@ As of Windows 10, Version 20H2, Snipping Tool remains broken.
 ## Usage and Screenshots
 
 Launching DeadEye will make its icon appear in the tray. Right-clicking the icon opens the menu:
+
 ![Screenshot of DeadEye's icon in the tray, with the context menu open](screenshots/trayicon.png)
 
 The Settings window offers a few cosmetic options and an autostart option:
