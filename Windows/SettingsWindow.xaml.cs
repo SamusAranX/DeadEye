@@ -21,12 +21,6 @@ public partial class SettingsWindow
 		GridType.RuleOfThirds,
 	};
 
-	public static PickerType[] PickerTypes => new[]
-	{
-		PickerType.Circle,
-		PickerType.Square,
-	};
-
 	private void SettingsWindow_OnClosing(object sender, CancelEventArgs e)
 	{
 		// Instead of saving after every little change, only write the settings to disk when the settings window closes

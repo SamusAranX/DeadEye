@@ -176,7 +176,7 @@
                             <controls:ColorPicker
                                 PixelColor="#386581"
                                 FontSize="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}"
-                                PickerType="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerType}"
+                                PickerRadius="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerRadius}"
                                 Margin="24,0,0,0">
                                 <controls:ColorPicker.ImageSource>
                                     <CroppedBitmap Source="../Images/grid_preview.png" SourceRect="353,233,15,15" />
@@ -201,17 +201,21 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Column="0" Grid.Row="0"
-                                   Text="Picker Type:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                                   Text="Corner Radius:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-                        <ComboBox Grid.Column="2" Grid.Row="0" VerticalAlignment="Center"
-                                  ItemsSource="{Binding PickerTypes}"
-                                  SelectedItem="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerType}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                        <Grid Grid.Column="2" Grid.Row="0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="60" />
+                            </Grid.ColumnDefinitions>
+
+                            <Slider Grid.Column="0" x:Name="PickerRadiusSlider" VerticalAlignment="Center"
+                                    TickFrequency="1" IsSnapToTickEnabled="True" Minimum="0" Maximum="72"
+                                    Value="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerRadius}" />
+
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerRadius}" />
+                        </Grid>
 
                         <TextBlock Grid.Column="0" Grid.Row="1"
                                    Text="Text Size:" VerticalAlignment="Center" HorizontalAlignment="Right" />

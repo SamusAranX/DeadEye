@@ -20,15 +20,6 @@ public enum GridType
 	RuleOfThirds,
 }
 
-public enum PickerType
-{
-	[Description("Circle")]
-	Circle,
-
-	[Description("Square")]
-	Square,
-}
-
 public sealed class Settings : INotifyPropertyChanged
 {
 	private bool _autostartEnabled;
@@ -38,8 +29,8 @@ public sealed class Settings : INotifyPropertyChanged
 	private bool _markCenter;
 	private bool _showDimensions;
 	private double _textSize = 11;
-
-	private PickerType _pickerType = PickerType.Circle;
+	
+	private double _pickerRadius = 72;
 
 	private ShortcutKey? _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
 	private ShortcutKey? _colorPickerKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.C);
@@ -116,12 +107,12 @@ public sealed class Settings : INotifyPropertyChanged
 		}
 	}
 
-	public PickerType PickerType
+	public double PickerRadius
 	{
-		get => this._pickerType;
+		get => this._pickerRadius;
 		set
 		{
-			this._pickerType = value;
+			this._pickerRadius = value;
 			this.OnPropertyChanged();
 		}
 	}
@@ -188,7 +179,12 @@ public sealed class Settings : INotifyPropertyChanged
 	public static Settings Load()
 	{
 		if (!File.Exists(SETTINGS_PATH))
-			return new Settings();
+		{
+			Debug.WriteLine("Creating new settings file");
+			var s = new Settings();
+			s.Save();
+			return s;
+		}
 
 		try
 		{
@@ -217,8 +213,7 @@ public sealed class Settings : INotifyPropertyChanged
 		}
 		catch (Exception e)
 		{
-			Debug.WriteLine("Error while loading settings");
-			Debug.WriteLine(e);
+			Debug.WriteLine("Error while loading settings:\n{0}", e);
 			var s = new Settings();
 			s.Save();
 			return s;
@@ -233,11 +228,21 @@ public sealed class Settings : INotifyPropertyChanged
 
 		Directory.CreateDirectory(settingsDir);
 
+		var writerSettings = new XmlWriterSettings
+		{
+			Indent = true,
+			IndentChars = "\t",
+			NewLineChars = "\n",
+			OmitXmlDeclaration = true,
+		};
+
 		try
 		{
 			using var s = new FileStream(SETTINGS_PATH, FileMode.Create);
+			using var writer = XmlWriter.Create(s, writerSettings);
+
 			var x = new XmlSerializer(typeof(Settings));
-			x.Serialize(s, this);
+			x.Serialize(writer, this);
 		}
 		catch (Exception e)
 		{

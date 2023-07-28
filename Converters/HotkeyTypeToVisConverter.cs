@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using DeadEye.Hotkeys;
@@ -10,7 +9,6 @@ internal sealed class HotkeyTypeToVisConverter : IValueConverter
 {
 	public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
 	{
-		Debug.WriteLine("hotkey type: {0}", value);
 		if (value == null)
 			return Visibility.Collapsed;
 

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
@@ -8,25 +7,39 @@ namespace DeadEye.Controls;
 
 public partial class ColorPicker : INotifyPropertyChanged
 {
-	public const int SOURCE_RECT_SIZE = 15;
+	public const int IMAGE_SOURCE_RECT_SIZE = 15;
 
-	public static readonly DependencyProperty PixelColorProperty = DependencyProperty.RegisterAttached(
-		"PixelColor",
+	public static readonly DependencyProperty PixelColorProperty = DependencyProperty.Register(
+		nameof(PixelColor),
 		typeof(Color),
 		typeof(ColorPicker),
 		new FrameworkPropertyMetadata(Colors.Magenta, FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
 
-	public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.RegisterAttached(
-		"ImageSource",
+	public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register(
+		nameof(ImageSource),
 		typeof(ImageSource),
 		typeof(ColorPicker),
 		new FrameworkPropertyMetadata(default(ImageSource), FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
 
-	public static readonly DependencyProperty PickerTypeProperty = DependencyProperty.RegisterAttached(
-		"PickerType",
-		typeof(PickerType),
+	public static readonly DependencyProperty PickerRadiusProperty = DependencyProperty.Register(
+		nameof(PickerRadius),
+		typeof(double),
 		typeof(ColorPicker),
-		new FrameworkPropertyMetadata(PickerType.Circle, FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
+		new FrameworkPropertyMetadata((double)72, FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender, OnPickerRadiusChanged));
+
+	private static void OnPickerRadiusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is not ColorPicker picker)
+			return;
+
+		if (e.Property != PickerRadiusProperty)
+			return;
+
+		picker.PickerRadius2 = Math.Max(0, (double)e.NewValue - 1);
+		picker.PickerRadius3 = Math.Max(0, (double)e.NewValue - 4);
+
+		//Debug.WriteLine("{0} {1} {2}", picker.PickerRadius, picker.PickerRadius2, picker.PickerRadius3);
+	}
 
 	#region INotifyPropertyChanged
 
@@ -43,33 +56,10 @@ public partial class ColorPicker : INotifyPropertyChanged
 	{
 		this.InitializeComponent();
 
-		this.UpdateCornerRadius();
-	}
+		this.PickerRadius2 = Math.Max(0, this.PickerRadius - 1);
+		this.PickerRadius3 = Math.Max(0, this.PickerRadius - 4);
 
-	private void UpdateCornerRadius()
-	{
-		switch (this.PickerType)
-		{
-			case PickerType.Circle:
-				this.CornerRadius = 180;
-				break;
-			case PickerType.Square:
-				this.CornerRadius = 0;
-				break;
-		}
-	}
-
-	private double _cornerRadius;
-
-	public double CornerRadius
-	{
-		get => this._cornerRadius;
-		set
-		{
-			this._cornerRadius = value;
-			this.OnPropertyChanged();
-			Debug.WriteLine("Updated CornerRadius to {0}", this._cornerRadius);
-		}
+		//Debug.WriteLine("{0} {1} {2}", this.PickerRadius, this.PickerRadius2, this.PickerRadius3);
 	}
 
 	public Color PixelColor
@@ -84,13 +74,31 @@ public partial class ColorPicker : INotifyPropertyChanged
 		set => this.SetValue(ImageSourceProperty, value);
 	}
 
-	public PickerType PickerType
+	public double PickerRadius
 	{
-		get => (PickerType)this.GetValue(PickerTypeProperty);
-		set
+		get => (double)this.GetValue(PickerRadiusProperty);
+		set => this.SetValue(PickerRadiusProperty, value);
+	}
+
+	private double _pickerRadius2, _pickerRadius3;
+
+	public double PickerRadius2
+	{
+		get => this._pickerRadius2;
+		private set
 		{
-			this.SetValue(PickerTypeProperty, value);
-			this.UpdateCornerRadius();
+			this._pickerRadius2 = value;
+			this.OnPropertyChanged();
+		}
+	}
+
+	public double PickerRadius3
+	{
+		get => this._pickerRadius3;
+		private set
+		{
+			this._pickerRadius3 = value;
+			this.OnPropertyChanged();
 		}
 	}
 }

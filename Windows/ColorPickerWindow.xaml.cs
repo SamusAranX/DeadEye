@@ -140,7 +140,7 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 			return;
 
 		this.ColorPickerCroppedBitmap = new CroppedBitmap((this.ScreenshotImage as BitmapSource)!, this._colorPickerSourceRect);
-		var offset = (int)Math.Floor((double)ColorPicker.SOURCE_RECT_SIZE / 2);
+		var offset = (int)Math.Floor((double)ColorPicker.IMAGE_SOURCE_RECT_SIZE / 2);
 		var cb = new CroppedBitmap(this.ColorPickerCroppedBitmap, new Int32Rect(offset, offset, 1, 1));
 		var pixels = new byte[4]; // bgra
 		cb.CopyPixels(pixels, 4, 0);
@@ -172,12 +172,12 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 		var pickerPosY = (int)Math.Floor(pos.Y - this._colorPickerSize / 2);
 		this.ColorPickerPosition = new Point(pickerPosX, pickerPosY);
 
-		var pickerPadding = (int)Math.Round((double)ColorPicker.SOURCE_RECT_SIZE / 2);
+		var pickerPadding = (int)Math.Round((double)ColorPicker.IMAGE_SOURCE_RECT_SIZE / 2);
 		pos.X -= pickerPadding;
 		pos.Y -= pickerPadding;
-		pos.X = Math.Clamp(pos.X, 0, this.ActualWidth - ColorPicker.SOURCE_RECT_SIZE);
-		pos.Y = Math.Clamp(pos.Y, 0, this.ActualHeight - ColorPicker.SOURCE_RECT_SIZE);
-		this._colorPickerSourceRect = new Int32Rect((int)pos.X, (int)pos.Y, ColorPicker.SOURCE_RECT_SIZE, ColorPicker.SOURCE_RECT_SIZE);
+		pos.X = Math.Clamp(pos.X, 0, this.ActualWidth - ColorPicker.IMAGE_SOURCE_RECT_SIZE);
+		pos.Y = Math.Clamp(pos.Y, 0, this.ActualHeight - ColorPicker.IMAGE_SOURCE_RECT_SIZE);
+		this._colorPickerSourceRect = new Int32Rect((int)pos.X, (int)pos.Y, ColorPicker.IMAGE_SOURCE_RECT_SIZE, ColorPicker.IMAGE_SOURCE_RECT_SIZE);
 		//Debug.WriteLine(this._colorPickerSourceRect);
 
 		this.UpdateColorPicker();

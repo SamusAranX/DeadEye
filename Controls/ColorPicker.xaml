@@ -3,27 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:DeadEye"
+             xmlns:local="clr-namespace:DeadEye" 
+             xmlns:controls="clr-namespace:DeadEye.Controls"
              mc:Ignorable="d"
              x:Name="ColorPickerControl"
              DataContext="{Binding ElementName=ColorPickerControl}"
-             FontSize="20"
+             FontSize="15"
              Width="143"
              Height="143">
     <UserControl.Resources>
-        <Style TargetType="Border">
-            <Setter Property="CornerRadius"
-                    Value="{Binding CornerRadius, ElementName=ColorPickerControl, FallbackValue=180}" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Source={x:Static local:Settings.Shared}, Path=PickerType}" Value="Square">
-                    <Setter Property="CornerRadius" Value="0" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Source={x:Static local:Settings.Shared}, Path=PickerType}" Value="Circle">
-                    <Setter Property="CornerRadius" Value="{Binding CornerRadius, ElementName=ColorPickerControl}" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
         <CroppedBitmap x:Key="DefaultImage" Source="../Images/grid_preview.png" SourceRect="353,233,15,15" />
 
         <DrawingBrush x:Key="GridBrush" Viewport="0,0,9,9" ViewportUnits="Absolute" Stretch="None" TileMode="Tile">
@@ -47,11 +35,11 @@
 
     <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
         <!-- masking border. margin must be the sum of the following 3 borders' margins -->
-        <Border Background="White" x:Name="ImageMask" Margin="4" />
+        <Border Background="White" x:Name="ImageMask" Margin="4" CornerRadius="{Binding PickerRadius3}" />
 
-        <Border x:Name="OuterBorder" Background="{StaticResource TranslucentBlack}">
-            <Border x:Name="WhiteBorder" Background="White" Margin="1">
-                <Border x:Name="ImageContainer" Background="Red" Margin="3" ClipToBounds="True">
+        <Border x:Name="OuterBorder" Background="{StaticResource TranslucentBlack}" CornerRadius="{Binding PickerRadius}">
+            <Border x:Name="WhiteBorder" Background="White" Margin="1" CornerRadius="{Binding PickerRadius2}">
+                <Border x:Name="ImageContainer" Background="Red" Margin="3">
                     <Border.OpacityMask>
                         <VisualBrush Visual="{Binding ElementName=ImageMask}" />
                     </Border.OpacityMask>
@@ -114,7 +102,7 @@
                         <Border x:Name="InnerBorder"
                                 Grid.Column="0" Grid.Row="0"
                                 Grid.ColumnSpan="4" Grid.RowSpan="4"
-                                BorderThickness="1" BorderBrush="{StaticResource TranslucentBlack}" />
+                                BorderThickness="1" BorderBrush="{StaticResource TranslucentBlack}" CornerRadius="{Binding PickerRadius3}" />
 
                         <Border x:Name="CenterHighlight"
                                 Grid.Column="1" Grid.Row="1"
