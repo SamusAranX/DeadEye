@@ -1,3 +1,5 @@
+*.sln text eol=lf
+*.csproj text eol=lf
 *.cs text eol=lf
 *.xaml text eol=lf
 *.md text eol=lf
