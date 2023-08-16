@@ -32,4 +32,10 @@ public partial class App : IDisposable
 			Debug.WriteLine($"[{i}{isPrimary}] {screen}");
 		}
 	}
+
+	private void App_OnSessionEnding(object sender, SessionEndingCancelEventArgs e)
+	{
+		// make sure the app shuts down cleanly
+		this.Shutdown();
+	}
 }

@@ -19,8 +19,6 @@
         <converters:TextSizeNameConverter x:Key="TextSizeNameConverter" />
         <converters:HotkeyTypeToVisConverter x:Key="HotkeyTypeToVisConverter" />
 
-        <DropShadowEffect x:Key="PreviewShadow" BlurRadius="8" Direction="270" ShadowDepth="2" Opacity="0.6" />
-
         <DrawingImage x:Key="CrossCursor">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V18 H18 V0 H0 Z">
@@ -49,7 +47,7 @@
             <TabItem Header="Screenshot">
                 <StackPanel>
                     <!-- Grid preview -->
-                    <Grid Margin="0,0,0,8" Height="169" Effect="{StaticResource PreviewShadow}">
+                    <Grid Margin="0,0,0,8" Height="169">
                         <Border Name="ScreenshotPreviewMask" Background="#F9F9F9" CornerRadius="4" />
 
                         <Grid>
@@ -163,7 +161,7 @@
             <TabItem Header="Color Picker">
                 <StackPanel>
                     <!-- Grid preview -->
-                    <Grid Margin="0,0,0,8" Height="169" Effect="{StaticResource PreviewShadow}">
+                    <Grid Margin="0,0,0,8" Height="169">
                         <Border Name="ColorPickerPreviewMask" Background="#F9F9F9" CornerRadius="4" />
 
                         <Grid>
