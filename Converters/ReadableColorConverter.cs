@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -10,27 +11,29 @@ internal sealed class ReadableColorConverter : MarkupExtension, IValueConverter
 {
 	private static ReadableColorConverter? _converter;
 
-	private static readonly SolidColorBrush MAGENTA = new(Colors.Magenta);
-	private static readonly SolidColorBrush BLACK = new(Colors.Black);
-	private static readonly SolidColorBrush WHITE = new(Colors.White);
+	private static readonly SolidColorBrush BLACK = Brushes.Black;
+	private static readonly SolidColorBrush WHITE = Brushes.White;
 
-	public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+	public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
-		if (value == null)
-			return BLACK;
+		Color color;
 
 		if (value is SolidColorBrush brush)
-			value = brush.Color;
-
-		var color = (Color)value;
-		if (color.A <= 102)
+			color = brush.Color;
+		else if (value is Color c)
+			color = c;
+		else
+		{
+			Debug.WriteLine("no color!");
 			return BLACK;
+		}
+			
 
-		var luma = color.GetLuma();
-		return luma < 0.4 ? WHITE : BLACK;
+		var lightness = color.GetLightness();
+		return lightness < 0.5 ? WHITE : BLACK;
 	}
 
-	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+	public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
 		throw new NotImplementedException();
 	}

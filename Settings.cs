@@ -22,7 +22,7 @@ public enum GridType
 
 public sealed class Settings : INotifyPropertyChanged
 {
-	private bool _autostartEnabled;
+	private bool _autostartEnabled = AutostartHelper.CheckAutostartStatus();
 	private AutostartStatus _autostartStatus;
 
 	private GridType _gridType = GridType.None;
@@ -31,16 +31,12 @@ public sealed class Settings : INotifyPropertyChanged
 	private double _textSize = 11;
 	
 	private double _pickerRadius = 72;
+	private bool _allColorLabel = true;
 
 	private ShortcutKey? _screenshotKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.D4);
 	private ShortcutKey? _colorPickerKey = new(ModifierKeys.Shift | ModifierKeys.Alt, Key.C);
 
 	private HotkeyType? _waitingForHotkey;
-
-	public Settings()
-	{
-		this._autostartEnabled = AutostartHelper.CheckAutostartStatus();
-	}
 
 	#region Singleton
 
@@ -113,6 +109,16 @@ public sealed class Settings : INotifyPropertyChanged
 		set
 		{
 			this._pickerRadius = value;
+			this.OnPropertyChanged();
+		}
+	}
+
+	public bool AllColorLabel
+	{
+		get => this._allColorLabel;
+		set
+		{
+			this._allColorLabel = value;
 			this.OnPropertyChanged();
 		}
 	}

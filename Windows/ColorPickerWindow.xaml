@@ -31,7 +31,8 @@
                               ImageSource="{Binding ColorPickerCroppedBitmap}"
                               FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=TextSize}"
                               PixelColor="{Binding ColorPickerPixelColor}"
-                              PickerRadius="{Binding Source={x:Static local:Settings.Shared}, Path=PickerRadius}" />
+                              PickerRadius="{Binding Source={x:Static local:Settings.Shared}, Path=PickerRadius}"
+                              ShowColorWell="{Binding Source={x:Static local:Settings.Shared}, Path=ShowColorWell}"/>
         </Canvas>
     </Grid>
 </Window>

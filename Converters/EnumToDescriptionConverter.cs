@@ -1,12 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace DeadEye.Converters;
 
-public sealed class EnumToDescriptionConverter : IValueConverter
+internal sealed class EnumToDescriptionConverter : MarkupExtension, IValueConverter
 {
-	public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+	private static EnumToDescriptionConverter? _converter;
+
+	public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
 		if (value == null)
 			return string.Empty;
@@ -16,7 +19,7 @@ public sealed class EnumToDescriptionConverter : IValueConverter
 		return type.IsEnum ? GetDescription(type, value) : string.Empty;
 	}
 
-	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+	public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
 		throw new NotImplementedException();
 	}
@@ -32,5 +35,10 @@ public sealed class EnumToDescriptionConverter : IValueConverter
 				.FirstOrDefault() is DescriptionAttribute descriptionAttribute
 				? descriptionAttribute.Description
 				: enumValueStr;
+	}
+
+	public override object ProvideValue(IServiceProvider serviceProvider)
+	{
+		return _converter ??= new EnumToDescriptionConverter();
 	}
 }

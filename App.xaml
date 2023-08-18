@@ -1,12 +1,15 @@
 ﻿<Application x:Class="DeadEye.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="clr-namespace:DeadEye.Converters" SessionEnding="App_OnSessionEnding"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             SessionEnding="App_OnSessionEnding"
              Startup="App_OnStartup" StartupUri="Windows/DummyWindow.xaml"
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <converters:ColorHexConverter x:Key="HexConv" />
+
+        <system:Boolean x:Key="True">True</system:Boolean>
+        <system:Boolean x:Key="False">False</system:Boolean>
 
         <SolidColorBrush x:Key="TranslucentBlack" Color="#66000000" />
         <SolidColorBrush x:Key="TranslucenterBlack" Color="#33000000" />

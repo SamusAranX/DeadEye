@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:deadeye="clr-namespace:DeadEye"
-        xmlns:converters="clr-namespace:DeadEye.Converters"
+        xmlns:conv="clr-namespace:DeadEye.Converters"
         xmlns:controls="clr-namespace:DeadEye.Controls"
         xmlns:helpers="clr-namespace:DeadEye.Helpers"
         mc:Ignorable="d" Icon="/Images/camera.ico" Closing="SettingsWindow_OnClosing"
@@ -15,10 +15,6 @@
         Background="{x:Static SystemColors.MenuBrush}"
         PreviewKeyDown="SettingsWindow_OnPreviewKeyDown">
     <Window.Resources>
-        <converters:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
-        <converters:TextSizeNameConverter x:Key="TextSizeNameConverter" />
-        <converters:HotkeyTypeToVisConverter x:Key="HotkeyTypeToVisConverter" />
-
         <DrawingImage x:Key="CrossCursor">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V18 H18 V0 H0 Z">
@@ -107,7 +103,7 @@
                                   SelectedItem="{Binding Source={x:Static deadeye:Settings.Shared}, Path=GridType}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                                    <TextBlock Text="{Binding Converter={conv:EnumToDescriptionConverter}}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
@@ -138,7 +134,7 @@
                                     Value="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}" />
 
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                       Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={StaticResource TextSizeNameConverter}}" />
+                                       Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={conv:TextSizeNameConverter}}" />
                         </Grid>
 
                         <TextBlock Grid.Column="0" Grid.Row="4"
@@ -150,7 +146,7 @@
                                     Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ScreenshotKey, FallbackValue=Placeholder}" />
 
                             <TextBlock VerticalAlignment="Center" Margin="8,0,0,0"
-                                       Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=WaitingForHotkey, Converter={StaticResource HotkeyTypeToVisConverter}}">
+                                       Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=WaitingForHotkey, Converter={conv:HotkeyTypeToVisConverter}}">
                                 Waiting…
                             </TextBlock>
                         </StackPanel>
@@ -175,6 +171,7 @@
                                 PixelColor="#386581"
                                 FontSize="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}"
                                 PickerRadius="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerRadius}"
+                                ShowColorWell="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowColorWell}"
                                 Margin="24,0,0,0">
                                 <controls:ColorPicker.ImageSource>
                                     <CroppedBitmap Source="../Images/grid_preview.png" SourceRect="353,233,15,15" />
@@ -193,6 +190,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="22" />
                             <RowDefinition Height="22" />
                             <RowDefinition Height="22" />
                             <RowDefinition Height="22" />
@@ -229,19 +227,26 @@
                                     Value="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}" />
 
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                       Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={StaticResource TextSizeNameConverter}}" />
+                                       Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={conv:TextSizeNameConverter}}" />
                         </Grid>
 
                         <TextBlock Grid.Column="0" Grid.Row="2"
+                                   Text="Color Preview:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+
+                        <CheckBox Grid.Column="2" Grid.Row="2" Content="Show Small Preview" VerticalAlignment="Center"
+                                  VerticalContentAlignment="Center"
+                                  IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowColorWell}" />
+
+                        <TextBlock Grid.Column="0" Grid.Row="3"
                                    Text="Hotkey:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="2">
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="3">
                             <Button Padding="8,2"
                                     Click="ColorPickerHotkeyButton_OnClick"
                                     Content="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ColorPickerKey, FallbackValue=Placeholder}" />
 
                             <TextBlock VerticalAlignment="Center" Margin="8,0,0,0"
-                                       Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=WaitingForHotkey, Converter={StaticResource HotkeyTypeToVisConverter}}">
+                                       Visibility="{Binding Source={x:Static deadeye:Settings.Shared}, Path=WaitingForHotkey, Converter={conv:HotkeyTypeToVisConverter}}">
                                 Waiting…
                             </TextBlock>
                         </StackPanel>

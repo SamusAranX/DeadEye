@@ -57,6 +57,9 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 	{
 		Debug.WriteLine("got focus");
 		this.ColorPickerPosition = Mouse.GetPosition(this);
+
+		// TODO: make cropped screenshot update immediately
+		//this.ColorPickerWindow_OnMouseMove(this, e);
 	}
 
 	private void ColorPickerWindow_OnDeactivated(object sender, EventArgs e)

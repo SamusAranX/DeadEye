@@ -31,6 +31,22 @@ public sealed class HsvColor
 public static class ColorExtensions
 {
 	/// <summary>
+	/// The CIE standard states 0.008856 but 216/24389 is the intent for 0.008856451679036
+	/// </summary>
+	private const double EPSILON = 216d / 24389d;
+
+	/// <summary>
+	/// The CIE standard states 903.3, but 24389/27 is the intent, making 903.296296296296296
+	/// </summary>
+	private const double KAPPA = 24389d / 27d;
+
+	private const double THIRD = 1d / 3d;
+
+	private const double SRGB_COEFF_R = 0.2126;
+	private const double SRGB_COEFF_G = 0.7152;
+	private const double SRGB_COEFF_B = 0.0722;
+
+	/// <summary>
 	/// Converts a <see cref="Color" /> to a hexadecimal string representation.
 	/// </summary>
 	/// <param name="color">The color to convert.</param>
@@ -92,24 +108,45 @@ public static class ColorExtensions
 		return ret;
 	}
 
-	private static double SRGBToLinear(double component)
+	/// <summary>
+	/// Converts an sRGB-encoded color value to a linear one.
+	/// </summary>
+	/// <param name="srgb">An sRGB color value between 0.0 and 1.0.</param>
+	/// <returns>A linearized value.</returns>
+	private static double SRGBToLinear(double srgb)
 	{
-		component /= byte.MaxValue;
+		if (srgb <= 0.04045)
+			return srgb / 12.92;
 
-		if (component <= 0.03928)
-			component /= 12.92;
-		else
-			component = Math.Pow((component + 0.055) / 1.055, 2.4);
-
-		return component;
+		return Math.Pow((srgb + 0.055) / 1.055, 2.4);
 	}
 
-	public static double GetLuma(this Color c)
+	/// <summary>
+	/// Returns the luminance for a given color.
+	/// </summary>
+	/// <param name="c">A color object.</param>
+	/// <returns>Luminance, in a range from 0.0 to 1.0.</returns>
+	public static double GetLuminance(this Color c)
 	{
-		var r = SRGBToLinear(c.R);
-		var g = SRGBToLinear(c.G);
-		var b = SRGBToLinear(c.B);
+		var linR = SRGBToLinear(c.R / 255d);
+		var linG = SRGBToLinear(c.G / 255d);
+		var linB = SRGBToLinear(c.B / 255d);
 
-		return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+		return SRGB_COEFF_R * linR + SRGB_COEFF_G * linG + SRGB_COEFF_B * linB;
+	}
+
+	/// <summary>
+	/// Returns a color's perceptual lightness.
+	/// </summary>
+	/// <param name="c">A color object.</param>
+	/// <returns>Perceptual lightness in a range from 0.0 to 1.0.</returns>
+	public static double GetLightness(this Color c)
+	{
+		var luminance = c.GetLuminance();
+
+		if (luminance <= EPSILON)
+			return luminance * KAPPA / 100;
+
+		return (Math.Pow(luminance, THIRD) * 116 - 16) / 100;
 	}
 }

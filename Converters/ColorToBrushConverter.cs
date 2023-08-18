@@ -5,20 +5,16 @@ using System.Windows.Media;
 
 namespace DeadEye.Converters;
 
-internal sealed class ColorHexConverter : MarkupExtension, IValueConverter
+internal sealed class ColorToBrushConverter : MarkupExtension, IValueConverter
 {
-	private static ColorHexConverter? _converter;
+	private static ColorToBrushConverter? _converter;
 
 	public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
-		if (value is null or not Color)
-			return "N/A";
+		if (value is Color color)
+			return new SolidColorBrush(color);
 
-		var c = (Color)value;
-		if (parameter is true)
-			return $"#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2}";
-
-		return $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+		return new SolidColorBrush(Colors.Magenta);
 	}
 
 	public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -28,6 +24,6 @@ internal sealed class ColorHexConverter : MarkupExtension, IValueConverter
 
 	public override object ProvideValue(IServiceProvider serviceProvider)
 	{
-		return _converter ??= new ColorHexConverter();
+		return _converter ??= new ColorToBrushConverter();
 	}
 }
