@@ -109,7 +109,19 @@ public partial class DummyWindow
 
 		if (this._screenshotWindow != null || this._colorPickerWindow != null)
 		{
-			Debug.WriteLine("A Window is already open");
+			Debug.WriteLine("A Window is already open, attempting to bring it to the front");
+			switch (e.Type)
+			{
+				case HotkeyType.Screenshot:
+					this._screenshotWindow?.Activate();
+					break;
+				case HotkeyType.ColorPicker:
+					this._colorPickerWindow?.Activate();
+					break;
+				default:
+					throw new NotImplementedException($"Invalid hotkey type {e.Type}");
+			}
+
 			return;
 		}
 
@@ -131,7 +143,6 @@ public partial class DummyWindow
 				this._screenshotWindow.Show();
 				break;
 			case HotkeyType.ColorPicker:
-
 				this._colorPickerWindow = new ColorPickerWindow(ref bitmapImage);
 				this._colorPickerWindow.Closed += (_, _) => { this._colorPickerWindow = null; };
 				this._colorPickerWindow.ColorPicked += this.ColorPicked;

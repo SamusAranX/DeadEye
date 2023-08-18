@@ -168,13 +168,13 @@
                             <Image Source="../Images/grid_preview.png" Stretch="UniformToFill" />
 
                             <controls:ColorPicker
-                                PixelColor="#386581"
+                                PixelColor="#355874"
                                 FontSize="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize}"
                                 PickerRadius="{Binding Source={x:Static deadeye:Settings.Shared}, Path=PickerRadius}"
-                                ShowColorWell="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowColorWell}"
-                                Margin="24,0,0,0">
+                                AllColorLabel="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AllColorLabel}"
+                                VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <controls:ColorPicker.ImageSource>
-                                    <CroppedBitmap Source="../Images/grid_preview.png" SourceRect="353,233,15,15" />
+                                    <CroppedBitmap Source="../Images/grid_preview.png" SourceRect="357,241,15,15" />
                                 </controls:ColorPicker.ImageSource>
                             </controls:ColorPicker>
 
@@ -230,12 +230,13 @@
                                        Text="{Binding Source={x:Static deadeye:Settings.Shared}, Path=TextSize, Converter={conv:TextSizeNameConverter}}" />
                         </Grid>
 
+                        <!-- TODO: name this something better -->
                         <TextBlock Grid.Column="0" Grid.Row="2"
-                                   Text="Color Preview:" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                                   Text="Cosmetics:" VerticalAlignment="Center" HorizontalAlignment="Right" />
 
-                        <CheckBox Grid.Column="2" Grid.Row="2" Content="Show Small Preview" VerticalAlignment="Center"
+                        <CheckBox Grid.Column="2" Grid.Row="2" Content="All-Color Preview" VerticalAlignment="Center"
                                   VerticalContentAlignment="Center"
-                                  IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=ShowColorWell}" />
+                                  IsChecked="{Binding Source={x:Static deadeye:Settings.Shared}, Path=AllColorLabel}" />
 
                         <TextBlock Grid.Column="0" Grid.Row="3"
                                    Text="Hotkey:" VerticalAlignment="Center" HorizontalAlignment="Right" />

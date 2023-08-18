@@ -37,7 +37,20 @@
         <Border Background="White" x:Name="ImageMask" Margin="4" CornerRadius="{Binding PickerRadius3}" />
 
         <Border x:Name="OuterBorder" Background="{StaticResource TranslucentBlack}" CornerRadius="{Binding PickerRadius}">
-            <Border x:Name="WhiteBorder" Background="White" Margin="1" CornerRadius="{Binding PickerRadius2}">
+            <Border x:Name="WhiteBorder" Margin="1" CornerRadius="{Binding PickerRadius2}">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AllColorLabel}" Value="True">
+                                <Setter Property="Background" Value="{Binding PixelColor, Converter={conv:ColorToBrushConverter}}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding AllColorLabel}" Value="False">
+                                <Setter Property="Background" Value="White" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
                 <Border x:Name="ImageContainer" Background="Red" Margin="3">
                     <Border.OpacityMask>
                         <VisualBrush Visual="{Binding ElementName=ImageMask}" />
@@ -78,11 +91,11 @@
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ShowColorWell}" Value="True">
-                                                <Setter Property="Background" Value="White" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding ShowColorWell}" Value="False">
+                                            <DataTrigger Binding="{Binding AllColorLabel}" Value="True">
                                                 <Setter Property="Background" Value="{Binding PixelColor, Converter={conv:ColorToBrushConverter}}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding AllColorLabel}" Value="False">
+                                                <Setter Property="Background" Value="White" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -94,22 +107,22 @@
                                         <ColumnDefinition MaxWidth="24" />
                                     </Grid.ColumnDefinitions>
 
-                                    <!-- Color code label that's shown when ShowColorWell is true -->
-                                    <TextBlock x:Name="ColorCode" 
-                                               Visibility="{Binding ShowColorWell, Converter={conv:AdvancedBooleanToVisibilityConverter}}"
+                                    <!-- Color code label that's shown when AllColorLabel is false -->
+                                    <TextBlock x:Name="ColorCodeLabel" 
+                                               Visibility="{Binding AllColorLabel, Converter={conv:AdvancedBooleanToVisibilityConverter}, ConverterParameter={StaticResource True}}"
                                                Style="{StaticResource BlackOnWhite}" VerticalAlignment="Center"
                                                Text="{Binding PixelColor, Converter={conv:ColorHexConverter}, FallbackValue=#EB4619}" />
 
-                                    <!-- Color code label that's shown when ShowColorWell is false. The foreground color is based on the color picker's PixelColor property. -->
-                                    <TextBlock x:Name="ColorCodeDynamic" Grid.Column="0" 
-                                               Visibility="{Binding ShowColorWell, Converter={conv:AdvancedBooleanToVisibilityConverter}, ConverterParameter={StaticResource True}}"
+                                    <!-- Color code label that's shown when AllColorLabel is true. The foreground color is based on the color picker's PixelColor property. -->
+                                    <TextBlock x:Name="ColorCodeLabelDynamic" Grid.Column="0" 
+                                               Visibility="{Binding AllColorLabel, Converter={conv:AdvancedBooleanToVisibilityConverter}}"
                                                Style="{StaticResource BlackOnWhite}" VerticalAlignment="Center"
                                                Foreground="{Binding PixelColor, Converter={conv:ReadableColorConverter}}"
                                                Text="{Binding PixelColor, Converter={conv:ColorHexConverter}, FallbackValue=#EB4619}" />
 
                                     <Border x:Name="ColorWell" Grid.Column="1" CornerRadius="2" Height="Auto" Margin="4,0,0,0"
                                             Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                            Visibility="{Binding ShowColorWell, Converter={StaticResource BoolToVis}}">
+                                            Visibility="{Binding AllColorLabel, Converter={conv:AdvancedBooleanToVisibilityConverter}, ConverterParameter={StaticResource True}}">
                                         <Border.Background>
                                             <SolidColorBrush Color="{Binding PixelColor}" />
                                         </Border.Background>

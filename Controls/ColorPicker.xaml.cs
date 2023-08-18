@@ -27,8 +27,8 @@ public partial class ColorPicker : INotifyPropertyChanged
 		typeof(ColorPicker),
 		new FrameworkPropertyMetadata(Colors.Magenta, FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
 
-	public static readonly DependencyProperty ShowColorWellProperty = DependencyProperty.Register(
-		nameof(ShowColorWell),
+	public static readonly DependencyProperty AllColorLabelProperty = DependencyProperty.Register(
+		nameof(AllColorLabel),
 		typeof(bool),
 		typeof(ColorPicker),
 		new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsRender));
@@ -51,10 +51,10 @@ public partial class ColorPicker : INotifyPropertyChanged
 		set => this.SetValue(PixelColorProperty, value);
 	}
 
-	public bool ShowColorWell
+	public bool AllColorLabel
 	{
-		get => (bool)this.GetValue(ShowColorWellProperty);
-		set => this.SetValue(ShowColorWellProperty, value);
+		get => (bool)this.GetValue(AllColorLabelProperty);
+		set => this.SetValue(AllColorLabelProperty, value);
 	}
 
 	public ImageSource ImageSource

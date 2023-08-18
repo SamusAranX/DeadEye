@@ -32,7 +32,7 @@
                               FontSize="{Binding Source={x:Static local:Settings.Shared}, Path=TextSize}"
                               PixelColor="{Binding ColorPickerPixelColor}"
                               PickerRadius="{Binding Source={x:Static local:Settings.Shared}, Path=PickerRadius}"
-                              ShowColorWell="{Binding Source={x:Static local:Settings.Shared}, Path=ShowColorWell}"/>
+                              AllColorLabel="{Binding Source={x:Static local:Settings.Shared}, Path=AllColorLabel}"/>
         </Canvas>
     </Grid>
 </Window>
