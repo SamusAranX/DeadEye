@@ -25,9 +25,8 @@ public delegate void ColorPickedEventHandler(object sender, ColorPickEventArgs a
 
 public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 {
-	private Point _colorPickerPosition;
-
 	private ImageSource? _screenshotImage;
+	private bool _isReady;
 
 	public ColorPickerWindow()
 	{
@@ -56,10 +55,7 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 	private void ColorPickerWindow_OnActivated(object? sender, EventArgs e)
 	{
 		Debug.WriteLine("got focus");
-		this.ColorPickerPosition = Mouse.GetPosition(this);
-
-		// TODO: make cropped screenshot update immediately
-		//this.ColorPickerWindow_OnMouseMove(this, e);
+		this.ColorPickerPosition = this.MousePosToPickerPos(Mouse.GetPosition(this));
 	}
 
 	private void ColorPickerWindow_OnDeactivated(object sender, EventArgs e)
@@ -86,6 +82,11 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 
 	#region ColorPicker support properties
 
+	private Point _colorPickerPosition;
+	private Int32Rect _colorPickerSourceRect;
+	private Color _colorPickerPixelColor;
+	private CroppedBitmap? _colorPickerCroppedBitmap;
+
 	public Point ColorPickerPosition
 	{
 		get => this._colorPickerPosition;
@@ -95,10 +96,6 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 			this.OnPropertyChanged();
 		}
 	}
-
-	private Int32Rect _colorPickerSourceRect;
-	private Color _colorPickerPixelColor;
-	private CroppedBitmap? _colorPickerCroppedBitmap;
 
 	public Color ColorPickerPixelColor
 	{
@@ -116,6 +113,16 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 		private set
 		{
 			this._colorPickerCroppedBitmap = value;
+			this.OnPropertyChanged();
+		}
+	}
+
+	public bool IsReady
+	{
+		get => this._isReady;
+		set
+		{
+			this._isReady = value;
 			this.OnPropertyChanged();
 		}
 	}
@@ -148,11 +155,28 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 		var pixels = new byte[4]; // bgra
 		cb.CopyPixels(pixels, 4, 0);
 		this.ColorPickerPixelColor = Color.FromArgb(255, pixels[2], pixels[1], pixels[0]);
+
+		this.IsReady = true;
 	}
 
 	#endregion
 
 	#region Mouse and Key Handlers
+
+	private void ColorGizmo_OnSizeChanged(object sender, SizeChangedEventArgs e)
+	{
+		if (this._colorPickerSize != 0)
+			return;
+
+		this._colorPickerSize = this.ColorGizmo.ActualWidth;
+	}
+
+	private Point MousePosToPickerPos(Point mousePos)
+	{
+		var pickerPosX = (int)Math.Floor(mousePos.X - this._colorPickerSize / 2);
+		var pickerPosY = (int)Math.Floor(mousePos.Y - this._colorPickerSize / 2);
+		return new Point(pickerPosX, pickerPosY);
+	}
 
 	private void ColorPickerWindow_OnKeyDown(object sender, KeyEventArgs e)
 	{
@@ -166,14 +190,8 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 
 	private void ColorPickerWindow_OnMouseMove(object sender, MouseEventArgs e)
 	{
-		if (this._colorPickerSize == 0 && this.ColorGizmo.ActualWidth > 0)
-			this._colorPickerSize = this.ColorGizmo.ActualWidth;
-
 		var pos = e.GetPosition(this);
-
-		var pickerPosX = (int)Math.Floor(pos.X - this._colorPickerSize / 2);
-		var pickerPosY = (int)Math.Floor(pos.Y - this._colorPickerSize / 2);
-		this.ColorPickerPosition = new Point(pickerPosX, pickerPosY);
+		this.ColorPickerPosition = this.MousePosToPickerPos(pos);
 
 		var pickerPadding = (int)Math.Round((double)ColorPicker.IMAGE_SOURCE_RECT_SIZE / 2);
 		pos.X -= pickerPadding;

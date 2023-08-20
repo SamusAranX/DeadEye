@@ -26,6 +26,8 @@
         <Canvas x:Name="ColorPickerCanvas" Background="Transparent">
             <ctrl:ColorPicker x:Name="ColorGizmo"
                               DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                              SizeChanged="ColorGizmo_OnSizeChanged"
+                              Visibility="{Binding IsReady, Converter={StaticResource BoolToVis}, FallbackValue=Visible}"
                               Canvas.Left="{Binding ColorPickerPosition.X}"
                               Canvas.Top="{Binding ColorPickerPosition.Y}"
                               ImageSource="{Binding ColorPickerCroppedBitmap}"
