@@ -4,15 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" x:Name="GuideGridControl"
-             d:DesignWidth="320" d:DesignHeight="240">
+             d:DesignWidth="320" d:DesignHeight="240"
+             DataContext="{Binding ElementName=GuideGridControl}">
 
     <UserControl.Resources>
-        <Grid x:Key="NoneGrid" DataContext="{Binding ElementName=GuideGridControl}">
+        <Grid x:Key="NoneGrid">
             <!-- Outer border -->
             <Border BorderThickness="1" BorderBrush="{Binding GridLineBrush}" />
         </Grid>
 
-        <Grid x:Key="RuleOfThirdsGrid" DataContext="{Binding ElementName=GuideGridControl}">
+        <Grid x:Key="RuleOfThirdsGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="1" />
@@ -56,7 +57,7 @@
                     BorderBrush="{Binding GridLineBrush}" />
         </Grid>
 
-        <Grid x:Key="GoldenRuleGrid" DataContext="{Binding ElementName=GuideGridControl}">
+        <Grid x:Key="GoldenRuleGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1" />
@@ -101,7 +102,7 @@
         </Grid>
     </UserControl.Resources>
 
-    <Grid DataContext="{Binding ElementName=GuideGridControl}">
+    <Grid>
         <ContentControl Opacity="{Binding GridOpacity}">
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
