@@ -70,6 +70,7 @@
                 <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="Build Time" />
 
                 <TextBlock Grid.Column="2" Grid.Row="0" Text="{x:Static local:Version.GIT_TAG}" />
+                <!--<TextBlock Grid.Column="2" Grid.Row="0" Text="{Binding AssemblyVersion}" />-->
                 <TextBlock Grid.Column="2" Grid.Row="1" Text="{x:Static local:Version.GIT_BRANCH}" />
                 <TextBlock Grid.Column="2" Grid.Row="2" Text="{x:Static local:Version.GIT_COMMIT_SHORT}" />
                 <TextBlock Grid.Column="2" Grid.Row="3" Text="{Binding BuildDateTime, StringFormat=g, FallbackValue=N/A}" />

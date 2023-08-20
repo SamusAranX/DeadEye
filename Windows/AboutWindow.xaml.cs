@@ -27,4 +27,14 @@ public partial class AboutWindow
 			return string.Empty;
 		}
 	}
+
+	public string AssemblyVersion
+	{
+		get
+		{
+			var asm = Assembly.GetExecutingAssembly();
+			var asmVersion = asm.GetName().Version;
+			return asmVersion != null ? asmVersion.ToString() : string.Empty;
+		}
+	}
 }
