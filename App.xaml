@@ -14,7 +14,7 @@
         <SolidColorBrush x:Key="TranslucentBlack" Color="#66000000" />
         <SolidColorBrush x:Key="TranslucenterBlack" Color="#33000000" />
 
-        <FontFamily x:Key="MonoFont">Cascadia Mono, Consolas, Courier New</FontFamily>
+        <FontFamily x:Key="MonoFont">pack://application:,,,/Fonts/#JetBrains Mono NL</FontFamily>
 
         <DropShadowEffect x:Key="TextShadow" BlurRadius="2" Direction="315" ShadowDepth="1" Opacity="0.6" />
 
@@ -22,10 +22,10 @@
 
         <Style x:Key="BlackOnWhite" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+            <Setter Property="FontStretch" Value="Normal" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Foreground" Value="Black" />
             <Setter Property="Typography.NumeralAlignment" Value="Tabular" />
-            <Setter Property="Typography.StylisticSet4" Value="True" />
         </Style>
 
         <Style x:Key="WhiteOnBlack" TargetType="TextBlock" BasedOn="{StaticResource BlackOnWhite}">

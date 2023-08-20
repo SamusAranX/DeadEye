@@ -19,6 +19,7 @@ public partial class SettingsWindow
 	{
 		GridType.None,
 		GridType.RuleOfThirds,
+		GridType.GoldenRule,
 	};
 
 	private void SettingsWindow_OnClosing(object sender, CancelEventArgs e)

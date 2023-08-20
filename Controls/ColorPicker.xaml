@@ -4,12 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conv="clr-namespace:DeadEye.Converters"
-             mc:Ignorable="d"
-             x:Name="ColorPickerControl"
+             mc:Ignorable="d" x:Name="ColorPickerControl"
              DataContext="{Binding ElementName=ColorPickerControl}"
              FontSize="15"
-             Width="143"
-             Height="143">
+             Width="143" Height="143">
     <UserControl.Resources>
         <CroppedBitmap x:Key="DefaultImage" Source="../Images/grid_preview.png" SourceRect="353,233,15,15" />
 

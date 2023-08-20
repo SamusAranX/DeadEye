@@ -18,6 +18,9 @@ public enum GridType
 
 	[Description("Rule of Thirds")]
 	RuleOfThirds,
+
+	[Description("Golden Rule")]
+	GoldenRule,
 }
 
 public sealed class Settings : INotifyPropertyChanged
