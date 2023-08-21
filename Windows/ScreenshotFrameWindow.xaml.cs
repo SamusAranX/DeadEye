@@ -60,11 +60,6 @@ public sealed partial class ScreenshotFrameWindow : INotifyPropertyChanged
 		this.ScreenshotTaken?.Invoke(this, e);
 	}
 
-	private void ScreenshotFrameWindow_OnSourceInitialized(object sender, EventArgs e)
-	{
-		this.Topmost = !DebugHelper.IsDebugMode;
-	}
-
 	private void ScreenshotFrameWindow_OnDeactivated(object sender, EventArgs e)
 	{
 		Debug.WriteLine("lost focus");

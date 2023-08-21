@@ -83,14 +83,25 @@ public partial class SettingsWindow
 		Debug.WriteLine($"Color Picker Hotkey active: {HotkeyManager.Shared.IsColorPickerHotkeyRegistered}");
 	}
 
+	private static void CancelRebinding()
+	{
+		Settings.Shared.WaitingForHotkey = null;
+		EnsureHotkeyStatus();
+	}
+
 	private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
 		if (e.Source is not TabControl || !Settings.Shared.WaitingForHotkey.HasValue)
 			return;
 
-		// cancel hotkey process when switching tabs
-		Settings.Shared.WaitingForHotkey = null;
-		EnsureHotkeyStatus();
+		// cancel hotkey rebinding when switching tabs
+		CancelRebinding();
+	}
+
+	private void SettingsWindow_OnDeactivated(object? sender, EventArgs e)
+	{
+		// cancel hotkey rebinding when window loses focus
+		CancelRebinding();
 	}
 
 	private void SettingsWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -111,24 +122,31 @@ public partial class SettingsWindow
 
 		Debug.WriteLine($"key: {key}");
 
-		// if key is not null here, we may have found our new hotkey
-		if (key.HasValue && key != Key.Escape)
+		switch (key)
 		{
-			// we actually have a new hotkey
-			var newHotkey = new ShortcutKey(modifiers, key.Value);
-			switch (Settings.Shared.WaitingForHotkey)
-			{
-				case HotkeyType.Screenshot:
-					Settings.Shared.ScreenshotKey = newHotkey;
-					break;
-				case HotkeyType.ColorPicker:
-					Settings.Shared.ColorPickerKey = newHotkey;
-					break;
-			}
+			case null:
+				// no non-modifier key has been pressed yet
+				EnsureHotkeyStatus();
+				break;
+			case Key.Escape:
+				// escape was pressed, cancel rebinding
+				CancelRebinding();
+				break;
+			default:
+				// we actually have a new hotkey
+				var newHotkey = new ShortcutKey(modifiers, key.Value);
+				switch (Settings.Shared.WaitingForHotkey)
+				{
+					case HotkeyType.Screenshot:
+						Settings.Shared.ScreenshotKey = newHotkey;
+						break;
+					case HotkeyType.ColorPicker:
+						Settings.Shared.ColorPickerKey = newHotkey;
+						break;
+				}
 
-			Settings.Shared.WaitingForHotkey = null;
+				Settings.Shared.WaitingForHotkey = null;
+				break;
 		}
-
-		EnsureHotkeyStatus();
 	}
 }

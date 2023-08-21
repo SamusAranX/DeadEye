@@ -13,7 +13,7 @@
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         Title="Settings" Width="340" Height="500" SizeToContent="Height" ResizeMode="NoResize"
         Background="{x:Static SystemColors.MenuBrush}"
-        PreviewKeyDown="SettingsWindow_OnPreviewKeyDown">
+        PreviewKeyDown="SettingsWindow_OnPreviewKeyDown" Deactivated="SettingsWindow_OnDeactivated">
     <Window.Resources>
         <DrawingImage x:Key="CrossCursor">
             <DrawingImage.Drawing>

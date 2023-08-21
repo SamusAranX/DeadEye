@@ -8,11 +8,10 @@
         xmlns:windows="clr-namespace:DeadEye.Windows"
         mc:Ignorable="d" WindowStyle="None" Background="Magenta" ResizeMode="NoResize"
         Title="DeadEye Screenshot Window" Height="240" Width="320"
-        UseLayoutRounding="True" Cursor="Cross"
+        UseLayoutRounding="True" Cursor="Cross" Topmost="True"
         TextOptions.TextHintingMode="Fixed" TextOptions.TextFormattingMode="Display"
         RenderOptions.BitmapScalingMode="NearestNeighbor"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        SourceInitialized="ScreenshotFrameWindow_OnSourceInitialized"
         Deactivated="ScreenshotFrameWindow_OnDeactivated"
         KeyDown="ScreenshotFrameWindow_OnKeyDown" KeyUp="ScreenshotFrameWindow_OnKeyUp"
         MouseLeftButtonDown="ScreenshotFrameWindow_OnMouseLeftButtonDown"
@@ -28,7 +27,8 @@
                                DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
 
         <Canvas x:Name="GridCanvas" Background="Transparent">
-            <ctrl:GuideGrid GridOpacity="0.6"
+            <ctrl:GuideGrid x:Name="GuideGrid" 
+                            GridOpacity="0.6"
                             GridType="{Binding Source={x:Static local:Settings.Shared}, Path=GridType}"
                             MarkCenter="{Binding Source={x:Static local:Settings.Shared}, Path=MarkCenter}"
                             Canvas.Left="{Binding SelectionBoundsClamped.Left}"

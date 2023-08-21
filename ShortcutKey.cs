@@ -9,6 +9,7 @@ public sealed class ShortcutKey
 
 	public static readonly Key[] IgnoredKeys =
 	{
+		// do not put Key.Escape in here
 		Key.System,
 		Key.LeftCtrl, Key.RightCtrl,
 		Key.LeftShift, Key.RightShift,

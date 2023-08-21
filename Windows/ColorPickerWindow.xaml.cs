@@ -47,11 +47,6 @@ public sealed partial class ColorPickerWindow : INotifyPropertyChanged
 		this.ColorPicked?.Invoke(this, e);
 	}
 
-	private void ColorPickerWindow_OnSourceInitialized(object sender, EventArgs e)
-	{
-		this.Topmost = !DebugHelper.IsDebugMode;
-	}
-
 	private void ColorPickerWindow_OnActivated(object? sender, EventArgs e)
 	{
 		Debug.WriteLine("got focus");
